@@ -2,9 +2,10 @@ import FilterAndResearch from "@/components/filterAndResearch/FilterAndResearch"
 import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import { ModalContext } from "@/context/modalContext";
 import { Faculty } from "@/entities/faculty.entity";
-import {
-  ChevronUpDownIcon,
-} from "@heroicons/react/24/outline";
+import { FacultiesState } from "@/gx/signals/faculties.signal";
+import { formatDate } from "@/utils";
+import { useSignal } from "@dilane3/gx";
+import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
   Card,
@@ -20,51 +21,39 @@ import { useContext } from "react";
 
 const TABS = [
   {
-    label: "Tous",
-    value: "tous",
+    label: "All",
+    value: "all",
   },
   {
-    label: "Noms",
-    value: "noms",
+    label: "Names",
+    value: "names",
   },
   {
     label: "Description",
     value: "Description",
   },
 ];
-;
-
-const TABLE_HEAD = ["Name", "Description", "Actions"];
-
-const TABLE_ROWS: Array<Faculty> = [
-  new Faculty({
-    name: "Faculty of science",
-    description: "Description of the faculty of science",
-  }),
-  new Faculty({
-    name: "Faculty of arts",
-    description: "Description of the faculty of arts",
-  }),
-];
-
+const TABLE_HEAD = ["Name", "Registered At", "Actions"];
 
 export function Faculties() {
-
   const { handleOpen, dispatch } = useContext(ModalContext);
 
+  // Global state
+  const { faculties } = useSignal<FacultiesState>("faculties");
+
   const handleOpenCreateFacultyModal = () => {
-    if(!dispatch) return
-    
-    dispatch!({ type: "ADD_FACULTY" })
+    if (!dispatch) return;
+
+    dispatch!({ type: "ADD_FACULTY" });
     handleOpen();
-  }
+  };
 
   const handleOpenDeleteModal = () => {
-    if(!dispatch) return
-    
-    dispatch!({ type: "DELETE_CONFIRMATION" })
+    if (!dispatch) return;
+
+    dispatch!({ type: "DELETE_CONFIRMATION" });
     handleOpen();
-  }
+  };
 
   return (
     <Card className="h-full w-full">
@@ -72,15 +61,18 @@ export function Faculties() {
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Liste de facultés
+              List of faculties
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              Ci-dessous les informations sur les facultés
+              Below are the informations about faculties
             </Typography>
           </div>
-          <Button onClick={handleOpenCreateFacultyModal} className="flex items-center gap-3 bg-primary" size="md">
-            <PlusCircleIcon strokeWidth={2} className="h-6 w-6" /> Ajouter une
-            faculté
+          <Button
+            onClick={handleOpenCreateFacultyModal}
+            className="flex items-center gap-3 bg-primary"
+            size="md"
+          >
+            <PlusCircleIcon strokeWidth={2} className="h-6 w-6" /> Add a faculty
           </Button>
         </div>
         <FilterAndResearch tabsList={TABS} />
@@ -95,7 +87,7 @@ export function Faculties() {
                   className="cursor-pointer border-y border-blue-gray-100 bg-primary bg-opacity-80 p-4 transition-colors hover:bg-opacity-100"
                 >
                   <Typography
-                    variant="h4"
+                    variant="h6"
                     color="white"
                     className="flex items-center justify-between gap-2 font-bold leading-none"
                   >
@@ -109,11 +101,9 @@ export function Faculties() {
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(({ name, description }, index) => {
-              const isLast = index === TABLE_ROWS.length - 1;
-              const classes = isLast
-                ? "p-4"
-                : "p-4 border-b border-blue-gray-50";
+            {faculties.map(({ name, createdAt }, index) => {
+              const isLast = index === faculties.length - 1;
+              const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
               return (
                 <tr key={name}>
@@ -122,7 +112,7 @@ export function Faculties() {
                       <Typography
                         variant="paragraph"
                         color="blue-gray"
-                        className="text-lg font-medium"
+                        className="text-lg font-medium capitalize"
                       >
                         {name}
                       </Typography>
@@ -134,7 +124,7 @@ export function Faculties() {
                       color="blue-gray"
                       className="text-lg font-medium"
                     >
-                      {description}
+                      {formatDate(createdAt)}
                     </Typography>
                   </td>
                   <td className={classes}>
