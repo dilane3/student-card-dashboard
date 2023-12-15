@@ -13,7 +13,10 @@ export const login = async (email: string, password: string) => {
       {
         email,
         password,
-      }
+      },
+      headers: {
+        "Access-Control-Allow-Credentials": true,
+      },
     );
 
     if (response.status === 200) {
@@ -34,7 +37,9 @@ export const login = async (email: string, password: string) => {
  */
 export const logout = async () => {
   try {
-    const response = await instance.post("/auth/logout");
+    const response = await instance.post("/auth/logout", headers: {
+      "Access-Control-Allow-Credentials": true,
+    },);
 
     if (response.status === 200) {
       return { data: true };
