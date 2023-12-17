@@ -17,9 +17,13 @@ import { useContext } from "react";
 import { useSignal } from "@dilane3/gx";
 import { AgentsState } from "@/gx/signals/agents.signal";
 import { formatDate } from "@/utils";
+import useLoadAgents from "@/hooks/useLoadAgents";
 
 export default function Agents() {
   const { handleOpen, dispatch } = useContext(ModalContext);
+
+  // This hooks gets the agents from the API
+  useLoadAgents();
 
   // Global state
   const { agents } = useSignal<AgentsState>("agents");
@@ -34,7 +38,7 @@ export default function Agents() {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader className="mb-8 p-6 bg-primary flex items-center justify-between w-full">
+        <CardHeader className="mb-8 p-6 bg-primary flex items-center justify-between w-">
           <Typography variant="h6" color="white">
             List of Agents
           </Typography>
