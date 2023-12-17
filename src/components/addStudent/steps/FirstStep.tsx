@@ -80,7 +80,7 @@ const FirstStep = () => {
   return (
     <>
       <Typography variant="h4" color="purple" className="mt-8">
-        Informations Personnelles
+        Personal Informations
       </Typography>
       <div className="mt-8 flex flex-col md:flex-row w-full gap-4">
         <div className="mb-4 flex w-full md:w-1/2 flex-col gap-6">

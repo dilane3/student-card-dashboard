@@ -47,6 +47,16 @@ export function CustomStepperForm() {
           ) {
             return true;
           }
+
+          return false;
+        }
+
+        case 1: {
+          const { nationality, email, phone, photo } = form.step2;
+
+          if (nationality && email && phone && photo) return true;
+
+          return false;
         }
 
         default:
