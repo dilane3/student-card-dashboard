@@ -14,9 +14,11 @@ export const login = async (email: string, password: string) => {
         email,
         password,
       },
-      {headers: {
-        "Access-Control-Allow-Credentials": true,
-      }},
+      {
+        headers: {
+          "Access-Control-Allow-Credentials": true,
+        },
+      },
     );
 
     if (response.status === 200) {
@@ -37,9 +39,11 @@ export const login = async (email: string, password: string) => {
  */
 export const logout = async () => {
   try {
-    const response = await instance.post("/auth/logout", {headers: {
-      "Access-Control-Allow-Credentials": true,
-    }},);
+    const response = await instance.post("/auth/logout", {
+      headers: {
+        "Access-Control-Allow-Credentials": true,
+      },
+    });
 
     if (response.status === 200) {
       return { data: true };
@@ -51,7 +55,7 @@ export const logout = async () => {
 
     return { error: error };
   }
-}
+};
 
 /**
  * Function used retrieve information about the current agent or the admin
@@ -65,14 +69,36 @@ export const getMe = async () => {
       },
     });
 
+    console.log(response)
+
     if (response.status === 200) {
       return { data: true, user: response.data };
     }
 
     return { data: false };
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.log("holllllllllle")
+    try {
+      console.log(error)
+      if (error.response.status === 401) {
+        const response = await instance.get("users/agents/me", {
+          headers: {
+            "Access-Control-Allow-Credentials": true,
+          },
+        });
 
-    return { error: error };
+        console.log(response);
+
+        if (response.status === 200) {
+          return { data: true, user: response.data };
+        }
+      }
+
+      return { data: false };
+    } catch (error: any) {
+      console.error(error);
+
+      return { error: error };
+    }
   }
 };
