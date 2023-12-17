@@ -24,7 +24,7 @@ export default function Students() {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["author", "function", "status", "birthDate", "Action"].map(
+                {["author", "sex", "status", "registered at", "Action"].map(
                   (el) => (
                     <th
                       key={el}
@@ -70,17 +70,14 @@ export default function Students() {
                     </td>
                     <td className={className}>
                       <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {job[0]}
-                      </Typography>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {job[1]}
+                        Male
                       </Typography>
                     </td>
                     <td className={className}>
                       <Chip
                         variant="gradient"
                         color={online ? "green" : "blue-gray"}
-                        value={online ? "online" : "offline"}
+                        value={online ? "Verified" : "Disabled"}
                         className="py-0.5 px-2 text-[11px] font-medium"
                       />
                     </td>

@@ -38,7 +38,7 @@ export default function Agents() {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader className="mb-8 p-6 bg-primary flex items-center justify-between w-">
+        <CardHeader className="mb-8 p-6 bg-primary flex items-center justify-between">
           <Typography variant="h6" color="white">
             List of Agents
           </Typography>

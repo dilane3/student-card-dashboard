@@ -80,7 +80,7 @@ export const getMe = async () => {
     console.log("holllllllllle")
     try {
       console.log(error)
-      if (error.response.status === 401) {
+      if (error && error.response && error.response.status === 401) {
         const response = await instance.get("users/agents/me", {
           headers: {
             "Access-Control-Allow-Credentials": true,
