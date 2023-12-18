@@ -47,7 +47,7 @@ export default function useLoadAgents() {
 
       loadAgents(agents);
     } else {
-      toast.error("Failed to load faculties");
+      toast.error("Failed to load agents");
     }
   };
 }

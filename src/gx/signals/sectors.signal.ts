@@ -13,6 +13,10 @@ export type SectorsActions = {
   deleteSector: (sector: Sector) => void;
 };
 
+export type SectorsOperations = {
+  getSector: (id: string) => Sector | undefined;
+};
+
 const sectorsSignal = createSignal<SectorsState>({
   name: "sectors",
   state: {
@@ -52,6 +56,12 @@ const sectorsSignal = createSignal<SectorsState>({
         ...state,
         sectors: state.sectors.filter((s) => s.id !== sector.id)
       };
+    }
+  },
+
+  operations: {
+    getSector: (state, id: string) => {
+      return state.sectors.find((s) => s.id === id);
     }
   }
 });

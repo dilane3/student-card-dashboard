@@ -19,6 +19,8 @@ import { Faculties } from "./pages/dashboard/faculty";
 import { Sectors } from "./pages/dashboard/sector";
 import AcademicYear from "./pages/dashboard/academicYear";
 import Agents from "./pages/dashboard/agents";
+import { RoleEnum } from "./entities/role.entity";
+import AuthProvider from "./provider/authProvider";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -32,6 +34,7 @@ export type RouteType = {
     name: string;
     path: string;
     element: ReactNode;
+    access?: RoleEnum[];
   }>;
 };
 
@@ -44,73 +47,103 @@ export const routes: Array<RouteType> = [
         name: "dashboard",
         path: "/home",
         element: <Home />,
+        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
       },
       {
         icon: <AcademicCapIcon {...icon} />,
         name: "students",
         path: "/students",
-        element: <Students />,
+        element: (
+          <AuthProvider access={[RoleEnum.AGENT]}>
+            <Students />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.AGENT],
       },
       {
         icon: <AcademicCapIcon {...icon} />,
         name: "agents",
         path: "/agents",
-        element: <Agents />,
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN]}>
+            <Agents />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.ADMIN],
       },
       {
         icon: <UserCircleIcon {...icon} />,
         name: "profile",
         path: "/profile",
         element: <Profile />,
+        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
       },
       {
         icon: <PencilIcon {...icon} />,
         name: "personal info",
         path: "/personal-info",
-        element: <PersonalInfo />,
+        element: (
+          <AuthProvider access={[RoleEnum.AGENT]}>
+            <PersonalInfo />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.AGENT],
       },
       {
         icon: <PrinterIcon {...icon} />,
         name: "export card",
         path: "/export-card",
-        element: <Export />,
+        element: (
+          <AuthProvider access={[RoleEnum.AGENT]}>
+            <Export />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.AGENT],
       },
       {
         icon: <UserPlusIcon {...icon} />,
         name: "add student",
         path: "/add-student",
-        element: <AddStudent />,
+        element: (
+          <AuthProvider access={[RoleEnum.AGENT]}>
+            <AddStudent />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.AGENT],
       },
       {
         icon: <AcademicCapIcon {...icon} />,
         name: "faculty",
         path: "/faculty",
-        element: <Faculties />,
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN]}>
+            <Faculties />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.ADMIN],
       },
       {
         icon: <AcademicCapIcon {...icon} />,
         name: "sector",
         path: "/sector",
-        element: <Sectors />,
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN]}>
+            <Sectors />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.ADMIN],
       },
       {
         icon: <CalendarDaysIcon {...icon} />,
         name: "academic year",
         path: "/academic-year",
-        element: <AcademicYear />,
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN]}>
+            <AcademicYear />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.ADMIN],
       },
-      // {
-      //   icon: <TableCellsIcon {...icon} />,
-      //   name: "tables",
-      //   path: "/tables",
-      //   element: <Tables />,
-      // },
-      // {
-      //   icon: <BellIcon {...icon} />,
-      //   name: "notifactions",
-      //   path: "/notifactions",
-      //   element: <Notifications />,
-      // },
     ],
   },
   {
@@ -122,13 +155,8 @@ export const routes: Array<RouteType> = [
         name: "sign in",
         path: "/sign-in",
         element: <SignIn />,
+        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
       },
-      // {
-      //   icon: <UserPlusIcon {...icon} />,
-      //   name: "sign up",
-      //   path: "/sign-up",
-      //   element: <SignUp />,
-      // },
     ],
   },
 ];
