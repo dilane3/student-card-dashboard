@@ -1,16 +1,27 @@
 import { AxiosRequestConfig } from "axios";
 import instance from "..";
 
-type CreateStudentDto = null;
+type CreateStudentDto = {
+  sectorId: string,
+  matricule: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  phone: string,
+  sexe: "MALE" | "FEMALE",
+  avatar: string,
+  birthDate: Date,
+  nationality: string
+};
 type UpdateStudentDto = null;
 
 /**
  * This function creates student on the server.
  * @param payload DTO for creating student.
  */
-export async function createStudent(payload: CreateStudentDto) {
+export async function registerStudent(payload: CreateStudentDto) {
   try {
-    const response = await instance.post("/students", payload);
+    const response = await instance.post("/student-cards", payload);
 
     if (response.status === 201) {
       return {
@@ -36,7 +47,7 @@ export async function createStudent(payload: CreateStudentDto) {
  */
 export async function updateStudent(id: string, payload: UpdateStudentDto) {
   try {
-    const response = await instance.patch(`/students/${id}`, payload);
+    const response = await instance.patch(`/student-cards/${id}`, payload);
     if (response.status === 200) {
       return {
         data: response.data,
@@ -60,7 +71,7 @@ export async function updateStudent(id: string, payload: UpdateStudentDto) {
  */
 export async function findAllStudents() {
   try {
-    const response = await instance.get("/students");
+    const response = await instance.get("/student-cards");
 
     if (response.status === 200) {
       return {
@@ -87,7 +98,7 @@ export async function findAllStudents() {
  */
 export async function deleteStudent(id: string) {
   try {
-    const response = await instance.delete(`/students/${id}`);
+    const response = await instance.delete(`/student-cards/${id}`);
 
     if (response.status === 200) {
       return {
@@ -110,7 +121,7 @@ export async function deleteStudent(id: string) {
 /**
  * This function loads paginated students from the server.
  */
-export async function findStudentsWithPagination(offset: number, limit: number) {
+export async function findStudentsWithPagination(offset = 0, limit = 20) {
   try {
     const params = {
       offset,
@@ -121,11 +132,11 @@ export async function findStudentsWithPagination(offset: number, limit: number) 
       params,
     };
 
-    const response = await instance.get("/students", config);
+    const response = await instance.get("/student-cards", config);
 
     if (response.status === 200) {
       return {
-        data: response.data.data,
+        data: response.data,
       };
     }
 
@@ -148,7 +159,7 @@ export async function findStudentsWithPagination(offset: number, limit: number) 
  */
 export async function getStudent(id: string) {
   try {
-    const response = await instance.get(`/students/${id}`);
+    const response = await instance.get(`/student-cards/${id}`);
     if (response.status === 200) {
       return {
         data: response.data,

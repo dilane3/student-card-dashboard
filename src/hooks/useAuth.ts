@@ -42,7 +42,7 @@ export default function useAuth() {
           createdAt: new Date(userData.admin.createdAt),
           role: new Role({
             label: RoleEnum.ADMIN,
-            description: "admin",
+            description: "Admin",
           }),
         };
 
@@ -53,7 +53,27 @@ export default function useAuth() {
 
         login(user);
       } else {
-        // TO DO: Handle agent
+        console.log(userData)
+        const agentData = {
+          id: userData.agent.id,
+          lastName: userData.agent.lastName,
+          firstName: userData.agent.firstName,
+          phone: userData.agent.phone,
+          avatar: "https://www.gravatar.com/av",
+          sexe: "male",
+          createdAt: new Date(userData.agent.createdAt),
+          role: new Role({
+            label: RoleEnum.AGENT,
+            description: "Agent",
+          }),
+        };
+
+        const user = new User({
+          email: userData.email,
+          ...agentData,
+        });
+
+        login(user);
       }
     } else {
       setIsLoading(false);

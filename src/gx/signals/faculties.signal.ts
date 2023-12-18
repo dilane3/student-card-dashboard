@@ -13,6 +13,10 @@ export type FacultiesActions = {
   deleteFaculty: (faculty: Faculty) => void;
 };
 
+export type FacultiesOperations = {
+  getFaculty: (id: string) => Faculty | undefined;
+};
+
 const facultiesSignal = createSignal<FacultiesState>({
   name: "faculties",
   state: {
@@ -53,6 +57,10 @@ const facultiesSignal = createSignal<FacultiesState>({
         faculties: state.faculties.filter((f) => f.id !== faculty.id)
       };
     }
+  },
+
+  operations: {
+    getFaculty: (state, id: string) => state.faculties.find((faculty) => faculty.id === id),
   }
 });
 

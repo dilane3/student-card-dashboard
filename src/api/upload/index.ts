@@ -9,7 +9,7 @@ import instance from "..";
 export async function uploadFile(formData: FormData, multiple: boolean = false) {
   try {
     const response = await instance.post(
-      `/uploads/file${multiple && "s"}`,
+      `/uploads/file${multiple ? "s" : ""}`,
       formData,
     );
 

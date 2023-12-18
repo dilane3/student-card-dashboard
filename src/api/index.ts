@@ -17,7 +17,7 @@ instance.interceptors.request.use(
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      config.headers["Access-Control-Allow-Origin"] = true;
+      // config.headers["Access-Control-Allow-Origin"] = true;
     }
     return config;
   },

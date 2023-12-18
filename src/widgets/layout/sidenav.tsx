@@ -3,6 +3,8 @@ import { Link, NavLink } from "react-router-dom";
 import { Button, Tooltip, Typography } from "@material-tailwind/react";
 import { useMaterialTailwindController } from "@/context";
 import { RouteType } from "@/routes";
+import { useSignal } from "@dilane3/gx";
+import { AuthState } from "@/gx/signals/auth.signal";
 
 type SideNavProps = {
   brandImg: string;
@@ -13,9 +15,17 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
   const [controller, _] = useMaterialTailwindController();
   const { sidenavColor, sidenavType } = controller;
 
+  // Global state
+  const { user } = useSignal<AuthState>("auth");
+
+  // Check if the user is authenticated
+  if (!user) {
+    return null;
+  }
+
   return (
     <aside
-      className={`fixed inset-0 z-50 h-full w-max bg-primary  transition-transform duration-300 xl:w-72 xl:translate-x-0`}
+      className={`fixed inset-0 z-50 h-full w-max bg-primary  transition-transform duration-300 xl:w-72 xl:translate-x-0 overflow-y-auto`}
     >
       <div
         className={`relative border-b ${
@@ -47,38 +57,42 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
                 </Typography>
               </li>
             )}
-            {pages.map(({ icon, name, path }) => (
-              <Tooltip
-                content={name}
-                className="bg-primary block 1140px:hidden 1359px:hidden ml-2 font-nunitoBold capitalize"
-                placement="right-center"
-              >
-                <li key={name}>
-                  <NavLink to={`/${layout}${path}`}>
-                    {({ isActive }) => (
-                      <Button
-                        variant={isActive ? "gradient" : "text"}
-                        color={isActive ? "white" : "white"}
-                        className={`${
-                          isActive ? "bg-white text-primary" : "text-white"
-                        } flex items-center gap-4 pl-2 pr-0 capitalize xl:px-4`}
-                        fullWidth
-                      >
-                        {icon}
-                        <Typography
-                          color="inherit"
-                          className={`${
-                            isActive ? "text-primary" : "text-white"
-                          } hidden font-medium capitalize xl:block`}
-                        >
-                          {name}
-                        </Typography>
-                      </Button>
-                    )}
-                  </NavLink>
-                </li>
-              </Tooltip>
-            ))}
+            {pages.map(
+              ({ icon, name, path, access }) =>
+                access &&
+                access.includes(user.role.label) && (
+                  <Tooltip
+                    content={name}
+                    className="bg-primary block 1140px:hidden 1359px:hidden ml-2 font-nunitoBold capitalize"
+                    placement="right-center"
+                  >
+                    <li key={name}>
+                      <NavLink to={`/${layout}${path}`}>
+                        {({ isActive }) => (
+                          <Button
+                            variant={isActive ? "gradient" : "text"}
+                            color={isActive ? "white" : "white"}
+                            className={`${
+                              isActive ? "bg-white text-primary" : "text-white"
+                            } flex items-center gap-4 pl-2 pr-0 capitalize xl:px-4`}
+                            fullWidth
+                          >
+                            {icon}
+                            <Typography
+                              color="inherit"
+                              className={`${
+                                isActive ? "text-primary" : "text-white"
+                              } hidden font-medium capitalize xl:block`}
+                            >
+                              {name}
+                            </Typography>
+                          </Button>
+                        )}
+                      </NavLink>
+                    </li>
+                  </Tooltip>
+                ),
+            )}
           </ul>
         ))}
       </div>

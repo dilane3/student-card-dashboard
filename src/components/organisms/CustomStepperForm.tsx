@@ -1,21 +1,183 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Stepper, Step, Button } from "@material-tailwind/react";
 import FirstStep from "../addStudent/steps/FirstStep";
-import {
-  ShieldCheckIcon,
-  UserIcon,
-  UsersIcon,
-} from "@heroicons/react/24/solid";
+import { ShieldCheckIcon, UserIcon, UsersIcon } from "@heroicons/react/24/solid";
 import SecondStep from "../addStudent/steps/SecondStep";
 import ThirdStep from "../addStudent/steps/ThirdStep";
+import { useActions, useOperations, useSignal } from "@dilane3/gx";
+import {
+  StudentsCardFormActions,
+  StudentsCardFormState,
+} from "@/gx/signals/studentsCardForm.signal";
+import { registerStudent } from "@/api/students";
+import { uploadFile } from "@/api/upload";
+import { toast } from "react-toastify";
+import Card from "@/entities/studentCard.entity";
+import { SectorsOperations } from "@/gx/signals/sectors.signal";
+import { FacultiesOperations } from "@/gx/signals/faculties.signal";
+import { StudentCardActions } from "@/gx/signals/students.signal";
+import { useNavigate } from "react-router";
 
 export function CustomStepperForm() {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [isLastStep, setIsLastStep] = React.useState(false);
-  const [isFirstStep, setIsFirstStep] = React.useState(false);
+  // Navigation
+  const navigate = useNavigate();
 
-  const handleNext = () => !isLastStep && setActiveStep((cur) => cur + 1);
-  const handlePrev = () => !isFirstStep && setActiveStep((cur) => cur - 1);
+  // Local state
+  const [loading, setLoading] = useState(false);
+
+  // Global state
+  const { form, step: activeStep } =
+    useSignal<StudentsCardFormState>("students-card-form");
+
+  // Global actions
+  const {
+    setNext,
+    setPrev,
+    setActive,
+    reset: resetForm,
+  } = useActions<StudentsCardFormActions>("students-card-form");
+  const { addCard } = useActions<StudentCardActions>("students");
+
+  // Global operations
+  const { getSector } = useOperations<SectorsOperations>("sectors");
+  const { getFaculty } = useOperations<FacultiesOperations>("faculties");
+
+  // Memoized values
+  const isLastStep = useMemo(() => activeStep === 2, [activeStep]);
+  const isFirstStep = useMemo(() => activeStep === 0, [activeStep]);
+  const isVerified = useCallback(
+    (step = activeStep) => {
+      switch (step) {
+        case 0: {
+          const {
+            firstName,
+            lastName,
+            sex,
+            birthPlace,
+            birthDate,
+            matricule,
+            sector,
+          } = form.step1;
+
+          if (
+            firstName &&
+            lastName &&
+            sex &&
+            birthDate &&
+            birthPlace &&
+            matricule &&
+            sector
+          ) {
+            return true;
+          }
+
+          return false;
+        }
+
+        case 1: {
+          const { nationality, email, phone, photo } = form.step2;
+
+          if (nationality && email && phone && photo) return true;
+
+          return false;
+        }
+
+        default:
+          return false;
+      }
+    },
+    [JSON.stringify(form)],
+  );
+
+  // Handlers
+
+  const handleNext = async () => {
+    if (isVerified()) {
+      if (isLastStep) {
+        // Submit form
+        setLoading(true);
+
+        toast.info("Uploading photo...");
+
+        // Uploading photo
+        const formData = new FormData();
+
+        formData.append("file", form.step2.photo as any);
+
+        const { data } = await uploadFile(formData);
+
+        if (data) {
+          toast.info("Submitting form...");
+
+          const { fileName } = data;
+
+          const payload = {
+            ...form.step1,
+            ...form.step2,
+            sexe: form.step1.sex as "MALE" | "FEMALE",
+            sectorId: JSON.parse(form.step1.sector).id,
+            avatar: fileName,
+            birthDate: new Date(form.step1.birthDate),
+            sex: undefined,
+            photo: undefined,
+            sector: undefined,
+            birthPlace: undefined,
+          };
+
+          const { data: cardData } = await registerStudent(payload);
+
+          if (cardData) {
+            toast.success("Student card created successfully");
+
+            // Get academic year
+
+            // Get sector and faculty
+            const sector = getSector(cardData.sectorId);
+            const faculty = getFaculty(sector?.idFaculty || "");
+
+            const card = new Card({
+              ...cardData,
+              birthDate: new Date(cardData.birthDate),
+              createdAt: new Date(cardData.createdAt),
+              updatedAt: new Date(cardData.updatedAt),
+              sex: cardData.sexe,
+              academicYear: 2023,
+              sector: sector?.name,
+              faculty: faculty?.name,
+            });
+
+            addCard(card);
+
+            // Reset form
+            resetForm();
+
+            // Redirect to student card
+            navigate(`/dashboard/personal-info`);
+          } else {
+            toast.error("Error while creating student card");
+          }
+        } else {
+          toast.error("Error while uploading photo");
+        }
+
+        setLoading(false);
+      } else {
+        setNext();
+      }
+    }
+  };
+
+  const handlePrev = () => {
+    if (isFirstStep) return;
+
+    setPrev();
+  };
+
+  const handleSetActive = (step: number) => {
+    if (isVerified(step)) {
+      setActive(step);
+    }
+  };
 
   const displayFormStep = (): JSX.Element => {
     switch (activeStep) {
@@ -34,20 +196,18 @@ export function CustomStepperForm() {
   };
 
   return (
-    <div className="w-full py-4 px-8">
+    <div className="w-full p-4 md:py-4 md:px-8">
       <Stepper
         lineClassName="h-2"
         activeLineClassName="bg-purple-700"
         activeStep={activeStep}
-        isLastStep={(value) => setIsLastStep(value)}
-        isFirstStep={(value) => setIsFirstStep(value)}
       >
         <Step
           color="purple"
           activeClassName="bg-purple-700"
           completedClassName="bg-purple-700"
           className="h-16 w-16"
-          onClick={() => setActiveStep(0)}
+          onClick={() => handleSetActive(0)}
         >
           <UserIcon className="w-5" />
         </Step>
@@ -55,7 +215,7 @@ export function CustomStepperForm() {
           activeClassName="bg-purple-700"
           completedClassName="bg-purple-700"
           className="h-16 w-16"
-          onClick={() => setActiveStep(1)}
+          onClick={() => handleSetActive(1)}
         >
           <UsersIcon className="w-5" />
         </Step>
@@ -63,7 +223,7 @@ export function CustomStepperForm() {
           activeClassName="bg-purple-700"
           completedClassName="bg-purple-700"
           className="h-16 w-16"
-          onClick={() => setActiveStep(2)}
+          onClick={() => handleSetActive(2)}
         >
           <ShieldCheckIcon className="w-5" />
         </Step>
@@ -86,9 +246,9 @@ export function CustomStepperForm() {
         <Button
           className="bg-purple-700"
           onClick={handleNext}
-          disabled={isLastStep}
+          disabled={!isVerified()}
         >
-          {activeStep === 2 ? "Valider" : "Next"}
+          {activeStep === 2 ? (loading ? "Loading..." : "Valider") : "Next"}
         </Button>
       </div>
     </div>
