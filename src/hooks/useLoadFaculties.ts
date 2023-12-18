@@ -16,11 +16,11 @@ export default function useLoadFaculties() {
 
   useEffect(() => {
     (async () => {
-      if (user && !loading) {
+      if (!loading) {
         await handleLoadFaculties();
       }
     })();
-  }, [user]);
+  }, []);
 
   // Handlers
   const handleLoadFaculties = async () => {

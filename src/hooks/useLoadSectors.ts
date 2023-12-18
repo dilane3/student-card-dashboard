@@ -16,11 +16,11 @@ export default function useLoadSectors() {
 
   useEffect(() => {
     (async () => {
-      if (user && !loading) {
+      if (!loading) {
         await handleLoadSectors();
       }
     })();
-  }, [user]);
+  }, []);
 
   // Handlers
   const handleLoadSectors = async () => {
