@@ -3,28 +3,24 @@ import { useEffect } from "react";
 import "../styles.css";
 
 import { Controller, useForm } from "react-hook-form";
-import { Button, Input, Option, Select, Typography } from "@material-tailwind/react";
+import { Input, Option, Select, Typography } from "@material-tailwind/react";
 import { useActions, useSignal } from "@dilane3/gx";
-import { StudentsCardFormActions, StudentsCardFormState } from "@/gx/signals/studentsCardForm.signal";
-
-type InputSchema = {
-  firstName: string;
-  lastName: string;
-  sex: string;
-  birthDate: string;
-  birthPlace: string;
-  matricule: string;
-  sector: string;
-};
+import {
+  FirstStepInputSchema,
+  StudentsCardFormActions,
+  StudentsCardFormState,
+} from "@/gx/signals/studentsCardForm.signal";
+import { SectorsState } from "@/gx/signals/sectors.signal";
 
 const FirstStep = () => {
-  const { control, watch, setValue } = useForm<InputSchema>();
+  const { control, watch, setValue } = useForm<FirstStepInputSchema>();
 
   // Global actions
   const { setForm } = useActions<StudentsCardFormActions>("students-card-form");
 
   // Global state
   const { form } = useSignal<StudentsCardFormState>("students-card-form");
+  const { sectors } = useSignal<SectorsState>("sectors");
 
   // Watchers
   const firstName = watch("firstName");
@@ -40,15 +36,8 @@ const FirstStep = () => {
   // Set Default values
   useEffect(() => {
     (() => {
-      const {
-        firstName,
-        lastName,
-        sex,
-        birthPlace,
-        birthDate,
-        matricule,
-        sector,
-      } = form.step1;
+      const { firstName, lastName, sex, birthPlace, birthDate, matricule, sector } =
+        form.step1;
 
       setValue("firstName", firstName);
       setValue("lastName", lastName);
@@ -57,7 +46,7 @@ const FirstStep = () => {
       setValue("birthPlace", birthPlace);
       setValue("matricule", matricule);
       setValue("sector", sector);
-    })()
+    })();
   }, []);
 
   useEffect(() => {
@@ -196,8 +185,15 @@ const FirstStep = () => {
                 value={value}
                 onChange={onChange}
               >
-                <Option value="i">Informatique</Option>
-                <Option value="c">Chimie</Option>
+                {sectors.map((sector) => (
+                  <Option
+                    key={sector.id}
+                    className="capitalize"
+                    value={JSON.stringify({ id: sector.id, name: sector.name })}
+                  >
+                    {sector.name}
+                  </Option>
+                ))}
               </Select>
             )}
           />

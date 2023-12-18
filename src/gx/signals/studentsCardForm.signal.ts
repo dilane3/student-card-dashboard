@@ -1,9 +1,27 @@
+import { Sector } from "@/entities/sector.entity";
 import { createSignal } from "@dilane3/gx";
+
+export type FirstStepInputSchema = {
+  firstName: string;
+  lastName: string;
+  sex: string;
+  birthDate: string;
+  birthPlace: string;
+  matricule: string;
+  sector: string;
+};
+
+export type SecondStepInputSchema = {
+  nationality: string;
+  email: string;
+  phone: string;
+  photo: File | undefined;
+};
 
 export type StudentsCardFormState = {
   form: {
-    step1: { [key: string]: any };
-    step2: { [key: string]: any };
+    step1: FirstStepInputSchema;
+    step2: SecondStepInputSchema;
   };
   step: number;
   complete: boolean;
@@ -24,21 +42,34 @@ export default createSignal<StudentsCardFormState>({
   name: "students-card-form",
   state: {
     form: {
-      step1: {},
-      step2: {},
+      step1: {
+        firstName: "",
+        lastName: "",
+        sex: "",
+        birthDate: "",
+        birthPlace: "",
+        matricule: "",
+        sector: "",
+      },
+      step2: {
+        nationality: "",
+        email: "",
+        phone: "",
+        photo: undefined,
+      },
     },
-    step: 0,
+    step: 2,
     complete: false,
     loading: false,
   },
   actions: {
-    setForm: (state, payload: { [key: string]: any }) => {
+    setForm: (state, payload: FirstStepInputSchema | SecondStepInputSchema) => {
       if (state.step === 0) {
         return {
           ...state,
           form: {
             ...state.form,
-            step1: payload,
+            step1: payload as FirstStepInputSchema,
           },
         };
       } else if (state.step === 1) {
@@ -46,7 +77,7 @@ export default createSignal<StudentsCardFormState>({
           ...state,
           form: {
             ...state.form,
-            step2: payload,
+            step2: payload as SecondStepInputSchema,
           },
         };
       }
@@ -87,8 +118,16 @@ export default createSignal<StudentsCardFormState>({
       return {
         ...state,
         form: {
-          step1: {},
-          step2: {},
+          step1: {
+            firstName: "",
+            lastName: "",
+            sex: "",
+            birthDate: "",
+            birthPlace: "",
+            matricule: "",
+            sector: "",
+          },
+          step2: { nationality: "", email: "", phone: "", photo: undefined },
         },
         step: 0,
         complete: false,

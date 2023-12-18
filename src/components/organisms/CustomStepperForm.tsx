@@ -70,11 +70,20 @@ export function CustomStepperForm() {
 
   const handleNext = () => {
     if (isVerified()) {
-      setNext();
+      if (isLastStep) {
+        console.log({
+          step1: form.step1,
+          step2: form.step2,
+        })
+      } else {
+        setNext();
+      }
     }
   };
 
   const handlePrev = () => {
+    if (isFirstStep) return;
+
     setPrev();
   };
 

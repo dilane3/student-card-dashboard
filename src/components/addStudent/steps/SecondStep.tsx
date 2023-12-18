@@ -1,4 +1,5 @@
 import {
+  SecondStepInputSchema,
   StudentsCardFormActions,
   StudentsCardFormState,
 } from "@/gx/signals/studentsCardForm.signal";
@@ -15,15 +16,8 @@ import { useCountries } from "use-react-countries";
 
 // import cloud from "../../../assets/images/icons/settings/cloud.png";
 
-type InputSchema = {
-  nationality: string;
-  email: string;
-  phone: string;
-  photo: File | undefined;
-};
-
 const SecondStep = () => {
-  const { control, watch, setValue } = useForm<InputSchema>();
+  const { control, watch, setValue } = useForm<SecondStepInputSchema>();
 
   // Ref
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +44,7 @@ const SecondStep = () => {
     (() => {
       const { nationality, email, phone, photo } = form.step2;
 
-      setValue("nationality", nationality);
+      setValue("nationality", nationality || "Cameroon");
       setValue("email", email);
       setValue("phone", phone);
       setValue("photo", photo);
@@ -70,8 +64,6 @@ const SecondStep = () => {
       photo,
     });
   };
-
-  const handleSetPhoto = (e: any) => {};
 
   const handleOpenFileExplorer = () => {
     inputRef.current?.click();
@@ -95,11 +87,19 @@ const SecondStep = () => {
     return "";
   };
 
-  // const putInAlphabeticOrder = (countries: { name: string, flags: any }[]) => {
-  //   return countries.sort((a, b) => {
-  //     return a.name - b.name
-  //   })
-  // }
+  const putInAlphabeticOrder = (countries: { name: string; flags: any }[]) => {
+    return countries.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+
+      if (a.name > b.name) {
+        return 1;
+      }
+
+      return 0;
+    });
+  };
 
   return (
     <>
@@ -127,20 +127,22 @@ const SecondStep = () => {
                 value={value}
                 onChange={onChange}
               >
-                {countries.map(({ name, flags }: { name: string, flags: any }) => (
-                  <Option
-                    key={name}
-                    value={name}
-                    className="flex items-center gap-2"
-                  >
-                    <img
-                      src={flags.svg}
-                      alt={name}
-                      className="h-5 w-5 rounded-full object-cover"
-                    />
-                    {name}
-                  </Option>
-                ))}
+                {putInAlphabeticOrder(countries).map(
+                  ({ name, flags }: { name: string; flags: any }) => (
+                    <Option
+                      key={name}
+                      value={name}
+                      className="flex items-center gap-2"
+                    >
+                      <img
+                        src={flags.svg}
+                        alt={name}
+                        className="h-5 w-5 rounded-full object-cover"
+                      />
+                      {name}
+                    </Option>
+                  ),
+                )}
               </Select>
             )}
           />
