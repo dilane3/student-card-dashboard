@@ -133,8 +133,8 @@ const FirstStep = () => {
                 value={value}
                 onChange={onChange}
               >
-                <Option value="m">Masculin</Option>
-                <Option value="f">Feminin</Option>
+                <Option value="MALE">Masculin</Option>
+                <Option value="FEMALE">Feminin</Option>
               </Select>
             )}
           />

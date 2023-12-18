@@ -58,7 +58,7 @@ export default createSignal<StudentsCardFormState>({
         photo: undefined,
       },
     },
-    step: 2,
+    step: 0,
     complete: false,
     loading: false,
   },
