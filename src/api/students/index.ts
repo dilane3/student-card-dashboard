@@ -121,7 +121,7 @@ export async function deleteStudent(id: string) {
 /**
  * This function loads paginated students from the server.
  */
-export async function findStudentsWithPagination(offset: number, limit: number) {
+export async function findStudentsWithPagination(offset = 0, limit = 20) {
   try {
     const params = {
       offset,
@@ -136,7 +136,7 @@ export async function findStudentsWithPagination(offset: number, limit: number) 
 
     if (response.status === 200) {
       return {
-        data: response.data.data,
+        data: response.data,
       };
     }
 

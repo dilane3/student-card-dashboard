@@ -10,6 +10,7 @@ export interface ICard {
   phone: string;
   avatar: string;
   sex: string;
+  status: string;
   birthDate: Date;
   nationality: string;
   createdAt: Date;
@@ -32,6 +33,7 @@ export default class Card {
   private _phone: string;
   private _avatar: string;
   private _sex: string;
+  private _status: string;
   private _birthDate: Date;
   private _nationality: string;
   private _createdAt: Date;
@@ -50,6 +52,7 @@ export default class Card {
     this._phone = data.phone
     this._avatar = data.avatar
     this._sex = data.sex
+    this._status = data.status
     this._birthDate = data.birthDate
     this._nationality = data.nationality
     this._createdAt = data.createdAt
@@ -80,6 +83,10 @@ export default class Card {
     return this._lastName
   }
 
+  get fullName() {
+    return `${this._firstName} ${this._lastName}`
+  }
+
   get email() {
     return this._email
   }
@@ -92,12 +99,16 @@ export default class Card {
     return this._avatar
   }
 
-  avatarLink() {
-    return `${baseURL}/${this._avatar}`;
+  get avatarLink() {
+    return `${baseURL}/${this.avatar}`;
   }
 
   get sex() {
     return this._sex
+  }
+
+  get status() {
+    return this._status;
   }
 
   get birthDate() {
@@ -139,6 +150,7 @@ export default class Card {
       phone: this._phone,
       avatar: this._avatar,
       sex: this._sex,
+      status: this._status,
       birthDate: this._birthDate,
       nationality: this._nationality,
       createdAt: this._createdAt,
