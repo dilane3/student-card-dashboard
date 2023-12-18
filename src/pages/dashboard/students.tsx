@@ -5,6 +5,7 @@ import {
   Typography,
   Avatar,
   Chip,
+  Button,
 } from "@material-tailwind/react";
 
 import { studentsTableData } from "@/data";
@@ -14,21 +15,38 @@ import useLoadStudentsCards from "@/hooks/useLoadStudentsCard";
 import { StudentCardState } from "@/gx/signals/students.signal";
 import { useSignal } from "@dilane3/gx";
 import { formatDate } from "@/utils";
+import { PrinterIcon } from "@heroicons/react/24/solid";
+import { ModalContext } from "@/context/modalContext";
+import { useContext } from "react";
 
 export default function Students() {
   // Load students cards
   useLoadStudentsCards();
 
+  // Contexts
+  const { handleOpen, dispatch } = useContext(ModalContext);
+
   // Global state
   const { cards } = useSignal<StudentCardState>("students");
+
+  const handleOpenCreateAgentModal = () => {
+    if (!dispatch) return;
+
+    dispatch!({ type: "EXPORT_CARDS" });
+    handleOpen();
+  };
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader className="mb-8 p-6 bg-primary">
+        <CardHeader className="mb-8 p-6 bg-primary flex justify-between items-center">
           <Typography variant="h6" color="white">
             Students Table
           </Typography>
+
+          <Button onClick={handleOpenCreateAgentModal} className="flex items-center gap-3 bg-white text-primary" size="md">
+            <PrinterIcon strokeWidth={2} className="h-6 w-6" /> Export Cards
+          </Button>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
           <table className="w-full min-w-[640px] table-auto">
