@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Stepper, Step, Button } from "@material-tailwind/react";
+import { Stepper, Step, Button, Typography } from "@material-tailwind/react";
 import FirstStep from "../addStudent/steps/FirstStep";
 import { ShieldCheckIcon, UserIcon, UsersIcon } from "@heroicons/react/24/solid";
 import SecondStep from "../addStudent/steps/SecondStep";
@@ -17,8 +17,13 @@ import { SectorsOperations } from "@/gx/signals/sectors.signal";
 import { FacultiesOperations } from "@/gx/signals/faculties.signal";
 import { StudentCardActions } from "@/gx/signals/students.signal";
 import { useNavigate } from "react-router";
+import formRegistrationImg from "@/assets/img/registrationDone.png";
 
-export function CustomStepperForm() {
+type Props = {
+  context?: "visitor" | "admin";
+};
+
+export function CustomStepperForm({ context = "visitor" }: Props) {
   // Navigation
   const navigate = useNavigate();
 
@@ -26,8 +31,11 @@ export function CustomStepperForm() {
   const [loading, setLoading] = useState(false);
 
   // Global state
-  const { form, step: activeStep } =
-    useSignal<StudentsCardFormState>("students-card-form");
+  const {
+    form,
+    step: activeStep,
+    complete,
+  } = useSignal<StudentsCardFormState>("students-card-form");
 
   // Global actions
   const {
@@ -35,6 +43,7 @@ export function CustomStepperForm() {
     setPrev,
     setActive,
     reset: resetForm,
+    setComplete,
   } = useActions<StudentsCardFormActions>("students-card-form");
   const { addCard } = useActions<StudentCardActions>("students");
 
@@ -146,13 +155,9 @@ export function CustomStepperForm() {
               faculty: faculty?.name,
             });
 
-            addCard(card);
+            if (context === "admin") addCard(card);
 
-            // Reset form
-            resetForm();
-
-            // Redirect to student card
-            navigate(`/dashboard/personal-info`);
+            setComplete(true);
           } else {
             toast.error("Error while creating student card");
           }
@@ -195,62 +200,101 @@ export function CustomStepperForm() {
     }
   };
 
+  const handleNavigate = () => {
+    // Reset form
+    resetForm();
+
+    // Redirect to student card
+    navigate(`/dashboard/personal-info`);
+  };
+
+  const handleRetry = () => {
+    // Reset form
+    resetForm();
+  };
+
   return (
     <div className="w-full p-4 md:py-4 md:px-8">
-      <Stepper
-        lineClassName="h-2"
-        activeLineClassName="bg-purple-700"
-        activeStep={activeStep}
-      >
-        <Step
-          color="purple"
-          activeClassName="bg-purple-700"
-          completedClassName="bg-purple-700"
-          className="h-16 w-16"
-          onClick={() => handleSetActive(0)}
-        >
-          <UserIcon className="w-5" />
-        </Step>
-        <Step
-          activeClassName="bg-purple-700"
-          completedClassName="bg-purple-700"
-          className="h-16 w-16"
-          onClick={() => handleSetActive(1)}
-        >
-          <UsersIcon className="w-5" />
-        </Step>
-        <Step
-          activeClassName="bg-purple-700"
-          completedClassName="bg-purple-700"
-          className="h-16 w-16"
-          onClick={() => handleSetActive(2)}
-        >
-          <ShieldCheckIcon className="w-5" />
-        </Step>
-      </Stepper>
-      <form className="w-full">{displayFormStep()}</form>
-      <div
-        className={`mt-16 flex ${
-          activeStep === 0 ? "w-full justify-end" : "justify-between"
-        }`}
-      >
-        {activeStep > 0 && (
-          <Button
-            className="bg-purple-700"
-            onClick={handlePrev}
-            disabled={isFirstStep}
+      {!complete ? (
+        <>
+          <Stepper
+            lineClassName="h-2"
+            activeLineClassName="bg-purple-700"
+            activeStep={activeStep}
           >
-            Prev
-          </Button>
-        )}
-        <Button
-          className="bg-purple-700"
-          onClick={handleNext}
-          disabled={!isVerified()}
-        >
-          {activeStep === 2 ? (loading ? "Loading..." : "Valider") : "Next"}
-        </Button>
-      </div>
+            <Step
+              color="purple"
+              activeClassName="bg-purple-700"
+              completedClassName="bg-purple-700"
+              className="h-16 w-16"
+              onClick={() => handleSetActive(0)}
+            >
+              <UserIcon className="w-5" />
+            </Step>
+            <Step
+              activeClassName="bg-purple-700"
+              completedClassName="bg-purple-700"
+              className="h-16 w-16"
+              onClick={() => handleSetActive(1)}
+            >
+              <UsersIcon className="w-5" />
+            </Step>
+            <Step
+              activeClassName="bg-purple-700"
+              completedClassName="bg-purple-700"
+              className="h-16 w-16"
+              onClick={() => handleSetActive(2)}
+            >
+              <ShieldCheckIcon className="w-5" />
+            </Step>
+          </Stepper>
+          <form className="w-full">{displayFormStep()}</form>
+          <div
+            className={`mt-16 flex ${
+              activeStep === 0 ? "w-full justify-end" : "justify-between"
+            }`}
+          >
+            {activeStep > 0 && (
+              <Button
+                className="bg-purple-700"
+                onClick={handlePrev}
+                disabled={isFirstStep}
+              >
+                Prev
+              </Button>
+            )}
+            <Button
+              className="bg-purple-700"
+              onClick={handleNext}
+              disabled={!isVerified()}
+            >
+              {activeStep === 2 ? (loading ? "Loading..." : "Valider") : "Next"}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center md:h-[400px]">
+          <img src={formRegistrationImg} width={200} />
+
+          <Typography>All informations have been saved properly</Typography>
+
+          <div className="">
+            <Button
+              variant="outlined"
+              className="mt-4 border-primary text-primary"
+              onClick={handleRetry}
+            >
+              Fill again
+            </Button>
+
+            {context === "admin" && (
+              <Button className="mt-4 bg-purple-700 ml-4" onClick={handleNavigate}>
+                View
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
