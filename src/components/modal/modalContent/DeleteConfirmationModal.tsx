@@ -6,6 +6,8 @@ import { Button, Card, CardBody, CardFooter, Typography } from '@material-tailwi
 import { useContext, useState } from 'react'
 import { toast } from "react-toastify";
 import { Faculty } from '@/entities/faculty.entity';
+import { SectorsActions, SectorsState } from '@/gx/signals/sectors.signal';
+import { deleteSector } from '@/api/sector';
 
 const DeleteConfirmationModal = () => {
     const {handleOpen} = useContext(ModalContext);
@@ -14,8 +16,10 @@ const DeleteConfirmationModal = () => {
     const [loading, setLoading] = useState(false);
 
     // Global actions
-    const { deleteFaculty: removeFaculty } = useActions<FacultiesActions>("faculties");
-    const { faculties, faculty } = useSignal<FacultiesState>("faculties");
+    const { deleteFaculty: removeFaculty, selectFaculty } = useActions<FacultiesActions>("faculties");
+    const { faculty } = useSignal<FacultiesState>("faculties");
+    const { deleteSector: removeSector, selectSector } = useActions<SectorsActions>("sectors")
+    const { sector } = useSignal<SectorsState>("sectors");
 
     // handlers
     const handleSubmit = async () => {
@@ -27,9 +31,23 @@ const DeleteConfirmationModal = () => {
             if (data) {
                 
                 removeFaculty(faculty);
+                selectFaculty(undefined)
                 toast.success("Faculty successfully removed");
                 handleOpen();
             }
+            return;
+
+        } else if( sector !== undefined  ){
+            const { data } = await deleteSector(sector.id);
+            if (data) {
+                
+                removeSector(sector);
+                selectSector(undefined)
+                toast.success("Sector successfully removed");
+                handleOpen();
+            }
+            return;
+           
         } else {
             toast.error("Something went wrong");
         }
@@ -51,7 +69,7 @@ const DeleteConfirmationModal = () => {
         </Button>
         <Button variant="filled" className="bg-red-700 uppercase font-bold" onClick={handleSubmit}>
             <Typography className='font-semibold text-base'>
-            Valider
+                {loading ? "Loading..." : "Valider"}
             </Typography>
         </Button>
         </CardFooter>

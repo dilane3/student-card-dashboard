@@ -4,7 +4,7 @@ import { ModalContext } from "@/context/modalContext";
 import { Sector as SectorEntity } from "@/entities/sector.entity";
 import { SectorsState } from "@/gx/signals/sectors.signal";
 import { formatDate } from "@/utils";
-import { useSignal } from "@dilane3/gx";
+import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
@@ -42,6 +42,12 @@ export function Sectors() {
   // Global state
   const { sectors } = useSignal<SectorsState>("sectors");
 
+  // Actions
+  const { selectSector } = useActions("sectors");
+
+  // Operations
+  const { getSector } = useOperations("sectors");
+
   const handleOpenCreateSectorModal = () => {
     if (!dispatch) return;
 
@@ -49,11 +55,12 @@ export function Sectors() {
     handleOpen();
   };
 
-  const handleOpenDeleteModal = () => {
+  const handleOpenDeleteModal = (id: string) => {
     if (!dispatch) return;
 
     dispatch!({ type: "DELETE_CONFIRMATION" });
     handleOpen();
+    selectSector(getSector(id));
   };
 
   return (
@@ -102,7 +109,7 @@ export function Sectors() {
             </tr>
           </thead>
           <tbody>
-            {sectors.map(({ name, createdAt }, index) => {
+            {sectors.map(({ name, createdAt, id }, index) => {
               const isLast = index === sectors.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -135,7 +142,7 @@ export function Sectors() {
                       </IconButton>
                     </Tooltip>
                     <Tooltip content="Delete Faculty">
-                      <IconButton onClick={handleOpenDeleteModal} variant="text">
+                      <IconButton onClick={() => handleOpenDeleteModal(id)} variant="text">
                         <TrashIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
