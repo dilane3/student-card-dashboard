@@ -42,7 +42,7 @@ const sectorsSignal = createSignal<SectorsState>({
       };
     },
 
-    selectSector: (state, sector: Sector) => {
+    selectSector: (state, sector: Sector | undefined) => {
       return {
         ...state,
         sector: sector

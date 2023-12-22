@@ -35,7 +35,7 @@ const facultiesSignal = createSignal<FacultiesState>({
       };
     },
 
-    selectFaculty: (state, faculty: Faculty) => {
+    selectFaculty: (state, faculty: Faculty | undefined) => {
       return {
         ...state,
         faculty: faculty

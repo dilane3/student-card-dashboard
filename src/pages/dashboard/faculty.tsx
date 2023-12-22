@@ -54,6 +54,14 @@ export function Faculties() {
     handleOpen();
   };
 
+  const handleOpenUpdateFacultyModal = (id: string) => {
+    if (!dispatch) return;
+
+    dispatch!({ type: "UPDATE_FACULTY" });
+    handleOpen();
+    selectFaculty(getFaculty(id));
+  };
+
   const handleOpenDeleteModal = (id: string) => {
     if (!dispatch) return;
 
@@ -136,7 +144,7 @@ export function Faculties() {
                   </td>
                   <td className={classes}>
                     <Tooltip content="Edit Faculty">
-                      <IconButton variant="text">
+                      <IconButton variant="text" onClick={() => handleOpenUpdateFacultyModal(id)}>
                         <PencilIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
