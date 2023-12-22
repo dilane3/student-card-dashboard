@@ -4,7 +4,7 @@ import { ModalContext } from "@/context/modalContext";
 import { Faculty } from "@/entities/faculty.entity";
 import { FacultiesState } from "@/gx/signals/faculties.signal";
 import { formatDate } from "@/utils";
-import { useSignal } from "@dilane3/gx";
+import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
@@ -41,6 +41,12 @@ export function Faculties() {
   // Global state
   const { faculties } = useSignal<FacultiesState>("faculties");
 
+  // Actions
+  const { selectFaculty } = useActions("faculties");
+
+  // Operations
+  const { getFaculty } = useOperations("faculties");
+
   const handleOpenCreateFacultyModal = () => {
     if (!dispatch) return;
 
@@ -48,11 +54,12 @@ export function Faculties() {
     handleOpen();
   };
 
-  const handleOpenDeleteModal = () => {
+  const handleOpenDeleteModal = (id: string) => {
     if (!dispatch) return;
 
     dispatch!({ type: "DELETE_CONFIRMATION" });
     handleOpen();
+    selectFaculty(getFaculty(id));
   };
 
   return (
@@ -101,7 +108,7 @@ export function Faculties() {
             </tr>
           </thead>
           <tbody>
-            {faculties.map(({ name, createdAt }, index) => {
+            {faculties.map(({ name, createdAt, id }, index) => {
               const isLast = index === faculties.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -134,7 +141,7 @@ export function Faculties() {
                       </IconButton>
                     </Tooltip>
                     <Tooltip content="Delete Faculty">
-                      <IconButton onClick={handleOpenDeleteModal} variant="text">
+                      <IconButton onClick={() => handleOpenDeleteModal(id)} variant="text">
                         <TrashIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>

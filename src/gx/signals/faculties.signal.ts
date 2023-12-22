@@ -3,12 +3,14 @@ import { createSignal } from "@dilane3/gx";
 
 export type FacultiesState = {
   faculties: Faculty[];
+  faculty: Faculty | undefined;
   loading: boolean;
 };
 
 export type FacultiesActions = {
   loadFaculties: (faculties: Faculty[]) => void;
   addFaculty: (faculty: Faculty) => void;
+  selectFaculty: (faculty: Faculty) => void;
   updateFaculty: (faculty: Faculty) => void;
   deleteFaculty: (faculty: Faculty) => void;
 };
@@ -21,6 +23,7 @@ const facultiesSignal = createSignal<FacultiesState>({
   name: "faculties",
   state: {
     faculties: [],
+    faculty: undefined,
     loading: false
   },
   actions: {
@@ -31,6 +34,13 @@ const facultiesSignal = createSignal<FacultiesState>({
         loading: false
       };
     },
+
+    selectFaculty: (state, faculty: Faculty) => {
+      return {
+        ...state,
+        faculty: faculty
+      }
+    }, 
 
     addFaculty: (state, faculty: Faculty) => {
       return {
