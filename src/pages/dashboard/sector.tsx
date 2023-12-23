@@ -1,9 +1,10 @@
 import FilterAndResearch from "@/components/filterAndResearch/FilterAndResearch";
 import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import { ModalContext } from "@/context/modalContext";
-import { Sector as SectorEntity } from "@/entities/sector.entity";
+import { Sector, Sector as SectorEntity } from "@/entities/sector.entity";
 import { SectorsState } from "@/gx/signals/sectors.signal";
-import { formatDate } from "@/utils";
+import usePagination from "@/hooks/usePagination";
+import { formatDate, ITEM_PER_PAGE } from "@/utils";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -71,6 +72,21 @@ export function Sectors() {
     selectSector(getSector(id));
   };
 
+  const {
+    currentPage,
+    totalPages,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    startIndex,
+    endIndex,
+  } = usePagination(sectors.length, ITEM_PER_PAGE);
+
+  // to display data by applying pagination
+  const currentPageData = (): Array<Sector> => {
+    return sectors.slice(startIndex, endIndex);
+  };
+
   return (
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -117,7 +133,7 @@ export function Sectors() {
             </tr>
           </thead>
           <tbody>
-            {sectors.map(({ name, createdAt, id }, index) => {
+            {currentPageData().map(({ name, createdAt, id }, index) => {
               const isLast = index === sectors.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -162,7 +178,17 @@ export function Sectors() {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-center border-t border-blue-gray-50 p-4">
-        <DefaultPagination />
+        <DefaultPagination 
+          paginationEntry={{ 
+            currentPage,
+            totalPages,
+            goToPage,
+            goToNextPage,
+            goToPreviousPage,
+            startIndex,
+            endIndex,
+          }}
+        />
       </CardFooter>
     </Card>
   );

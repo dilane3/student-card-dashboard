@@ -3,7 +3,8 @@ import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import { ModalContext } from "@/context/modalContext";
 import { Faculty } from "@/entities/faculty.entity";
 import { FacultiesState } from "@/gx/signals/faculties.signal";
-import { formatDate } from "@/utils";
+import usePagination from "@/hooks/usePagination";
+import { formatDate, ITEM_PER_PAGE } from "@/utils";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -70,6 +71,21 @@ export function Faculties() {
     selectFaculty(getFaculty(id));
   };
 
+  const {
+    currentPage,
+    totalPages,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    startIndex,
+    endIndex,
+  } = usePagination(faculties.length, ITEM_PER_PAGE);
+
+  // to display data by applying pagination
+  const currentPageData = (): Array<Faculty> => {
+    return faculties.slice(startIndex, endIndex);
+  };
+
   return (
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -116,7 +132,7 @@ export function Faculties() {
             </tr>
           </thead>
           <tbody>
-            {faculties.map(({ name, createdAt, id }, index) => {
+            {currentPageData().map(({ name, createdAt, id }, index) => {
               const isLast = index === faculties.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -161,7 +177,17 @@ export function Faculties() {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-center border-t border-blue-gray-50 p-4">
-        <DefaultPagination />
+        <DefaultPagination
+          paginationEntry={{ 
+            currentPage,
+            totalPages,
+            goToPage,
+            goToNextPage,
+            goToPreviousPage,
+            startIndex,
+            endIndex,
+          }}
+        />
       </CardFooter>
     </Card>
   );

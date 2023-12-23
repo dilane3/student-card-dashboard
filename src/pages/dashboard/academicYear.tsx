@@ -2,6 +2,8 @@ import FilterAndResearch from "@/components/filterAndResearch/FilterAndResearch"
 import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import { ModalContext } from "@/context/modalContext";
 import { AcademicYear as AcademicYearEntity } from "@/entities/academicYear.entity";
+import usePagination from "@/hooks/usePagination";
+import { ITEM_PER_PAGE } from "@/utils";
 
 import {
   PencilIcon,
@@ -67,6 +69,21 @@ function AcademicYear() {
     handleOpen();
   }
 
+  const {
+    currentPage,
+    totalPages,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    startIndex,
+    endIndex,
+  } = usePagination(academicYears.length, ITEM_PER_PAGE);
+
+  // to display data by applying pagination
+  const currentPageData = (): Array<AcademicYearEntity> => {
+    return academicYears.slice(startIndex, endIndex);
+  };
+
   return (
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -87,7 +104,7 @@ function AcademicYear() {
         <FilterAndResearch tabsList={TABS} />
       </CardHeader>
       <CardBody className={`grid 600px:grid-cols-2 843px:grid-cols-3 1087px:grid-cols-4 1140px:grid-cols-3 1359px:grid-cols-4 gap-0 sm:gap-x-4 overflow-auto`}>
-        {academicYears.map(({ date }, index) => {
+        {currentPageData().map(({ date }, index) => {
 
           return (
             <Card key={index} className="mt-6 bg-primary">
@@ -114,7 +131,17 @@ function AcademicYear() {
         })}
       </CardBody>
       <CardFooter className="flex items-center justify-center border-t border-blue-gray-50 p-4">
-        <DefaultPagination />
+        <DefaultPagination
+          paginationEntry={{ 
+            currentPage,
+            totalPages,
+            goToPage,
+            goToNextPage,
+            goToPreviousPage,
+            startIndex,
+            endIndex,
+          }}
+        />
       </CardFooter>
     </Card>
   );
