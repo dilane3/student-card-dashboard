@@ -55,6 +55,14 @@ export function Sectors() {
     handleOpen();
   };
 
+  const handleOpenUpdateSectorModal = (id: string) => {
+    if (!dispatch) return;
+
+    dispatch!({ type: "UPDATE_SECTOR" });
+    handleOpen();
+    selectSector(getSector(id));
+  };
+
   const handleOpenDeleteModal = (id: string) => {
     if (!dispatch) return;
 
@@ -137,7 +145,7 @@ export function Sectors() {
                   </td>
                   <td className={classes}>
                     <Tooltip content="Edit Faculty">
-                      <IconButton variant="text">
+                      <IconButton variant="text" onClick={() => handleOpenUpdateSectorModal(id)}>
                         <PencilIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
