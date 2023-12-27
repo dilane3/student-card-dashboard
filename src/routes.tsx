@@ -87,7 +87,6 @@ export const routes: Array<RouteType> = [
             <PersonalInfo />
           </AuthProvider>
         ),
-        access: [RoleEnum.AGENT],
       },
       {
         icon: <PrinterIcon {...icon} />,
@@ -159,6 +158,7 @@ export const routes: Array<RouteType> = [
       },
     ],
   },
+  
 ];
 
 export default routes;
