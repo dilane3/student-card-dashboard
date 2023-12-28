@@ -16,7 +16,7 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 const TABS = [
   {
@@ -50,7 +50,15 @@ const TABLE_ROWS: Array<SectorEntity> = [
 
 export function Sectors() {
 
-  const { handleOpen, dispatch} = useContext(ModalContext)
+  // Global state
+  const { sectors } = useSignal<SectorsState>("sectors");
+  const [filteredSectors, setFilteredSectors] = useState(sectors);
+
+  const handleFilteredData = (filteredData) => {
+    // Mettre à jour l'état local avec les données filtrées
+    setFilteredSectors(filteredData);
+    console.log("Données filtrées reçues :", filteredData);
+  };
 
   const handleOpenCreateSectorModal = () => {
     if(!dispatch) return
@@ -83,7 +91,7 @@ export function Sectors() {
             filière
           </Button>
         </div>
-        <FilterAndResearch tabsList={TABS} />
+        <FilterAndResearch tabsList={TABS}  TabItems={sectors} onDataFiltered={handleFilteredData} />
       </CardHeader>
       <CardBody className="overflow-auto px-0">
         <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -109,11 +117,9 @@ export function Sectors() {
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(({ name, description }, index) => {
-              const isLast = index === TABLE_ROWS.length - 1;
-              const classes = isLast
-                ? "p-4"
-                : "p-4 border-b border-blue-gray-50";
+            {filteredSectors.map(({ name, createdAt }, index) => {
+              const isLast = index === filteredSectors.length - 1;
+              const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
               return (
                 <tr key={name}>
