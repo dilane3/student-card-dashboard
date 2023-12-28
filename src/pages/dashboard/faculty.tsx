@@ -16,7 +16,7 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 const TABS = [
   {
@@ -36,7 +36,7 @@ const TABS = [
 
 const TABLE_HEAD = ["Name", "Description", "Actions"];
 
-const TABLE_ROWS: Array<Faculty> = [
+let TABLE_ROWS: Array<Faculty> = [
   new Faculty({
     name: "Faculty of science",
     description: "Description of the faculty of science",
@@ -47,11 +47,22 @@ const TABLE_ROWS: Array<Faculty> = [
   }),
 ];
 
-
 export function Faculties() {
-
   const { handleOpen, dispatch } = useContext(ModalContext);
+  const [tableRows, setTableRows] = useState(TABLE_ROWS); // Utilisation de l'état pour stocker les données des facultés
 
+  // Fonction de rappel pour recevoir les données du composant enfant
+  const handleFilteredData = (filteredData) => {
+    // Traiter les données filtrées reçues du composant enfant
+    
+    
+      
+      setTableRows(filteredData);
+      // TABLE_ROWS = filteredData
+      console.log("Données filtrées reçues :", TABLE_ROWS);
+   // Faire d'autres manipulations ou mises à jour en fonction des données filtrées
+  };
+  
   const handleOpenCreateFacultyModal = () => {
     if(!dispatch) return
     
@@ -83,7 +94,7 @@ export function Faculties() {
             faculté
           </Button>
         </div>
-        <FilterAndResearch tabsList={TABS} />
+        <FilterAndResearch tabsList={TABS}  TabItems={TABLE_ROWS} onDataFiltered={handleFilteredData} />
       </CardHeader>
       <CardBody className="overflow-auto px-0">
         <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -109,8 +120,8 @@ export function Faculties() {
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(({ name, description }, index) => {
-              const isLast = index === TABLE_ROWS.length - 1;
+            {tableRows.map(({ name, description }, index) => {
+              const isLast = index === tableRows.length - 1;
               const classes = isLast
                 ? "p-4"
                 : "p-4 border-b border-blue-gray-50";
