@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --a4-width: 793.701px;
+  --a4-height: 1108.661px;
+  --a4-padding-width: 118.11px / 2;
+  --a4-padding-height: 43.701px / 2;
+}
+
 * {
   @apply box-border scroll-smooth;
 }
