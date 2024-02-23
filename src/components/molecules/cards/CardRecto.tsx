@@ -75,7 +75,7 @@ export default function CardRector({ card }: Props) {
               </span>
               <span className="mx-4 text-[8px]">À/AT</span>
               <span className="w-full h-full font-nunitoBold text-black text-[8px] uppercase">
-                {card.nationality}
+                {card.birthPlace}
               </span>
             </p>
           </div>
@@ -93,7 +93,7 @@ export default function CardRector({ card }: Props) {
         <div className="h-full flex flex-col justify-end items-center pb-4 w-[22%]">
           <div className="w-[60px] h-[60px] rounded-2xl border-2 border-primary overflow-hidden">
             <img
-              src={userImage}
+              src={card.avatarLink}
               className="w-full h-full object-cover"
               alt="Student image"
             />

@@ -39,11 +39,6 @@ export const formatDate = (d: Date) => {
 export const formatDateBySlash = (d: Date): string => {
   const date = new Date(d);
 
-  console.log({
-    d,
-    date,
-  });
-
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
@@ -52,3 +47,7 @@ export const formatDateBySlash = (d: Date): string => {
     month <= 9 ? `0${month}` : month
   }/${year}`;
 };
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

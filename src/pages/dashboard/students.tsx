@@ -18,6 +18,7 @@ import { formatDate } from "@/utils";
 import { PrinterIcon } from "@heroicons/react/24/solid";
 import { ModalContext } from "@/context/modalContext";
 import { useContext } from "react";
+import CardEntity from "@/entities/studentCard.entity";
 
 export default function Students() {
   // Load students cards
@@ -35,6 +36,13 @@ export default function Students() {
     dispatch!({ type: "EXPORT_CARDS" });
     handleOpen();
   };
+
+  const handleOpenViewCardModel = (card: CardEntity) => {
+    if (!dispatch) return;
+
+    dispatch({ type: "VIEW_CARD", payload: card });
+    handleOpen();
+  }
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -77,7 +85,10 @@ export default function Students() {
             <tbody>
               {cards.map(
                 (
-                  {
+                  card,
+                  key,
+                ) => {
+                  const {
                     id,
                     firstName,
                     fullName,
@@ -87,9 +98,7 @@ export default function Students() {
                     nationality,
                     createdAt,
                     status,
-                  },
-                  key,
-                ) => {
+                  } = card
                   const className = `py-3 px-5 ${
                     key === studentsTableData.length - 1
                       ? ""
@@ -140,13 +149,13 @@ export default function Students() {
                           {formatDate(createdAt)}
                         </Typography>
                       </td>
-                      <td className={className}>
+                      <td className={className} onClick={() => handleOpenViewCardModel(card)}>
                         <Typography
                           as="a"
                           href="#"
                           className="text-xs font-semibold text-blue-gray-600"
                         >
-                          Edit
+                          Export
                         </Typography>
                       </td>
                     </tr>
