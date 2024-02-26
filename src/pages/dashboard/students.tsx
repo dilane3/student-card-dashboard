@@ -93,7 +93,7 @@ export default function Students() {
                   return (
                     <tr key={card.id} >
                       <td className={className}  onClick={() => {
-                        navigate("/dashboard/personal-info", { state: { student: card } });
+                        navigate(`/dashboard/personal-info/${card.id}`);
                       }}>
                         <div className="flex items-center gap-4">
                           <Avatar src={card.avatarLink} alt={card.firstName} size="sm" />

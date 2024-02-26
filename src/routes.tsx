@@ -71,19 +71,29 @@ export const routes: Array<RouteType> = [
         ),
         access: [RoleEnum.ADMIN],
       },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "profile",
-        path: "/profile",
-        element: <Profile />,
-        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
-      },
+      // {
+      //   icon: <UserCircleIcon {...icon} />,
+      //   name: "profile",
+      //   path: "/profile",
+      //   element: <Profile />,
+      //   access: [RoleEnum.ADMIN, RoleEnum.AGENT],
+      // },
       {
         icon: <PencilIcon {...icon} />,
         name: "personal info",
         path: "/personal-info",
         element: (
           <AuthProvider access={[RoleEnum.AGENT]}>
+            <PersonalInfo />
+          </AuthProvider>
+        ),
+      },
+      {
+        icon: <PencilIcon {...icon} />,
+        name: "personal info",
+        path: "/personal-info/:id",
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
             <PersonalInfo />
           </AuthProvider>
         ),

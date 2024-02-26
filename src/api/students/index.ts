@@ -161,7 +161,10 @@ export async function getStudent(id: string) {
   try {
     const response = await instance.get(`/student-cards/${id}`);
     if (response.status === 200) {
+      console.log(response.data);
+
       return {
+        
         data: response.data,
       };
     }

@@ -1,53 +1,83 @@
 import { ExportContext, ExportContextType } from "@/context/export";
 import StudentContext from "@/context/students";
-import { Card } from "@material-tailwind/react";
-import { useLocation } from "react-router-dom";
+import { Card as MaterialCard } from "@material-tailwind/react";
+import { useParams } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-
-import QRCode from "qrcode";
+//import QRCode from "qrcode";
+import useStudent from "@/hooks/useSudent";
 import { formatDate } from "@/utils";
 import userImage from "@/assets/img/bruce-mars.jpeg";
 import { PencilIcon, PrinterIcon } from "@heroicons/react/24/solid";
 import Export from "@/layouts/exports";
+import Student from "@/entities/student.entity";
+import Card from "@/entities/studentCard.entity";
 
 export function PersonalInfo() {
+
+ 
+  
   const exportContext = useContext<ExportContextType | null>(ExportContext);
+
   //const { student } = useContext(StudentContext);
-  const location = useLocation();
-  const {student : student} = location.state;
-  const [inputText, setInputText] = useState(student?.qrcode?.toString());
+  const {id} = useParams();
 
-  const canvasRef = useRef(null);
+  if(!id){
+    return null;
+  }
+  useStudent(id);
+  console.log("studen*******************************t",id);
 
-  useEffect(() => {
-    console.log(inputText);
-    if (canvasRef.current) {
-      QRCode.toCanvas(
-        canvasRef.current,
-        inputText || " ",
-        (error: any) => error && console.error()
-      );
-    }
-  }, [inputText, canvasRef.current]);
+ // const location = useLocation();
+ // const {student : student} = location.state;
+  // const {student : student} = location.state;
+
+  const [student, setStudent] = useState <Card|null>(null);
+
+  // useEffect(() => {
+  //   const fetchStudent = async () => {
+  //     const response = await getStudentById(id);
+  //     if (response.data) {
+  //       setStudent(response.data);
+  //     }
+  //   };
+
+  //   fetchStudent();
+  // }, [id]);
+
+
+  // const [inputText, setInputText] = useState(student?.qrcode?.toString());
+
+  // const canvasRef = useRef(null);
+
+  // useEffect(() => {
+  //   console.log(inputText);
+  //   if (canvasRef.current) {
+  //     QRCode.toCanvas(
+  //       canvasRef.current,
+  //       inputText || " ",
+  //       (error: any) => error && console.error()
+  //     );
+  //   }
+  // }, [inputText, canvasRef.current]);
 
   console.log("student",student);
-  console.log("studentemail",student.birthday);
+  //.log("studentemail",student.birthday);
 
 
   if (!student) return;
 
   return (
     <div className="mt-12">
-      <Card>
+      <MaterialCard>
         <div className="flex flex-col rounded-[10px] border border-[#808080] bg-white p-[1.25rem] shadow-md">
           <div className="flex flex-row justify-between">
 
             <div className="flex w-[30%] flex-row items-center">
-              {student.avatarLink && (
+              {student.avatar && (
               <img
                 //src={student.avatarLink}
                 src={ userImage}
-                alt={student.fullName }
+                alt={student.firstName }
                 className="h-20 w-20 rounded-[50%] object-cover"
               />
               
@@ -167,7 +197,7 @@ export function PersonalInfo() {
                   <span className="text-[0.75em]"> Faculté / Faculty</span>
                 </div>
                 
-                <div className="mt-[0.625rem] flex flex-col">
+                {/* <div className="mt-[0.625rem] flex flex-col">
                   <span className="text-[0.875em] font-bold text-black">
                     {formatDate(student.deliveryDate)}
                   </span>
@@ -178,14 +208,14 @@ export function PersonalInfo() {
                     {formatDate(student.expirationDate)}
                   </span>
                   <span className="text-[0.75em]"> Date d'expiration</span>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex w-[35%] flex-col">
                 <div className="h-[1.5625em] border border-solid border-b-[purple] text-[0.875em] font-bold text-[purple]">
                   Codes
                 </div>
-                <div style={{ display: "flex" }}>
+                {/* <div style={{ display: "flex" }}>
                   <div>
                     <input
                       className=""
@@ -197,7 +227,7 @@ export function PersonalInfo() {
                     <br />
                   </div>
                   <canvas className="" ref={canvasRef} />
-                </div>
+                </div> */}
                 {/* <QRCodeSVG
                     value={student.qrcode}
                     style={{ marginTop: 20, marginBottom: 10 }}
@@ -211,15 +241,15 @@ export function PersonalInfo() {
                 </div>
               </div>
               <div style={{ display: "none" }}>
-                <Export
+                {/* <Export
                   exportRef={exportContext!.exportRef}
                   qrcode={inputText}
-                />
+                /> */}
               </div>
             </div>
           </div>
         </div>
-      </Card>
+      </MaterialCard>
     </div>
   );
 }
