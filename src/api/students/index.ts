@@ -121,6 +121,8 @@ export async function deleteStudent(id: string) {
 /**
  * This function loads paginated students from the server.
  */
+
+
 export async function findStudentsWithPagination(offset = 0, limit = 20) {
   try {
     const params = {
