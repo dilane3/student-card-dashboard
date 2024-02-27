@@ -31,7 +31,7 @@ export function SignIn() {
     // verify email and password
     if (email && password) {
       setLoading(true);
-      const { data, error } = await login(email, password);
+      const { error } = await login(email, password);
 
       if (error) {
         toast.error("Login failed");

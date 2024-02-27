@@ -20,9 +20,9 @@ type QrCodeGeneratorProps = {
 
 export default function QrCodeGenerator({ code }: QrCodeGeneratorProps) {
   const [options, setOptions] = useState<Options>({
-    width: 170,
-    height: 160,
-    type: "svg" as DrawType,
+    width: 70,
+    height: 70,
+    type: "canvas" as DrawType,
     data: code,
     image: logo,
     margin: 0,

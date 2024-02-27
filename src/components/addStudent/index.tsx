@@ -24,7 +24,7 @@ function AddStudent() {
   return (
     <div className="pt-6 pb-3">
       <Card>
-        <CustomStepperForm />
+        <CustomStepperForm context="admin" />
       </Card>
     </div>
   );

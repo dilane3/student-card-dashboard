@@ -69,15 +69,12 @@ export const getMe = async () => {
       },
     });
 
-    console.log(response)
-
     if (response.status === 200) {
       return { data: true, user: response.data };
     }
 
     return { data: false };
   } catch (error: any) {
-    console.log("holllllllllle")
     try {
       console.log(error)
       if (error && error.response && error.response.status === 401) {
@@ -86,8 +83,6 @@ export const getMe = async () => {
             "Access-Control-Allow-Credentials": true,
           },
         });
-
-        console.log(response);
 
         if (response.status === 200) {
           return { data: true, user: response.data };
