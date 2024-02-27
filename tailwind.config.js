@@ -8,6 +8,19 @@ module.exports = withMT({
       colors: {
         primary: "#6D437D",
       },
+      width: {
+        "card": "337.795px",
+        "a4": "793.701px"
+      },
+      height: {
+        "card": "212.992px",
+        "a4": "1108.661px"
+      },
+      spacing: {
+        "a4-padding-w": "59.055px",
+        "a4-padding-h": "21.85px",
+        "a4-padding-h2": "43.7px",
+      }
     },
     fontFamily: {
       nunitoBold: ["NunitoBold", "Helvetica", "Arial", "sans-serif"],

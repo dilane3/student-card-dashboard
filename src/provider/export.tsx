@@ -12,6 +12,7 @@ export const ExportProvider = ({ children }: ReactNodeChildren) => {
   const handlePrint = useReactToPrint({
     content: () => exportRef.current,
     documentTitle: `${student?.fullname} Qr_code`,
+    pageStyle: `@page { size: A4; margin: 0; } @media print { body { -webkit-print-color-adjust: exact; } }`
   });
 
   const value = {
