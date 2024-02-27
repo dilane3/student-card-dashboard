@@ -121,6 +121,8 @@ export async function deleteStudent(id: string) {
 /**
  * This function loads paginated students from the server.
  */
+
+
 export async function findStudentsWithPagination(offset = 0, limit = 20) {
   try {
     const params = {
@@ -161,7 +163,10 @@ export async function getStudent(id: string) {
   try {
     const response = await instance.get(`/student-cards/${id}`);
     if (response.status === 200) {
+      console.log(response.data);
+
       return {
+        
         data: response.data,
       };
     }

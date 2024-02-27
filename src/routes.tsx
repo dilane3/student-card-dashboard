@@ -71,13 +71,13 @@ export const routes: Array<RouteType> = [
         ),
         access: [RoleEnum.ADMIN],
       },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "profile",
-        path: "/profile",
-        element: <Profile />,
-        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
-      },
+      // {
+      //   icon: <UserCircleIcon {...icon} />,
+      //   name: "profile",
+      //   path: "/profile",
+      //   element: <Profile />,
+      //   access: [RoleEnum.ADMIN, RoleEnum.AGENT],
+      // },
       {
         icon: <PencilIcon {...icon} />,
         name: "personal info",
@@ -87,7 +87,16 @@ export const routes: Array<RouteType> = [
             <PersonalInfo />
           </AuthProvider>
         ),
-        access: [RoleEnum.AGENT],
+      },
+      {
+        icon: <PencilIcon {...icon} />,
+        name: "personal info",
+        path: "/personal-info/:id",
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
+            <PersonalInfo />
+          </AuthProvider>
+        ),
       },
       {
         icon: <PrinterIcon {...icon} />,
@@ -159,6 +168,7 @@ export const routes: Array<RouteType> = [
       },
     ],
   },
+  
 ];
 
 export default routes;

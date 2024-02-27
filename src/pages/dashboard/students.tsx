@@ -9,7 +9,7 @@ import {
 } from "@material-tailwind/react";
 
 import { studentsTableData } from "@/data";
-
+import { useNavigate } from "react-router-dom";
 import userImage from "../../assets/img/user.png";
 import useLoadStudentsCards from "@/hooks/useLoadStudentsCard";
 import { StudentCardState } from "@/gx/signals/students.signal";
@@ -18,14 +18,17 @@ import { formatDate } from "@/utils";
 import { PrinterIcon } from "@heroicons/react/24/solid";
 import { ModalContext } from "@/context/modalContext";
 import { useContext } from "react";
+import { Link } from "react-router-dom";
+import StudentContext, {StudentContextType} from "@/context/students";
 
 export default function Students() {
+  const navigate = useNavigate();
   // Load students cards
   useLoadStudentsCards();
 
   // Contexts
   const { handleOpen, dispatch } = useContext(ModalContext);
-
+  const { setCurrentStudent } = useContext<StudentContextType>(StudentContext);
   // Global state
   const { cards } = useSignal<StudentCardState>("students");
 
@@ -35,6 +38,7 @@ export default function Students() {
     dispatch!({ type: "EXPORT_CARDS" });
     handleOpen();
   };
+
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -77,17 +81,7 @@ export default function Students() {
             <tbody>
               {cards.map(
                 (
-                  {
-                    id,
-                    firstName,
-                    fullName,
-                    avatarLink,
-                    email,
-                    sex,
-                    nationality,
-                    createdAt,
-                    status,
-                  },
+                  card,
                   key,
                 ) => {
                   const className = `py-3 px-5 ${
@@ -97,32 +91,35 @@ export default function Students() {
                   }`;
 
                   return (
-                    <tr key={id}>
-                      <td className={className}>
+                    <tr key={card.id} >
+                      <td className={className}  onClick={() => {
+                        navigate(`/dashboard/personal-info/${card.id}`);
+                      }}>
                         <div className="flex items-center gap-4">
-                          <Avatar src={avatarLink} alt={firstName} size="sm" />
+                          <Avatar src={card.avatarLink} alt={card.firstName} size="sm" />
                           <div>
                             <Typography
                               variant="small"
                               color="blue-gray"
                               className="font-semibold capitalize"
                             >
-                              {fullName}
+                              {card.fullName}
                             </Typography>
                             <Typography className="text-xs font-normal text-blue-gray-500">
-                              {email}
+                              {card.email}
                             </Typography>
                           </div>
                         </div>
                       </td>
+                     
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {nationality}
+                          {card.nationality}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {sex}
+                          {card.sex}
                         </Typography>
                       </td>
                       <td className={className}>
@@ -137,7 +134,7 @@ export default function Students() {
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {formatDate(createdAt)}
+                          {formatDate(card.createdAt)}
                         </Typography>
                       </td>
                       <td className={className}>
