@@ -21,6 +21,7 @@ import AcademicYear from "./pages/dashboard/academicYear";
 import Agents from "./pages/dashboard/agents";
 import { RoleEnum } from "./entities/role.entity";
 import AuthProvider from "./provider/authProvider";
+import Receipt from "./layouts/receipt";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -100,6 +101,17 @@ export const routes: Array<RouteType> = [
       },
       {
         icon: <PrinterIcon {...icon} />,
+        name: "receipt",
+        path: "/receipt",
+        element: (
+          <AuthProvider access={[RoleEnum.AGENT]}>
+            <Receipt />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.AGENT],
+      },
+      {
+        icon: <PrinterIcon {...icon} />,
         name: "export card",
         path: "/export-card",
         element: (
@@ -125,33 +137,33 @@ export const routes: Array<RouteType> = [
         name: "faculty",
         path: "/faculty",
         element: (
-          <AuthProvider access={[RoleEnum.ADMIN]}>
+          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
             <Faculties />
           </AuthProvider>
         ),
-        access: [RoleEnum.ADMIN],
+        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
       },
       {
         icon: <AcademicCapIcon {...icon} />,
         name: "sector",
         path: "/sector",
         element: (
-          <AuthProvider access={[RoleEnum.ADMIN]}>
+          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
             <Sectors />
           </AuthProvider>
         ),
-        access: [RoleEnum.ADMIN],
+        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
       },
       {
         icon: <CalendarDaysIcon {...icon} />,
         name: "academic year",
         path: "/academic-year",
         element: (
-          <AuthProvider access={[RoleEnum.ADMIN]}>
+          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
             <AcademicYear />
           </AuthProvider>
         ),
-        access: [RoleEnum.ADMIN],
+        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
       },
     ],
   },

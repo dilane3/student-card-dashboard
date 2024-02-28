@@ -76,7 +76,7 @@ export const getMe = async () => {
     return { data: false };
   } catch (error: any) {
     try {
-      console.log(error)
+      console.log(error);
       if (error && error.response && error.response.status === 401) {
         const response = await instance.get("users/agents/me", {
           headers: {
