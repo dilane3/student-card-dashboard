@@ -4,7 +4,7 @@ import RectoCard from "../../assets/img/recto_v4.svg";
 import VersoCard from "../../assets/img/verso_v4.svg";
 import team1 from "../../assets/img/team-1.jpeg";
 import { useContext, useMemo, useRef, useState } from "react";
-import { IconButton, Typography } from "@material-tailwind/react";
+import { Button, IconButton, Typography } from "@material-tailwind/react";
 import StudentContext from "@/context/students";
 import Student from "@/entities/student.entity";
 import { ExportContext } from "@/context/export";
@@ -16,7 +16,6 @@ import { useSignal } from "@dilane3/gx";
 import { StudentCardState } from "@/gx/signals/students.signal";
 // import { formatDate } from "@/utils";
 // import QRCode from "qrcode";
-
 
 type ExportProps = {
   exportRef?: React.MutableRefObject<null>;
@@ -30,7 +29,7 @@ function Export({ exportRef }: ExportProps) {
   // Global state
   const { cards } = useSignal<StudentCardState>("students");
 
-  console.log(cards)
+  console.log(cards);
 
   const newStudent = useMemo(
     () =>
@@ -60,30 +59,25 @@ function Export({ exportRef }: ExportProps) {
 
   return (
     <>
-      {
-        cards.length > 0 && (
-          <div className="w-full">
-            <IconButton className="flex" onClick={exportContext?.print}>
-              <PrinterIcon
-                fill="black"
-                color="red"
-                scale={1}
-                className="bg-red-100"
-              />
-            </IconButton>
-            <Typography className="text-[1.75rem] font-extrabold">
-              This is your unique QRCode
-            </Typography>
-            {/* This will contain all the logic */}
-            <div
-              ref={exportContext?.exportRef}
-              className="w-full flex flex-col items-center"
-            >
-              <Document cards={cards} />
-            </div>
+      {cards.length > 0 && (
+        <div className="w-full">
+          <Button
+            className="bg-primary hover:bg-primary/80 flex items-center"
+            onClick={exportContext?.print}
+          >
+            <PrinterIcon strokeWidth={2} className="h-6 w-6 mr-2" />
+            <Typography className="font-nunitoBold">Export</Typography>
+          </Button>
+
+          {/* This will contain all the logic */}
+          <div
+            ref={exportContext?.exportRef}
+            className="w-full flex flex-col items-center"
+          >
+            <Document cards={cards} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 }
