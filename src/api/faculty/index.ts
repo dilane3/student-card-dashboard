@@ -4,7 +4,9 @@ import instance from "..";
 type CreateFacultyDto = {
   name: string;
 };
-type UpdateFacultyDto = null;
+type UpdateFacultyDto = {
+  name: string;
+};
 
 /**
  * This function creates faculty on the server.

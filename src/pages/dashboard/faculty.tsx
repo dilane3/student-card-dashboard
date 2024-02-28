@@ -3,8 +3,9 @@ import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import { ModalContext } from "@/context/modalContext";
 import { Faculty } from "@/entities/faculty.entity";
 import { FacultiesState } from "@/gx/signals/faculties.signal";
-import { formatDate } from "@/utils";
-import { useSignal } from "@dilane3/gx";
+import usePagination from "@/hooks/usePagination";
+import { formatDate, ITEM_PER_PAGE } from "@/utils";
+import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
@@ -41,6 +42,12 @@ export function Faculties() {
   // Global state
   const { faculties } = useSignal<FacultiesState>("faculties");
 
+  // Actions
+  const { selectFaculty } = useActions("faculties");
+
+  // Operations
+  const { getFaculty } = useOperations("faculties");
+
   const handleOpenCreateFacultyModal = () => {
     if (!dispatch) return;
 
@@ -48,11 +55,35 @@ export function Faculties() {
     handleOpen();
   };
 
-  const handleOpenDeleteModal = () => {
+  const handleOpenUpdateFacultyModal = (id: string) => {
+    if (!dispatch) return;
+
+    dispatch!({ type: "UPDATE_FACULTY" });
+    handleOpen();
+    selectFaculty(getFaculty(id));
+  };
+
+  const handleOpenDeleteModal = (id: string) => {
     if (!dispatch) return;
 
     dispatch!({ type: "DELETE_CONFIRMATION" });
     handleOpen();
+    selectFaculty(getFaculty(id));
+  };
+
+  const {
+    currentPage,
+    totalPages,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    startIndex,
+    endIndex,
+  } = usePagination(faculties.length, ITEM_PER_PAGE);
+
+  // to display data by applying pagination
+  const currentPageData = (): Array<Faculty> => {
+    return faculties.slice(startIndex, endIndex);
   };
 
   return (
@@ -101,7 +132,7 @@ export function Faculties() {
             </tr>
           </thead>
           <tbody>
-            {faculties.map(({ name, createdAt }, index) => {
+            {currentPageData().map(({ name, createdAt, id }, index) => {
               const isLast = index === faculties.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -129,12 +160,12 @@ export function Faculties() {
                   </td>
                   <td className={classes}>
                     <Tooltip content="Edit Faculty">
-                      <IconButton variant="text">
+                      <IconButton variant="text" onClick={() => handleOpenUpdateFacultyModal(id)}>
                         <PencilIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip content="Delete Faculty">
-                      <IconButton onClick={handleOpenDeleteModal} variant="text">
+                      <IconButton onClick={() => handleOpenDeleteModal(id)} variant="text">
                         <TrashIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
@@ -146,7 +177,17 @@ export function Faculties() {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-center border-t border-blue-gray-50 p-4">
-        <DefaultPagination />
+        <DefaultPagination
+          paginationEntry={{ 
+            currentPage,
+            totalPages,
+            goToPage,
+            goToNextPage,
+            goToPreviousPage,
+            startIndex,
+            endIndex,
+          }}
+        />
       </CardFooter>
     </Card>
   );

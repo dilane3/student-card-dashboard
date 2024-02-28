@@ -6,6 +6,9 @@ export const generateImage = () => {
   return `https://i.pravatar.cc/150?img=${random}`;
 };
 
+// for pagination
+export const ITEM_PER_PAGE = 4;
+
 export const formatDate = (d: Date) => {
   const date = new Date(d);
 

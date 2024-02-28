@@ -5,7 +5,9 @@ type CreateSectorDto = {
   name: string;
   facultyId: string;
 };
-type UpdateSectorDto = null;
+type UpdateSectorDto = {
+  name: string;
+};
 
 /**
  * This function creates sector on the server.

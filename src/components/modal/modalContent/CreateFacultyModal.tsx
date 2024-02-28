@@ -1,8 +1,8 @@
-import { createFaculty } from "@/api/faculty";
+import { createFaculty, updateFaculty } from "@/api/faculty";
 import { ModalContext } from "@/context/modalContext";
 import { Faculty } from "@/entities/faculty.entity";
-import { FacultiesActions } from "@/gx/signals/faculties.signal";
-import { useActions } from "@dilane3/gx";
+import { FacultiesActions, FacultiesState } from "@/gx/signals/faculties.signal";
+import { useActions, useSignal } from "@dilane3/gx";
 import {
   Button,
   Textarea,
@@ -12,23 +12,40 @@ import {
   Input,
   Typography,
 } from "@material-tailwind/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const CreateFacultyModal = () => {
   const { handleOpen } = useContext(ModalContext);
 
+  // Global actions
+  const { addFaculty, updateFaculty: patchFaculty } = useActions<FacultiesActions>("faculties");
+  const { faculty } = useSignal<FacultiesState>("faculties");
+
+  // Actions
+  const { selectFaculty } = useActions("faculties");
+
   // Local state
-  const [name, setName] = useState("");
+  const [name, setName] = useState(faculty?.name || "");
   const [loading, setLoading] = useState(false);
 
-  // Global actions
-  const { addFaculty } = useActions<FacultiesActions>("faculties");
+  // Effect 
+  useEffect(()=>{
+    if (faculty !== undefined) {
+      setName(faculty?.name)
+    }
+  }, [faculty])
 
   // Handlers
   const handleNameChange = (e: any) => setName(e.target.value);
 
+  const handleCloseModal = () => {
+    selectFaculty(undefined);
+    handleOpen();
+  }
+
   const handleSubmit = async () => {
+
     if (!name) {
       toast.error("Name is required");
       return;
@@ -36,18 +53,38 @@ const CreateFacultyModal = () => {
 
     setLoading(true);
 
-    const { data } = await createFaculty({ name });
-
-    if (data) {
-      const faculty = new Faculty(data);
-
-      addFaculty(faculty);
-
-      toast.success("Faculty created successfully");
-      handleOpen();
+    if (faculty !== undefined) {
+      const { data } = await updateFaculty(faculty.id, {
+        name: name
+      });
+  
+      if (data) {
+        const faculty = new Faculty(data);
+  
+        patchFaculty(faculty);
+  
+        toast.success("Faculty successfully updated");
+        handleOpen();
+      } else {
+        toast.error("Something went wrong");
+      }
+      
     } else {
-      toast.error("Something went wrong");
+  
+      const { data } = await createFaculty({ name });
+  
+      if (data) {
+        const faculty = new Faculty(data);
+  
+        addFaculty(faculty);
+  
+        toast.success("Faculty created successfully");
+        handleOpen();
+      } else {
+        toast.error("Something went wrong");
+      }
     }
+
   };
 
   return (
@@ -71,7 +108,7 @@ const CreateFacultyModal = () => {
         <Button
           variant="filled"
           className="bg-gray-400 uppercase"
-          onClick={handleOpen}
+          onClick={handleCloseModal}
         >
           Cancel
         </Button>
@@ -81,7 +118,7 @@ const CreateFacultyModal = () => {
           onClick={handleSubmit}
         >
           {
-            loading ? "Loading..." : "Add"
+            loading ? "Loading..." : (faculty !== undefined ? "Update" : "Add")
           }
         </Button>
       </CardFooter>

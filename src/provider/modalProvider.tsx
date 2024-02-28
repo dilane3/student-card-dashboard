@@ -16,6 +16,9 @@ const ModalActions = {
   DELETE_CONFIRMATION: "DELETE_CONFIRMATION",
   ADD_AGENT: "ADD_AGENT",
   EXPORT_CARDS: "EXPORT_CARDS",
+  UPDATE_FACULTY: "UPDATE_FACULTY",
+  UPDATE_SECTOR: "UPDATE_SECTOR"
+
 } as const;
 
 export type ModalSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
@@ -50,6 +53,10 @@ const ModalProvider = ({ children }: ReactNodeChildren) => {
         return { ...state, state: <CreateSectorModal />, size: "sm" };
       case "ADD_AGENT":
         return { ...state, state: <CreateAgentModal />, size: "sm" };
+      case "UPDATE_FACULTY":
+        return { ...state, state: <CreateFacultyModal />, size: "sm" };  
+      case "UPDATE_SECTOR":
+        return { ...state, state: <CreateSectorModal />, size: "sm" };
       case "DELETE_CONFIRMATION":
         return { ...state, state: <DeleteConfirmationModal />, size: "xs" };
       case "EXPORT_CARDS":

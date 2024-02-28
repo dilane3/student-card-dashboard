@@ -3,12 +3,14 @@ import { createSignal } from "@dilane3/gx";
 
 export type SectorsState = {
   sectors: Sector[];
+  sector: Sector | undefined;
   loading: boolean;
 };
 
 export type SectorsActions = {
   loadSectors: (sectors: Sector[]) => void;
   addSector: (sector: Sector) => void;
+  selectSector: (sector: Sector) => void;
   updateSector: (sector: Sector) => void;
   deleteSector: (sector: Sector) => void;
 };
@@ -21,6 +23,7 @@ const sectorsSignal = createSignal<SectorsState>({
   name: "sectors",
   state: {
     sectors: [],
+    sector: undefined,
     loading: false
   },
   actions: {
@@ -38,6 +41,13 @@ const sectorsSignal = createSignal<SectorsState>({
         sectors: [...state.sectors, sector]
       };
     },
+
+    selectSector: (state, sector: Sector | undefined) => {
+      return {
+        ...state,
+        sector: sector
+      }
+    },  
 
     updateSector: (state, sector: Sector) => {
       return {
