@@ -16,13 +16,19 @@ import QRCodeStyling, {
 
 type QrCodeGeneratorProps = {
   code: string;
+  width?: number;
+  height?: number;
 };
 
-export default function QrCodeGenerator({ code }: QrCodeGeneratorProps) {
+export default function QrCodeGenerator({
+  code,
+  width = 70,
+  height = 70,
+}: QrCodeGeneratorProps) {
   const [options, setOptions] = useState<Options>({
-    width: 170,
-    height: 160,
-    type: "svg" as DrawType,
+    width: width,
+    height: height,
+    type: "canvas" as DrawType,
     data: code,
     image: logo,
     margin: 0,

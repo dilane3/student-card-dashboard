@@ -10,7 +10,7 @@ import {
   CalendarDaysIcon,
 } from "@heroicons/react/24/solid";
 import { Home, PersonalInfo, Profile } from "@/pages/dashboard";
-import { SignIn, SignUp } from "@/pages/auth";
+import { SignIn } from "@/pages/auth";
 import Students from "./pages/dashboard/students";
 import { ReactNode } from "react";
 import Export from "./layouts/exports";
@@ -87,7 +87,16 @@ export const routes: Array<RouteType> = [
             <PersonalInfo />
           </AuthProvider>
         ),
-        access: [RoleEnum.AGENT],
+      },
+      {
+        icon: <PencilIcon {...icon} />,
+        name: "personal info",
+        path: "/personal-info/:id",
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
+            <PersonalInfo />
+          </AuthProvider>
+        ),
       },
       {
         icon: <PrinterIcon {...icon} />,

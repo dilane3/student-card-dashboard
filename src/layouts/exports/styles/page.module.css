@@ -1,0 +1,71 @@
+.page1 {
+  box-sizing: border-box;
+  display: grid;
+  gap: 4px 4px;
+  grid-template-areas: 
+    "a b"
+    "c d"
+    "e f"
+    "g h"
+    "i j";
+}
+
+.page2 {
+  box-sizing: border-box;
+  display: grid;
+  gap: 4px 4px;
+  grid-template-areas: 
+    "b a"
+    "d c"
+    "f e"
+    "h g"
+    "j i";
+}
+
+/* Assigning areas */
+
+/* select odd children */
+.page2 > *:nth-child(1) {
+  grid-area: a;
+}
+.page2 > *:nth-child(2) {
+  grid-area: b;
+}
+.page2 > *:nth-child(3) {
+  grid-area: c;
+}
+.page2 > *:nth-child(4) {
+  grid-area: d;
+}
+.page2 > *:nth-child(5) {
+  grid-area: e;
+}
+.page2 > *:nth-child(6) {
+  grid-area: f;
+}
+.page2 > *:nth-child(7) {
+  grid-area: g;
+}
+.page2 > *:nth-child(8) {
+  grid-area: h;
+}
+.page2 > *:nth-child(9) {
+  grid-area: i;
+}
+.page2 > *:nth-child(10) {
+  grid-area: j;
+}
+
+@media print {
+  .page {
+    size: 210mm 297mm;
+    margin: 1.8mm;
+  }
+  .page:last-child {
+    page-break-after: auto;
+    margin-bottom: 0;
+  }
+  .page > * {
+    page-break-inside: avoid;
+  }
+}

@@ -10,6 +10,7 @@ import { ThemeProvider } from "@material-tailwind/react";
 import StudentProvider from "./provider/students";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FormRegistration from "./pages/visitor/FormRegistration";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
                 <StudentProvider>
                   <ExportProvider>
                     <Routes>
+                      <Route path="/registration" element={<FormRegistration />} />
                       <Route path="/dashboard/*" element={<Dashboard />} />
                       <Route path="/auth/*" element={<Auth />} />
                       <Route
