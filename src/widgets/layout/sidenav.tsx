@@ -99,7 +99,7 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
           ))}
         </div>
       </div>
-      <div className="flex items-center w-[60%] xl:w-[80%] mb-8 mx-auto">
+      <div className="flex items-center w-[60%] xl:w-[80%] my-8 mx-auto">
         <div className="w-8 h-8 xl:w-12 xl:h-12 flex items-center justify-center rounded-full bg-white">
           {user.avatar ? (
             <p className="uppercase text-2xl text-primary font-nunitoBold">

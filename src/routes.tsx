@@ -137,33 +137,33 @@ export const routes: Array<RouteType> = [
         name: "faculty",
         path: "/faculty",
         element: (
-          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
+          <AuthProvider access={[RoleEnum.ADMIN]}>
             <Faculties />
           </AuthProvider>
         ),
-        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
+        access: [RoleEnum.ADMIN],
       },
       {
         icon: <AcademicCapIcon {...icon} />,
         name: "sector",
         path: "/sector",
         element: (
-          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
+          <AuthProvider access={[RoleEnum.ADMIN]}>
             <Sectors />
           </AuthProvider>
         ),
-        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
+        access: [RoleEnum.ADMIN],
       },
       {
         icon: <CalendarDaysIcon {...icon} />,
         name: "academic year",
         path: "/academic-year",
         element: (
-          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
+          <AuthProvider access={[RoleEnum.ADMIN]}>
             <AcademicYear />
           </AuthProvider>
         ),
-        access: [RoleEnum.ADMIN, RoleEnum.AGENT],
+        access: [RoleEnum.ADMIN],
       },
     ],
   },

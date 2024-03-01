@@ -37,6 +37,8 @@ export default function useLoadStudentsCards() {
     if (data) {
       const { data: cardsData, hasMore, count } = data;
 
+      console.log(cardsData);
+
       const cards = cardsData.map((card: any) => {
         // Get academic year
 
@@ -56,7 +58,7 @@ export default function useLoadStudentsCards() {
         });
       });
 
-      console.log(cards)
+      console.log(cards);
 
       loadCards({ data: cards, hasMore, count });
     } else {
