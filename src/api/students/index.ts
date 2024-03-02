@@ -11,6 +11,7 @@ type CreateStudentDto = {
   sexe: "MALE" | "FEMALE";
   avatar: string;
   birthDate: Date;
+  birthPlace: string;
   nationality: string;
 };
 type UpdateStudentDto = null;

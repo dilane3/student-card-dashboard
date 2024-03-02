@@ -20,6 +20,7 @@ import { ModalContext } from "@/context/modalContext";
 import { useContext, useState } from "react";
 import Document from "@/layouts/exports/document";
 import { ExportContext } from "@/context/export";
+import CardEntity from "@/entities/studentCard.entity";
 
 export default function Students() {
   const navigate = useNavigate();
@@ -37,13 +38,12 @@ export default function Students() {
   const [cardMode, setCardMode] = useState(false);
 
   /**
-   *
-   * @returns
+   * Function to view and export the card in image format
    */
-  const handleViewCardModal = () => {
+  const handleOpenViewCardModel = (card: CardEntity) => {
     if (!dispatch) return;
 
-    dispatch!({ type: "EXPORT_CARDS" });
+    dispatch({ type: "VIEW_CARD", payload: card });
     handleOpen();
   };
 
@@ -106,12 +106,7 @@ export default function Students() {
                           key={el}
                           className="border-b border-blue-gray-50 py-3 px-5 text-left"
                         >
-                          <Typography
-                            variant="small"
-                            className="text-[11px] font-bold uppercase text-blue-gray-400"
-                          >
-                            {el}
-                          </Typography>
+                          {el}
                         </th>
                       ))}
                     </tr>
@@ -182,9 +177,13 @@ export default function Students() {
                           <td className={className}>
                             <Chip
                               variant="gradient"
-                              color={status !== "SUBMITTED" ? "green" : "blue-gray"}
+                              color={
+                                card.status !== "SUBMITTED" ? "green" : "blue-gray"
+                              }
                               value={
-                                status !== "SUBMITTED" ? "Verified" : "Not Verified"
+                                card.status !== "SUBMITTED"
+                                  ? "Verified"
+                                  : "Not Verified"
                               }
                               className="py-0.5 px-2 text-[11px] font-medium"
                             />
@@ -205,7 +204,7 @@ export default function Students() {
                               </Typography>
 
                               <Button
-                                onClick={handleViewCardModal}
+                                onClick={() => handleOpenViewCardModel(card)}
                                 className="bg-transparent p-1 m-0 border-0"
                               >
                                 <PrinterIcon

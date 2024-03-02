@@ -13,5 +13,5 @@ export type ModalContextType = {
 export const ModalContext = createContext<ModalContextType>({
     open: false,
     handleOpen: () => {},
-    state: { state: null, size: 'xs' },
+    state: { state: null, size: 'xs', data: null },
 })
