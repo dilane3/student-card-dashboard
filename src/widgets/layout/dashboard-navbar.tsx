@@ -86,9 +86,9 @@ export function DashboardNavbar() {
           </Typography>
         </div>
         <div className="flex items-center">
-          <div className="mr-auto md:mr-4 md:w-56">
+          {/* <div className="mr-auto md:mr-4 md:w-56">
             <Input crossOrigin={null} label="Type here" />
-          </div>
+          </div> */}
           <IconButton
             variant="text"
             color="blue-gray"
@@ -124,10 +124,7 @@ export function DashboardNavbar() {
             onClick={handleLogout}
           >
             {loading ? (
-              <svg
-                className="animate-spin h-5 w-5 text-primary"
-                viewBox="0 0 24 24"
-              >
+              <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24">
                 <circle
                   className="opacity-25"
                   cx="12"
