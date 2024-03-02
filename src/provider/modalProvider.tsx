@@ -5,6 +5,7 @@ import CreateFacultyModal from "@/components/modal/modalContent/CreateFacultyMod
 import CreateSectorModal from "@/components/modal/modalContent/CreateSectorModal";
 import DeleteConfirmationModal from "@/components/modal/modalContent/DeleteConfirmationModal";
 import ExportCardsModal from "@/components/modal/modalContent/ExportCardsConfig";
+import ViewCardToExportModal from "@/components/modal/modalContent/ViewCardToExport";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { ReactNodeChildren } from "@/types";
 import { ReactNode, useReducer, useState } from "react";
@@ -17,26 +18,29 @@ const ModalActions = {
   ADD_AGENT: "ADD_AGENT",
   EXPORT_CARDS: "EXPORT_CARDS",
   UPDATE_FACULTY: "UPDATE_FACULTY",
-  UPDATE_SECTOR: "UPDATE_SECTOR"
-
+  UPDATE_SECTOR: "UPDATE_SECTOR",
+  VIEW_CARD: "VIEW_CARD",
 } as const;
 
 export type ModalSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 
 export interface ReducerState {
-  state: ReactNode | null;
+  state: ReactNode;
   size: ModalSize;
+  data?: any;
 }
 
 type ModalActionsType = (typeof ModalActions)[keyof typeof ModalActions];
 
 export type ActionType = {
   type: ModalActionsType;
+  payload?: any;
 };
 
 const initialState: ReducerState = {
-  state: null,
+  state: <></>,
   size: "xs",
+  data: null,
 };
 
 const ModalProvider = ({ children }: ReactNodeChildren) => {
@@ -54,13 +58,20 @@ const ModalProvider = ({ children }: ReactNodeChildren) => {
       case "ADD_AGENT":
         return { ...state, state: <CreateAgentModal />, size: "sm" };
       case "UPDATE_FACULTY":
-        return { ...state, state: <CreateFacultyModal />, size: "sm" };  
+        return { ...state, state: <CreateFacultyModal />, size: "sm" };
       case "UPDATE_SECTOR":
         return { ...state, state: <CreateSectorModal />, size: "sm" };
       case "DELETE_CONFIRMATION":
         return { ...state, state: <DeleteConfirmationModal />, size: "xs" };
       case "EXPORT_CARDS":
         return { ...state, state: <ExportCardsModal />, size: "sm" };
+      case "VIEW_CARD":
+        return {
+          ...state,
+          state: <ViewCardToExportModal />,
+          size: "md",
+          data: action.payload,
+        };
       default:
         return { ...state };
     }

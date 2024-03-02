@@ -130,10 +130,13 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
             sex: undefined,
             photo: undefined,
             sector: undefined,
-            birthPlace: undefined,
           };
 
-          const { data: cardData } = await registerStudent(payload);
+          console.log(payload)
+
+          const { data: cardData, error } = await registerStudent(payload);
+
+          console.log(error)
 
           if (cardData) {
             toast.success("Student card created successfully");

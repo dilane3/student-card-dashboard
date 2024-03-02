@@ -12,6 +12,7 @@ export interface ICard {
   sex: string;
   status: string;
   birthDate: Date;
+  birthPlace: string;
   nationality: string;
   createdAt: Date;
   updatedAt: Date;
@@ -35,6 +36,7 @@ export default class Card {
   private _sex: string;
   private _status: string;
   private _birthDate: Date;
+  private _birthPlace: string;
   private _nationality: string;
   private _createdAt: Date;
   private _updatedAt: Date;
@@ -54,6 +56,7 @@ export default class Card {
     this._sex = data.sex
     this._status = data.status
     this._birthDate = data.birthDate
+    this._birthPlace = data.birthPlace
     this._nationality = data.nationality
     this._createdAt = data.createdAt
     this._updatedAt = data.updatedAt
@@ -115,6 +118,10 @@ export default class Card {
     return this._birthDate
   }
 
+  get birthPlace() {
+    return this._birthPlace
+  }
+
   get nationality() {
     return this._nationality
   }
@@ -152,6 +159,7 @@ export default class Card {
       sex: this._sex,
       status: this._status,
       birthDate: this._birthDate,
+      birthPlace: this._birthPlace,
       nationality: this._nationality,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
