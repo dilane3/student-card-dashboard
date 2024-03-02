@@ -55,7 +55,7 @@ export default function CardVerso({ card }: Props) {
           <div className="h-1/3 flex w-full">
             <div className="w-full h-full mr-2">
               <p className="font-nunitoBoldItalic text-primary text-[8px]">LE DOYEN/THE DEAN</p>
-              <p className="w-full text-[8px]">PR TCHOUNKEU JEAN CLAUDE</p>
+              <p className="w-full text-[8px]">PR TCHOUANKEU JEAN CLAUDE</p>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import logo from "@/assets/img/logo.svg";
 import logoTransparent from "@/assets/img/logo_transparent.png";
-import userImage from "@/assets/img/bruce-mars.jpeg";
+import userImage from "@/assets/img/clems.jpeg";
 import star from "@/assets/img/star.svg";
 import Card from "@/entities/studentCard.entity";
 import { formatDateBySlash } from "@/utils";
@@ -94,6 +94,7 @@ export default function CardRector({ card }: Props) {
           <div className="w-[60px] h-[60px] rounded-2xl border-2 border-primary overflow-hidden">
             <img
               src={card.avatarLink}
+              // src={userImage}
               className="w-full h-full object-cover"
               alt="Student image"
             />
