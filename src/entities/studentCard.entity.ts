@@ -1,5 +1,16 @@
 import { baseURL } from "../api";
 
+export const cardsStatuses = {
+  SUBMITTED: "SUBMITTED",
+  INFORMATIONS_VALIDATED: "INFORMATIONS_VALIDATED",
+  AVAILABLE: "AVAILABLE",
+  PRINTED: "PRINTED",
+  RECEIVED: "RECEIVED",
+  INVALID: "INVALID",
+} as const;
+
+export type CardStatusesType = (typeof cardsStatuses)[keyof typeof cardsStatuses];
+
 export interface ICard {
   id: string;
   matricule: string;
@@ -10,7 +21,7 @@ export interface ICard {
   phone: string;
   avatar: string;
   sex: string;
-  status: string;
+  status: CardStatusesType;
   birthDate: Date;
   birthPlace: string;
   nationality: string;
@@ -34,7 +45,7 @@ export default class Card {
   private _phone: string;
   private _avatar: string;
   private _sex: string;
-  private _status: string;
+  private _status: CardStatusesType;
   private _birthDate: Date;
   private _birthPlace: string;
   private _nationality: string;
@@ -45,24 +56,24 @@ export default class Card {
   private _faculty: string;
 
   constructor(data: ICard) {
-    this._id = data.id
-    this._matricule = data.matricule
-    this._code = data.code
-    this._firstName = data.firstName
-    this._lastName = data.lastName
-    this._email = data.email
-    this._phone = data.phone
-    this._avatar = data.avatar
-    this._sex = data.sex
-    this._status = data.status
-    this._birthDate = data.birthDate
-    this._birthPlace = data.birthPlace
-    this._nationality = data.nationality
-    this._createdAt = data.createdAt
-    this._updatedAt = data.updatedAt
-    this._academicYear = data.academicYear
-    this._sector = data.sector
-    this._faculty = data.faculty
+    this._id = data.id;
+    this._matricule = data.matricule;
+    this._code = data.code;
+    this._firstName = data.firstName;
+    this._lastName = data.lastName;
+    this._email = data.email;
+    this._phone = data.phone;
+    this._avatar = data.avatar;
+    this._sex = data.sex;
+    this._status = data.status;
+    this._birthDate = data.birthDate;
+    this._birthPlace = data.birthPlace;
+    this._nationality = data.nationality;
+    this._createdAt = data.createdAt;
+    this._updatedAt = data.updatedAt;
+    this._academicYear = data.academicYear;
+    this._sector = data.sector;
+    this._faculty = data.faculty;
   }
 
   // Getters
@@ -71,35 +82,35 @@ export default class Card {
   }
 
   get matricule() {
-    return this._matricule
+    return this._matricule;
   }
 
   get code() {
-    return this._code
+    return this._code;
   }
 
   get firstName() {
-    return this._firstName
+    return this._firstName;
   }
 
   get lastName() {
-    return this._lastName
+    return this._lastName;
   }
 
   get fullName() {
-    return `${this._firstName} ${this._lastName}`
+    return `${this._firstName} ${this._lastName}`;
   }
 
   get email() {
-    return this._email
+    return this._email;
   }
 
   get phone() {
-    return this._phone
+    return this._phone;
   }
 
   get avatar() {
-    return this._avatar
+    return this._avatar;
   }
 
   get avatarLink() {
@@ -107,7 +118,7 @@ export default class Card {
   }
 
   get sex() {
-    return this._sex
+    return this._sex;
   }
 
   get status() {
@@ -115,35 +126,35 @@ export default class Card {
   }
 
   get birthDate() {
-    return this._birthDate
+    return this._birthDate;
   }
 
   get birthPlace() {
-    return this._birthPlace
+    return this._birthPlace;
   }
 
   get nationality() {
-    return this._nationality
+    return this._nationality;
   }
 
   get createdAt() {
-    return this._createdAt
+    return this._createdAt;
   }
 
   get updatedAt() {
-    return this._updatedAt
+    return this._updatedAt;
   }
 
   get academicYear() {
-    return this._academicYear
+    return this._academicYear;
   }
 
   get sector() {
-    return this._sector
+    return this._sector;
   }
 
   get faculty() {
-    return this._faculty
+    return this._faculty;
   }
 
   public toJson() {
@@ -165,7 +176,7 @@ export default class Card {
       updatedAt: this._updatedAt,
       academicYear: this._academicYear,
       sector: this._sector,
-      faculty: this._faculty
-    }
+      faculty: this._faculty,
+    };
   }
 }

@@ -3,6 +3,7 @@ import { createSignal } from "@dilane3/gx";
 
 export type StudentCardState = {
   cards: Card[];
+  pdfCards: Card[];
   card: Card | null;
   selectedCardId?: string;
   loading: boolean;
@@ -12,6 +13,7 @@ export type StudentCardState = {
 
 export type StudentCardActions = {
   loadCards: (payload: { data: Card[]; hasMore: boolean; count: number }) => void;
+  loadPdfCards: (payload: { data: Card[]; hasMore: boolean; count: number }) => void;
   loadCard: (payload: { data: Card }) => void;
   addCard: (payload: Card) => void;
   addCards: (payload: { data: Card[]; hasMore: boolean }) => void;
@@ -26,6 +28,7 @@ export default createSignal<StudentCardState>({
   name: "students",
   state: {
     cards: [],
+    pdfCards: [],
     card: null,
     selectedCardId: undefined,
     loading: false,
@@ -39,6 +42,17 @@ export default createSignal<StudentCardState>({
     ) => ({
       ...state,
       cards: payload.data,
+      hasMore: payload.hasMore,
+      count: payload.count,
+      loading: false,
+    }),
+
+    loadPdfCards: (
+      state,
+      payload: { data: Card[]; hasMore: boolean; count: number },
+    ) => ({
+      ...state,
+      pdfCards: payload.data,
       hasMore: payload.hasMore,
       count: payload.count,
       loading: false,

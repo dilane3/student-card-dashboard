@@ -30,7 +30,7 @@ export default function useLoadSectors() {
           id: sector.id,
           name: sector.name,
           createdAt: new Date(sector.createdAt),
-          idFaculty: sector.idFaculty
+          idFaculty: sector.idFaculty,
         });
       });
 

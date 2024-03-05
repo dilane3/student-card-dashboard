@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import instance from "..";
+import { CardStatusesType } from "@/entities/studentCard.entity";
 
 type CreateStudentDto = {
   sectorId: string;
@@ -123,7 +124,11 @@ export async function deleteStudent(id: string) {
  * This function loads paginated students from the server.
  */
 
-export async function findStudentsWithPagination(offset = 0, limit = 20) {
+export async function findStudentsWithPagination(
+  cardsStatus: CardStatusesType | "ALL" = "ALL",
+  offset = 0,
+  limit = 20,
+) {
   try {
     const params = {
       offset,
@@ -134,7 +139,12 @@ export async function findStudentsWithPagination(offset = 0, limit = 20) {
       params,
     };
 
-    const response = await instance.get("/student-cards", config);
+    const response = await instance.get(
+      `/student-cards${
+        cardsStatus !== "ALL" ? `/by-status?status=${cardsStatus}` : ""
+      }`,
+      config,
+    );
 
     if (response.status === 200) {
       return {
@@ -179,6 +189,109 @@ export async function getStudent(id: string) {
 
     return {
       error: "Error getting student.",
+    };
+  }
+}
+
+/**
+ * This function gets the .
+ *  @param id Id of the student to retrieve
+ *
+ */
+
+export async function getStudentCardStatistics() {
+  try {
+    const response = await instance.get(`/student-cards/statistics`);
+
+    if (response.status === 200) {
+      return {
+        data: response.data,
+      };
+    }
+
+    return {
+      error: "Error getting student.",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      error: "Error getting student.",
+    };
+  }
+}
+
+/**
+ * This function gets the .
+ *  @param id Id of the student to retrieve
+ *
+ */
+
+export async function getFilteredStudentCards(
+  sectorId: string,
+  startDate: Date,
+  endDate: Date,
+) {
+  try {
+    const params = {
+      startDate,
+      endDate,
+    };
+
+    const config: AxiosRequestConfig = {
+      params,
+    };
+
+    const response = await instance.get(
+      `/student-cards/unprinted/sector/${sectorId}`,
+      config,
+    );
+
+    if (response.status === 200) {
+      return {
+        data: response.data,
+      };
+    }
+
+    return {
+      error: "Error getting student.",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      error: "Error getting student.",
+    };
+  }
+}
+
+/**
+ * This function update student on the server.
+ * @param payload DTO for updating student.
+ */
+export async function updateStudentCardStatus(
+  cardId: string,
+  status: CardStatusesType,
+) {
+  try {
+    const response = await instance.patch(`/student-cards/${cardId}/status`, {
+      status: status,
+    });
+
+    if (response.status === 200) {
+      return {
+        data: response.data,
+      };
+    }
+
+    return {
+      error: "Error updating student.",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      error: "Error updating student.",
     };
   }
 }

@@ -10,7 +10,7 @@ export type FacultiesState = {
 export type FacultiesActions = {
   loadFaculties: (faculties: Faculty[]) => void;
   addFaculty: (faculty: Faculty) => void;
-  selectFaculty: (faculty: Faculty) => void;
+  selectFaculty: (faculty: Faculty | undefined) => void;
   updateFaculty: (faculty: Faculty) => void;
   deleteFaculty: (faculty: Faculty) => void;
 };
@@ -24,28 +24,28 @@ const facultiesSignal = createSignal<FacultiesState>({
   state: {
     faculties: [],
     faculty: undefined,
-    loading: false
+    loading: false,
   },
   actions: {
     loadFaculties: (state, faculties: Faculty[]) => {
       return {
         ...state,
         faculties,
-        loading: false
+        loading: false,
       };
     },
 
     selectFaculty: (state, faculty: Faculty | undefined) => {
       return {
         ...state,
-        faculty: faculty
-      }
-    }, 
+        faculty: faculty,
+      };
+    },
 
     addFaculty: (state, faculty: Faculty) => {
       return {
         ...state,
-        faculties: [...state.faculties, faculty]
+        faculties: [...state.faculties, faculty],
       };
     },
 
@@ -57,21 +57,22 @@ const facultiesSignal = createSignal<FacultiesState>({
             return faculty;
           }
           return f;
-        })
+        }),
       };
     },
 
     deleteFaculty: (state, faculty: Faculty) => {
       return {
         ...state,
-        faculties: state.faculties.filter((f) => f.id !== faculty.id)
+        faculties: state.faculties.filter((f) => f.id !== faculty.id),
       };
-    }
+    },
   },
 
   operations: {
-    getFaculty: (state, id: string) => state.faculties.find((faculty) => faculty.id === id),
-  }
+    getFaculty: (state, id: string) =>
+      state.faculties.find((faculty) => faculty.id === id),
+  },
 });
 
 export default facultiesSignal;

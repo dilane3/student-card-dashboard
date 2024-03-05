@@ -59,7 +59,7 @@ export function SignIn() {
           <Typography variant="h2">
             <p className="text-slate-900 mt-4 text-center">Sign In</p>
           </Typography>
-          <Typography variant="h7">
+          <Typography variant="h6">
             <p className="mt-2 text-center text-gray-600">
               Welcome back! Please sign in to continue.
             </p>

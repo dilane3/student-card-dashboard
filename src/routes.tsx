@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Home, PersonalInfo, Profile } from "@/pages/dashboard";
 import { SignIn } from "@/pages/auth";
-import Students from "./pages/dashboard/students";
+import Students from "./pages/dashboard/students/students";
 import { ReactNode } from "react";
 import Export from "./layouts/exports";
 import AddStudent from "./components/addStudent";
@@ -99,28 +99,28 @@ export const routes: Array<RouteType> = [
           </AuthProvider>
         ),
       },
-      {
-        icon: <PrinterIcon {...icon} />,
-        name: "receipt",
-        path: "/receipt",
-        element: (
-          <AuthProvider access={[RoleEnum.AGENT]}>
-            <Receipt />
-          </AuthProvider>
-        ),
-        access: [RoleEnum.AGENT],
-      },
-      {
-        icon: <PrinterIcon {...icon} />,
-        name: "export card",
-        path: "/export-card",
-        element: (
-          <AuthProvider access={[RoleEnum.AGENT]}>
-            <Export />
-          </AuthProvider>
-        ),
-        access: [RoleEnum.AGENT],
-      },
+      // {
+      //   icon: <PrinterIcon {...icon} />,
+      //   name: "receipt",
+      //   path: "/receipt",
+      //   element: (
+      //     <AuthProvider access={[RoleEnum.AGENT]}>
+      //       <Receipt />
+      //     </AuthProvider>
+      //   ),
+      //   access: [RoleEnum.AGENT],
+      // },
+      // {
+      //   icon: <PrinterIcon {...icon} />,
+      //   name: "export card",
+      //   path: "/export-card",
+      //   element: (
+      //     <AuthProvider access={[RoleEnum.AGENT]}>
+      //       <Export />
+      //     </AuthProvider>
+      //   ),
+      //   access: [RoleEnum.AGENT],
+      // },
       {
         icon: <UserPlusIcon {...icon} />,
         name: "add student",

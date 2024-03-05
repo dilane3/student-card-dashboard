@@ -10,7 +10,7 @@ export type SectorsState = {
 export type SectorsActions = {
   loadSectors: (sectors: Sector[]) => void;
   addSector: (sector: Sector) => void;
-  selectSector: (sector: Sector) => void;
+  selectSector: (sector: Sector | undefined) => void;
   updateSector: (sector: Sector) => void;
   deleteSector: (sector: Sector) => void;
 };
@@ -24,30 +24,30 @@ const sectorsSignal = createSignal<SectorsState>({
   state: {
     sectors: [],
     sector: undefined,
-    loading: false
+    loading: false,
   },
   actions: {
     loadSectors: (state, sectors: Sector[]) => {
       return {
         ...state,
         sectors,
-        loading: false
+        loading: false,
       };
     },
 
     addSector: (state, sector: Sector) => {
       return {
         ...state,
-        sectors: [...state.sectors, sector]
+        sectors: [...state.sectors, sector],
       };
     },
 
     selectSector: (state, sector: Sector | undefined) => {
       return {
         ...state,
-        sector: sector
-      }
-    },  
+        sector: sector,
+      };
+    },
 
     updateSector: (state, sector: Sector) => {
       return {
@@ -57,23 +57,23 @@ const sectorsSignal = createSignal<SectorsState>({
             return sector;
           }
           return s;
-        })
+        }),
       };
     },
 
     deleteSector: (state, sector: Sector) => {
       return {
         ...state,
-        sectors: state.sectors.filter((s) => s.id !== sector.id)
+        sectors: state.sectors.filter((s) => s.id !== sector.id),
       };
-    }
+    },
   },
 
   operations: {
     getSector: (state, id: string) => {
       return state.sectors.find((s) => s.id === id);
-    }
-  }
+    },
+  },
 });
 
 export default sectorsSignal;

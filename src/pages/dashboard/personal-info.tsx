@@ -1,4 +1,10 @@
-import { Card as MaterialCard } from "@material-tailwind/react";
+import {
+  Avatar,
+  Button,
+  Card as MaterialCard,
+  Option,
+  Select,
+} from "@material-tailwind/react";
 import { useParams } from "react-router-dom";
 import useStudent from "@/hooks/useStudent";
 import { formatDate } from "@/utils";
@@ -7,6 +13,14 @@ import { PencilIcon, PrinterIcon } from "@heroicons/react/24/solid";
 import { useSignal } from "@dilane3/gx";
 import { StudentCardState } from "@/gx/signals/students.signal";
 import QrCodeGenerator from "@/components/Qrgenerator";
+import { useContext, useEffect, useState } from "react";
+import Card, {
+  CardStatusesType,
+  cardsStatuses,
+} from "@/entities/studentCard.entity";
+import { updateStudentCardStatus } from "@/api/students";
+import { ModalContext } from "@/context/modalContext";
+import { toast } from "react-toastify";
 
 export function PersonalInfo() {
   const { id } = useParams();
@@ -15,25 +29,80 @@ export function PersonalInfo() {
 
   useStudent(id);
 
+  const { handleOpen, dispatch } = useContext(ModalContext);
+
   const { card: student } = useSignal<StudentCardState>("students");
+
+  const [statusValue, setStatusValue] = useState<CardStatusesType | undefined>(
+    student?.status,
+  );
+
+  useEffect(() => {
+    setStatusValue(student?.status);
+  }, [student]);
+
+  /**
+   * Function to update the card status
+   */
+  const handleUpdateCardStatus = async () => {
+    if (!student || !statusValue) return;
+
+    const { data } = await updateStudentCardStatus(student.id, statusValue);
+
+    if (data) {
+      toast.success("Card status updated successfully");
+    } else {
+      toast.error("Card status update failed");
+    }
+  };
+
+  /**
+   * Function to view and export the card in image format
+   */
+  const handleOpenViewCardModel = (card: Card) => {
+    if (!dispatch) return;
+
+    dispatch({ type: "VIEW_CARD", payload: card });
+    handleOpen();
+  };
 
   if (!student) return;
 
   return (
-    <div className="mt-12">
+    <div className="mt-8">
+      <div className="flex h-[3.125em] flex-row items-center gap-2 mb-2 justify-end">
+        {student.status === "INFORMATIONS_VALIDATED" && (
+          <Button
+            onClick={() => handleOpenViewCardModel(student)}
+            className="flex bg-primary hover:bg-primary/80 items-center gap-3"
+          >
+            <PrinterIcon className="w-4 h-4" />
+            Export
+          </Button>
+        )}
+
+        <Button
+          variant="outlined"
+          onClick={print}
+          className="flex items-center gap-3"
+        >
+          <PencilIcon className="w-4 h-4" />
+          Edit
+        </Button>
+      </div>
       <MaterialCard>
         <div className="flex flex-col rounded-[10px] border border-[#808080] bg-white p-[1.25rem] shadow-md">
           <div className="flex flex-row justify-between">
-            <div className="flex w-[30%] flex-row items-center">
-              {student.avatar && (
-                <img
-                  //src={student.avatarLink}
-                  src={userImage}
-                  alt={student.firstName}
-                  className="h-20 w-20 rounded-[50%] object-cover"
-                />
-              )}
-              <div className="ml-[0.3125rem] flex flex-col text-[0.875em]">
+            <div className="flex w-[50%] flex-row gap-2 items-center">
+              <Avatar
+                src={student.avatarLink}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = userImage;
+                }}
+                alt={student.firstName}
+              />
+              <div className="flex flex-col text-[0.875em]">
                 <span className="text-[1.375em] font-nunitoBold text-black">
                   {student.matricule}
                 </span>
@@ -42,21 +111,29 @@ export function PersonalInfo() {
                 </span>
               </div>
             </div>
-            <div className="flex h-[3.125em] flex-row justify-between">
-              <button
-                onClick={print}
-                className="flex h-[1.875em] w-[5.3125em] items-center justify-between rounded-[5px] border-none p-[0.625rem] transition-all bg-primary hover:bg-primary/80 font-nunitoBold text-white"
+            <div className="flex items-center gap-2">
+              <div className="w-72 my-2">
+                <Select
+                  label="Card status"
+                  color="purple"
+                  value={statusValue}
+                  animate={{
+                    mount: { y: 0 },
+                    unmount: { y: 25 },
+                  }}
+                  onChange={(val) => setStatusValue(val as CardStatusesType)}
+                >
+                  {Object.keys(cardsStatuses).map((e) => (
+                    <Option value={e}>{e}</Option>
+                  ))}
+                </Select>
+              </div>
+              <Button
+                onClick={handleUpdateCardStatus}
+                className="bg-primary hover:bg-primary/80"
               >
-                <span> Export</span>
-                <PrinterIcon className="w-4 h-4" />
-              </button>
-              <button
-                onClick={print}
-                className="flex h-[1.875em] ml-2 w-[4.3125em] items-center justify-between rounded-[5px] border-none p-[0.625rem] transition-all bg-gray-300 hover:bg-primary hover:font-nunitoBold hover:text-white"
-              >
-                <span> Edit</span>
-                <PencilIcon className="w-4 h-4" />
-              </button>
+                Change
+              </Button>
             </div>
           </div>
           <div className="mt-[0.9375rem] flex flex-col">

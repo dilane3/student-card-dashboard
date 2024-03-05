@@ -12,7 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormRegistration from "./pages/visitor/FormRegistration";
 
-function App() {
+const App = () => {
   return (
     <GXProvider store={store}>
       <ThemeProvider>
@@ -32,7 +32,7 @@ function App() {
                       />
                     </Routes>
 
-                    <ToastContainer 
+                    <ToastContainer
                       position="top-right"
                       autoClose={5000}
                       hideProgressBar={false}
@@ -51,6 +51,6 @@ function App() {
       </ThemeProvider>
     </GXProvider>
   );
-}
+};
 
 export default App;

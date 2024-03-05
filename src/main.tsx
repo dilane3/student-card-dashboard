@@ -9,12 +9,9 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import React from "react";
+import React, { ReactNode } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "@material-tailwind/react";
-import { MaterialTailwindControllerProvider } from "@/context";
 
 // Fonts
 import "./fonts/Nunito/static/Nunito-Bold.ttf";
@@ -25,4 +22,8 @@ import "./fonts/Nunito/static/Nunito-Regular.ttf";
 
 import "./main.css";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);

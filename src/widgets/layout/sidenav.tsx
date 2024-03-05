@@ -19,10 +19,7 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
   const { user } = useSignal<AuthState>("auth");
 
   // Check if the user is authenticated
-  if (!user) {
-    return null;
-  }
-  console.log(user.avatar);
+  if (!user) return;
 
   return (
     <aside
