@@ -96,10 +96,10 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
           ))}
         </div>
       </div>
-      <div className="flex items-center w-[60%] xl:w-[80%] my-8 mx-auto">
-        <div className="w-8 h-8 xl:w-12 xl:h-12 flex items-center justify-center rounded-full bg-white">
+      <div className="flex items-center w-[60%] xl:w-[80%] my-8 gap-2 mx-auto">
+        <div className="w-[100%] xl:w-[20%] h-full flex items-center justify-center rounded-full bg-white">
           {user.avatar ? (
-            <p className="uppercase text-2xl text-primary font-nunitoBold">
+            <p className="uppercase text-xl text-primary font-nunitoBold">
               <span>{user.fullName.split(" ")[0].slice(0)[0]}</span>
               <span className="hidden xl:inline-block">
                 {user.fullName.split(" ")[1].slice(0)[0]}
@@ -109,7 +109,7 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
             <img src={user.avatar} alt="User avatar" />
           )}
         </div>
-        <div className="text-white ml-2 hidden xl:block">
+        <div className="text-white w-[80%] hidden xl:block">
           <p className="capitalize font-nunitoBold">{user.fullName}</p>
           <p className="text-sm font-nunitoRegular">{user.email}</p>
         </div>

@@ -11,6 +11,7 @@ import StudentProvider from "./provider/students";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormRegistration from "./pages/visitor/FormRegistration";
+import UploadProvider from "./provider/uploadProvider";
 
 const App = () => {
   return (
@@ -22,15 +23,17 @@ const App = () => {
               <MaterialTailwindControllerProvider>
                 <StudentProvider>
                   <ExportProvider>
-                    <Routes>
-                      <Route path="/registration" element={<FormRegistration />} />
-                      <Route path="/dashboard/*" element={<Dashboard />} />
-                      <Route path="/auth/*" element={<Auth />} />
-                      <Route
-                        path="*"
-                        element={<Navigate to="/dashboard/home" replace />}
-                      />
-                    </Routes>
+                    <UploadProvider>
+                      <Routes>
+                        <Route path="/registration" element={<FormRegistration />} />
+                        <Route path="/dashboard/*" element={<Dashboard />} />
+                        <Route path="/auth/*" element={<Auth />} />
+                        <Route
+                          path="*"
+                          element={<Navigate to="/dashboard/home" replace />}
+                        />
+                      </Routes>
+                    </UploadProvider>
 
                     <ToastContainer
                       position="top-right"

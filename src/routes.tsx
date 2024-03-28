@@ -1,19 +1,17 @@
 import {
-  HomeIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
   AcademicCapIcon,
   PencilIcon,
-  PrinterIcon,
   RectangleGroupIcon,
   CalendarDaysIcon,
+  ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/solid";
 import { Home, PersonalInfo, Profile } from "@/pages/dashboard";
 import { SignIn } from "@/pages/auth";
 import Students from "./pages/dashboard/students/students";
 import { ReactNode } from "react";
-import Export from "./layouts/exports";
 import AddStudent from "./components/addStudent";
 import { Faculties } from "./pages/dashboard/faculty";
 import { Sectors } from "./pages/dashboard/sector";
@@ -21,7 +19,7 @@ import AcademicYear from "./pages/dashboard/academicYear";
 import Agents from "./pages/dashboard/agents";
 import { RoleEnum } from "./entities/role.entity";
 import AuthProvider from "./provider/authProvider";
-import Receipt from "./layouts/receipt";
+import UploadStudents from "./pages/auth/upload-students";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -99,6 +97,16 @@ export const routes: Array<RouteType> = [
           </AuthProvider>
         ),
       },
+      {
+        icon: <PencilIcon {...icon} />,
+        name: "personal info",
+        path: "/personal-info/:id",
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
+            <PersonalInfo />
+          </AuthProvider>
+        ),
+      },
       // {
       //   icon: <PrinterIcon {...icon} />,
       //   name: "receipt",
@@ -161,6 +169,17 @@ export const routes: Array<RouteType> = [
         element: (
           <AuthProvider access={[RoleEnum.ADMIN]}>
             <AcademicYear />
+          </AuthProvider>
+        ),
+        access: [RoleEnum.ADMIN],
+      },
+      {
+        icon: <ArrowUpOnSquareIcon {...icon} />,
+        name: "Upload students",
+        path: "/upload-students",
+        element: (
+          <AuthProvider access={[RoleEnum.ADMIN]}>
+            <UploadStudents />
           </AuthProvider>
         ),
         access: [RoleEnum.ADMIN],
