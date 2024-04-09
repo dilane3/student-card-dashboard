@@ -11,6 +11,9 @@ export async function uploadFile(formData: FormData, multiple: boolean = false) 
     const response = await instance.post(
       `/uploads/file${multiple ? "s" : ""}`,
       formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
     );
 
     if (response.status === 201) {

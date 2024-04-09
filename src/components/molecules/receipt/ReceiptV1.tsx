@@ -64,7 +64,7 @@ export default function ReceiptV1({ card }: Props) {
       <div className="w-full h-[60%] bg-primary p-2 pb-0 rounded-b">
         <div className="h-[35%]">
           <p className="font-nunitoBold text-white line-clamp-2 text-[12px] uppercase">
-            {card.firstName} {card.lastName}
+            {card.name}
           </p>
           <hr className="w-[30%] bg-purple-400 border-[#BA68C8]" />
         </div>

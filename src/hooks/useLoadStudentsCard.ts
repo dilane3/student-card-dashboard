@@ -1,6 +1,4 @@
-import { findAllFaculties } from "@/api/faculty";
 import { findStudentsWithPagination, getFilteredStudentCards } from "@/api/students";
-import { Faculty } from "@/entities/faculty.entity";
 import Card, { CardStatusesType } from "@/entities/studentCard.entity";
 import { AuthState } from "@/gx/signals/auth.signal";
 import { FacultiesOperations } from "@/gx/signals/faculties.signal";
@@ -52,7 +50,7 @@ export default function useLoadStudentsCards(
           createdAt: new Date(card.createdAt),
           updatedAt: new Date(card.updatedAt),
           sex: card.sexe,
-          academicYear: 2023,
+          academicYear: new Date(Date.now()).getFullYear(),
           sector: sector?.name,
           faculty: faculty?.name,
         });
@@ -110,7 +108,7 @@ export function useLoadConfiguratedStudentsCards(startDate: Date, endDate: Date)
           createdAt: new Date(card.createdAt),
           updatedAt: new Date(card.updatedAt),
           sex: card.sexe,
-          academicYear: 2023,
+          academicYear: new Date(Date.now()).getFullYear(),
           sector: sector?.name,
           faculty: faculty?.name,
         });

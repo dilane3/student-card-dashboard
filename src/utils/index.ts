@@ -1,3 +1,8 @@
+import { PhoneNumberUtil } from "google-libphonenumber";
+
+// Getting the library instance
+const phoneUtil = PhoneNumberUtil.getInstance();
+
 export const generateImage = () => {
   // Generate avatar randomly
 
@@ -60,4 +65,30 @@ export const formatTime = (time: number) => {
   return `${hours.toString().padStart(2, "0")}:${minutes
     .toString()
     .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+};
+
+/**
+ * Function used to verify if the email is in the correct format
+ * @param email
+ * @returns
+ */
+export const isValidEmail = (email: string) => {
+  try {
+    return RegExp("[^@ \\t\\r\\n]+@[^@ \\t\\r\\n]+\\.[^@ \\t\\r\\n]+").test(email);
+  } catch (error) {
+    return false;
+  }
+};
+
+/**
+ * Function used to verify if the phone number is in the correct format
+ * @param phone
+ * @returns
+ */
+export const isValidPhoneNumber = (phone: string) => {
+  try {
+    return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone));
+  } catch (error) {
+    return false;
+  }
 };

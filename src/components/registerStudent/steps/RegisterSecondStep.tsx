@@ -1,54 +1,45 @@
 import {
-  PaymentStatus,
-  SecondStepInputSchema,
-  StudentsCardFormActions,
-  StudentsCardFormState,
-} from "@/gx/signals/studentsCardForm.signal";
-import { useActions, useSignal } from "@dilane3/gx";
-import { Controller, useForm } from "react-hook-form";
-import "../styles.css";
-import { Input, Select, Typography, Option } from "@material-tailwind/react";
-import { useEffect, useRef } from "react";
-import { XCircleIcon } from "@heroicons/react/24/solid";
-import React from "react";
-// @ts-ignore
-import { useCountries } from "use-react-countries";
+  CompletionSecondStepInputSchema,
+  StudentsCompletionFormActions,
+  StudentsCompletionFormState,
+} from "@/gx/signals/studentsCompletionForm.signal";
 import { isValidEmail, isValidPhoneNumber } from "@/utils";
+import { useActions, useSignal } from "@dilane3/gx";
+import { XCircleIcon } from "@heroicons/react/24/solid";
+import { Input, Typography } from "@material-tailwind/react";
+import { useEffect, useRef } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
-const SecondStep = () => {
-  const { control, watch, setValue } = useForm<SecondStepInputSchema>();
+const RegisterSecondStep = () => {
+  const { setValue, control, watch } = useForm<CompletionSecondStepInputSchema>();
 
   // Ref
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Global actions
-  const { setForm } = useActions<StudentsCardFormActions>("students-card-form");
+  const { setForm } = useActions<StudentsCompletionFormActions>(
+    "students-completion-form",
+  );
 
   // Global state
-  const { form } = useSignal<StudentsCardFormState>("students-card-form");
+  const { form } = useSignal<StudentsCompletionFormState>(
+    "students-completion-form",
+  );
 
-  // Watchers
-  const nationality = watch("nationality");
-  const paymentStatus = watch("paymentStatus");
   const email = watch("email");
   const phone = watch("phone");
   const photo = watch("photo");
-
-  // Hooks
-  const { countries } = useCountries();
 
   // Effects
 
   // Set Default values
   useEffect(() => {
     (() => {
-      const { nationality, email, phone, photo, paymentStatus } = form.step2;
+      const { email, phone, photo } = form.step2;
 
-      setValue("nationality", nationality || "Cameroon");
-      setValue("paymentStatus", paymentStatus || PaymentStatus.HALF);
       setValue("email", email);
       setValue("phone", phone);
       setValue("photo", photo);
@@ -57,16 +48,14 @@ const SecondStep = () => {
 
   useEffect(() => {
     handleSetForm();
-  }, [nationality, email, phone, photo, paymentStatus]);
+  }, [email, phone, photo]);
 
   // Handlers
   const handleSetForm = () => {
     setForm({
-      nationality,
       email,
       phone,
       photo,
-      paymentStatus,
     });
   };
 
@@ -88,74 +77,16 @@ const SecondStep = () => {
     if (photo) {
       return URL.createObjectURL(photo);
     }
-
     return "";
-  };
-
-  const putInAlphabeticOrder = (countries: { name: string; flags: any }[]) => {
-    return countries.sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      }
-
-      if (a.name > b.name) {
-        return 1;
-      }
-
-      return 0;
-    });
   };
 
   return (
     <>
-      <Typography variant="h4" color="purple" className="mt-8">
-        Informations Supplementaires
-      </Typography>
       <div className="mt-8 flex flex-col md:flex-row w-full gap-4">
-        <div className="mb-4 flex w-full md:w-1/2  flex-col gap-6">
-          <Controller
-            name="nationality"
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <Select
-                size="lg"
-                label="Nationality"
-                selected={(element) =>
-                  element &&
-                  React.cloneElement(element, {
-                    disabled: true,
-                    className:
-                      "flex items-center opacity-100 px-0 gap-2 pointer-events-none",
-                  })
-                }
-                value={value}
-                onChange={onChange}
-              >
-                {putInAlphabeticOrder(countries).map(
-                  ({ name, flags }: { name: string; flags: any }) => (
-                    <Option
-                      key={name}
-                      value={name}
-                      className="flex items-center gap-2"
-                    >
-                      <img
-                        src={flags.svg}
-                        alt={name}
-                        className="h-5 w-5 rounded-full object-cover"
-                      />
-                      {name}
-                    </Option>
-                  ),
-                )}
-              </Select>
-            )}
-          />
-
+        <div className="mb-4 flex w-full md:w-1/2 flex-col gap-4">
           <Controller
             name="email"
             control={control}
-            rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <div>
                 <Input
@@ -176,7 +107,6 @@ const SecondStep = () => {
           <Controller
             name="phone"
             control={control}
-            rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <div>
                 <p className="text-sm font-semibold">Phone number</p>
@@ -224,24 +154,6 @@ const SecondStep = () => {
               </div>
             )}
           />
-
-          <Controller
-            name="paymentStatus"
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <Select
-                color="purple"
-                size="lg"
-                label="Payment Status"
-                value={value}
-                onChange={onChange}
-              >
-                <Option value={PaymentStatus.HALF}>{PaymentStatus.HALF}</Option>
-                <Option value={PaymentStatus.FULL}>{PaymentStatus.FULL}</Option>
-              </Select>
-            )}
-          />
         </div>
         <div className="mb-4 flex w-full md:w-1/2 flex-col gap-6">
           {photo ? (
@@ -282,4 +194,5 @@ const SecondStep = () => {
     </>
   );
 };
-export default SecondStep;
+
+export default RegisterSecondStep;

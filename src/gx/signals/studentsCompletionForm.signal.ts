@@ -1,40 +1,28 @@
+import Card from "@/entities/studentCard.entity";
 import { createSignal } from "@dilane3/gx";
 
-export const PaymentStatus = {
-  HALF: "HALF",
-  FULL: "FULL",
-} as const;
-
-export type PaymentStatusEnum = (typeof PaymentStatus)[keyof typeof PaymentStatus];
-
-export type FirstStepInputSchema = {
-  name: string;
-  sex: string;
-  birthDate: string;
-  birthPlace: string;
+export type CompletionFirstStepInputSchema = {
   matricule: string;
-  sector: string;
+  card?: Card;
 };
 
-export type SecondStepInputSchema = {
-  nationality: string;
-  email?: string;
-  phone?: string;
+export type CompletionSecondStepInputSchema = {
+  email: string;
+  phone: string;
   photo: File | undefined;
-  paymentStatus: PaymentStatusEnum;
 };
 
-export type StudentsCardFormState = {
+export type StudentsCompletionFormState = {
   form: {
-    step1: FirstStepInputSchema;
-    step2: SecondStepInputSchema;
+    step1: CompletionFirstStepInputSchema;
+    step2: CompletionSecondStepInputSchema;
   };
   step: number;
   complete: boolean;
   loading: boolean;
 };
 
-export type StudentsCardFormActions = {
+export type StudentsCompletionFormActions = {
   setForm: (payload: { [key: string]: any }) => void;
   setComplete: (payload: boolean) => void;
   setLoading: (payload: boolean) => void;
@@ -44,23 +32,17 @@ export type StudentsCardFormActions = {
   reset: () => void;
 };
 
-export default createSignal<StudentsCardFormState>({
-  name: "students-card-form",
+export default createSignal<StudentsCompletionFormState>({
+  name: "students-completion-form",
   state: {
     form: {
       step1: {
-        name: "",
-        sex: "",
-        birthDate: "",
-        birthPlace: "",
         matricule: "",
-        sector: "",
+        card: undefined,
       },
       step2: {
-        nationality: "",
-        paymentStatus: PaymentStatus.HALF,
-        email: undefined,
-        phone: undefined,
+        email: "",
+        phone: "",
         photo: undefined,
       },
     },
@@ -69,13 +51,16 @@ export default createSignal<StudentsCardFormState>({
     loading: false,
   },
   actions: {
-    setForm: (state, payload: FirstStepInputSchema | SecondStepInputSchema) => {
+    setForm: (
+      state,
+      payload: CompletionFirstStepInputSchema | CompletionSecondStepInputSchema,
+    ) => {
       if (state.step === 0) {
         return {
           ...state,
           form: {
             ...state.form,
-            step1: payload as FirstStepInputSchema,
+            step1: payload as CompletionFirstStepInputSchema,
           },
         };
       } else if (state.step === 1) {
@@ -83,7 +68,7 @@ export default createSignal<StudentsCardFormState>({
           ...state,
           form: {
             ...state.form,
-            step2: payload as SecondStepInputSchema,
+            step2: payload as CompletionSecondStepInputSchema,
           },
         };
       }
@@ -125,18 +110,12 @@ export default createSignal<StudentsCardFormState>({
         ...state,
         form: {
           step1: {
-            name: "",
-            sex: "",
-            birthDate: "",
-            birthPlace: "",
             matricule: "",
-            sector: "",
+            card: undefined,
           },
           step2: {
-            nationality: "",
-            paymentStatus: PaymentStatus.HALF,
-            email: undefined,
-            phone: undefined,
+            email: "",
+            phone: "",
             photo: undefined,
           },
         },

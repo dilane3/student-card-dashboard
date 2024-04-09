@@ -13,14 +13,22 @@ import {
   Switch,
   Typography,
 } from "@material-tailwind/react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import useLoadSectors from "@/hooks/useLoadSectors";
 import { SectorsActions, SectorsState } from "@/gx/signals/sectors.signal";
 import useFilterByDate from "@/hooks/useFilterByDate";
 import { useLoadConfiguratedStudentsCards } from "@/hooks/useLoadStudentsCard";
 
-const PdfStudentCards = () => {
+type PdfStudentCardsProps = {
+  cardMode?: boolean;
+  setCardMode: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const PdfStudentCards = ({
+  cardMode = false,
+  setCardMode,
+}: PdfStudentCardsProps) => {
   const navigate = useNavigate();
 
   // Contexts
@@ -33,7 +41,6 @@ const PdfStudentCards = () => {
   const { pdfCards: cards } = useSignal<StudentCardState>("students");
   const { sectors, sector } = useSignal<SectorsState>("sectors");
   const { selectSector } = useActions<SectorsActions>("sectors");
-  const [cardMode, setCardMode] = useState(false);
 
   // Cards filtering configurator logic
   const { startDate, endDate, handleSetRangeDate } = useFilterByDate();
@@ -104,9 +111,7 @@ const PdfStudentCards = () => {
               className: "before:hidden w-3.5 h-3.5 left-0.5 top-2 border-none",
             }}
             defaultChecked={cardMode}
-            onClick={() => {
-              setCardMode((prev) => !prev);
-            }}
+            onClick={() => setCardMode((prev) => !prev)}
             label="Card Display"
           />
         </div>
@@ -162,18 +167,16 @@ const PdfStudentCards = () => {
                       {card.avatarLink ? (
                         <div className="flex w-10 h-10 items-center justify-center rounded-full bg-primary">
                           <p className="uppercase text-lg text-white font-nunitoBold">
-                            <span>{card.fullName.split(" ")[0].slice(0)[0]}</span>
-                            <span className="">
-                              {card.fullName.split(" ")[1].slice(0)[0]}
-                            </span>
+                            <span>{card.name.split(" ")[0].slice(0)[0]}</span>
+                            {card.name.split(" ")[1] && (
+                              <span className="">
+                                {card.name.split(" ")[1].slice(0)[0]}
+                              </span>
+                            )}
                           </p>
                         </div>
                       ) : (
-                        <Avatar
-                          src={card.avatarLink}
-                          alt={card.firstName}
-                          size="sm"
-                        />
+                        <Avatar src={card.avatarLink} alt={card.name} size="sm" />
                       )}
                       <div>
                         <Typography
@@ -181,7 +184,7 @@ const PdfStudentCards = () => {
                           color="blue-gray"
                           className="font-semibold capitalize line-clamp-1"
                         >
-                          {card.fullName}
+                          {card.name}
                         </Typography>
                         <Typography className="text-xs font-normal line-clamp-1 text-blue-gray-500">
                           {card.email}

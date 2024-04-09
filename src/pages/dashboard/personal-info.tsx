@@ -8,7 +8,7 @@ import {
 import { useParams } from "react-router-dom";
 import useStudent from "@/hooks/useStudent";
 import { formatDate } from "@/utils";
-import userImage from "@/assets/img/bruce-mars.jpeg";
+import userImage from "@/assets/img/user.png";
 import { PencilIcon, PrinterIcon } from "@heroicons/react/24/solid";
 import { useSignal } from "@dilane3/gx";
 import { StudentCardState } from "@/gx/signals/students.signal";
@@ -100,14 +100,14 @@ export function PersonalInfo() {
                   const target = e.target as HTMLImageElement;
                   target.src = userImage;
                 }}
-                alt={student.firstName}
+                alt={student.name}
               />
               <div className="flex flex-col text-[0.875em]">
                 <span className="text-[1.375em] font-nunitoBold text-black">
                   {student.matricule}
                 </span>
                 <span className="text-[1.375em] font-nunitoBold text-black">
-                  {student.fullName}
+                  {student.name}
                 </span>
               </div>
             </div>
@@ -143,25 +143,17 @@ export function PersonalInfo() {
                   Information personnelle / Personnal informations
                 </div>
                 <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.lastName}
-                  </span>
-                  <span> Noms / LastNames</span>
+                  <span className="font-nunitoBold text-black">{student.name}</span>
+                  <span> Noms & Prénoms / LastName & FirstName</span>
                 </div>
                 <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.firstName}
-                  </span>
-                  <span> Prénoms / FirstName</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
+                  <span className="font-nunitoBold text-black">
                     {student.sex === "MALE" ? "Masculin" : "Feminin"}
                   </span>
                   <span> Sexe / Sex</span>
                 </div>
                 <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
+                  <span className="font-nunitoBold text-black">
                     {formatDate(student.birthDate)} - {student.nationality}
                   </span>
                   <span> Date et Lieu de naissance / Date and Place of Birth</span>
@@ -197,6 +189,12 @@ export function PersonalInfo() {
                     {student.phone}
                   </span>
                   <span> Téléphone / Phone</span>
+                </div>
+                <div className="mt-[0.625rem] flex flex-col">
+                  <span className=" font-nunitoBold text-black">
+                    {student.paymentStatus}
+                  </span>
+                  <span>Statut de Paiement / Payment Status</span>
                 </div>
                 <div className="mt-[0.625rem] flex flex-col">
                   <span className=" font-nunitoBold text-black">

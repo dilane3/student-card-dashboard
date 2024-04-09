@@ -5,17 +5,29 @@ import { CardStatusesType } from "@/entities/studentCard.entity";
 type CreateStudentDto = {
   sectorId: string;
   matricule: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
+  name: string;
+  email?: string;
+  phone?: string;
   sexe: "MALE" | "FEMALE";
-  avatar: string;
+  avatar?: string;
   birthDate: Date;
   birthPlace: string;
   nationality: string;
+  paymentStatus?: "FULL" | "HALF";
 };
-type UpdateStudentDto = null;
+type UpdateStudentDto = {
+  sectorId?: string;
+  name?: string;
+  matricule?: string;
+  birthDate?: Date;
+  birthPlace?: string;
+  nationality?: string;
+  avatar?: string;
+  email?: string;
+  phone?: string;
+  sexe?: "MALE" | "FEMALE";
+  paymentStatus?: "FULL" | "HALF";
+};
 
 /**
  * This function creates student on the server.
@@ -174,8 +186,6 @@ export async function getStudent(id: string) {
     const response = await instance.get(`/student-cards/id/${id}`);
 
     if (response.status === 200) {
-      console.log(response.data);
-
       return {
         data: response.data,
       };
@@ -194,11 +204,35 @@ export async function getStudent(id: string) {
 }
 
 /**
- * This function gets the .
- *  @param id Id of the student to retrieve
+ * This function get by id a student on the server.
+ *  @param matricule Id of the student to retrieve
  *
  */
+export async function getStudentByMatricule(matricule: string) {
+  try {
+    const response = await instance.get(`/student-cards/matricule/${matricule}`);
 
+    if (response.status === 200) {
+      return {
+        data: response.data,
+      };
+    }
+
+    return {
+      error: "Error getting student.",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      error: "Error getting student.",
+    };
+  }
+}
+
+/**
+ * This function gets the necessary statistics about the students on the server.
+ */
 export async function getStudentCardStatistics() {
   try {
     const response = await instance.get(`/student-cards/statistics`);

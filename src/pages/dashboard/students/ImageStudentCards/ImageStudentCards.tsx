@@ -61,8 +61,10 @@ const ImageStudentCards = () => {
               setStatusValue(val as CardStatusesType | "ALL");
             }}
           >
-            {["ALL", ...Object.keys(cardsStatuses)].map((e) => (
-              <Option value={e}>{e}</Option>
+            {["ALL", ...Object.keys(cardsStatuses)].map((e, index) => (
+              <Option key={index + 2} value={e}>
+                {e}
+              </Option>
             ))}
           </Select>
         </div>
@@ -133,14 +135,16 @@ const ImageStudentCards = () => {
                     {card.avatarLink ? (
                       <div className="flex w-10 h-10 items-center justify-center rounded-full bg-primary">
                         <p className="uppercase text-lg text-white font-nunitoBold">
-                          <span>{card.fullName.split(" ")[0].slice(0)[0]}</span>
-                          <span className="">
-                            {card.fullName.split(" ")[1].slice(0)[0]}
-                          </span>
+                          <span>{card.name.split(" ")[0].slice(0)[0]}</span>
+                          {card.name.split(" ")[1] && (
+                            <span className="">
+                              {card.name.split(" ")[1].slice(0)[0]}
+                            </span>
+                          )}
                         </p>
                       </div>
                     ) : (
-                      <Avatar src={card.avatarLink} alt={card.firstName} size="sm" />
+                      <Avatar src={card.avatarLink} alt={card.name} size="sm" />
                     )}
                     <div>
                       <Typography
@@ -148,7 +152,7 @@ const ImageStudentCards = () => {
                         color="blue-gray"
                         className="font-semibold capitalize line-clamp-1"
                       >
-                        {card.fullName}
+                        {card.name}
                       </Typography>
                       <Typography className="text-xs font-normal text-blue-gray-500 line-clamp-1">
                         {card.email}
