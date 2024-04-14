@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Stepper, Step, Button, Typography } from "@material-tailwind/react";
 import FirstStep from "../addStudent/steps/FirstStep";
 import { ShieldCheckIcon, UserIcon, UsersIcon } from "@heroicons/react/24/solid";
@@ -15,9 +15,10 @@ import { toast } from "react-toastify";
 import Card from "@/entities/studentCard.entity";
 import { SectorsOperations } from "@/gx/signals/sectors.signal";
 import { FacultiesOperations } from "@/gx/signals/faculties.signal";
-import { StudentCardActions } from "@/gx/signals/students.signal";
+import { StudentCardActions, StudentCardState } from "@/gx/signals/students.signal";
 import { useNavigate } from "react-router";
 import formRegistrationImg from "@/assets/img/registrationDone.png";
+import { isValidEmail, isValidPhoneNumber } from "@/utils";
 
 type Props = {
   context?: "visitor" | "admin";
@@ -45,6 +46,8 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
     reset: resetForm,
     setComplete,
   } = useActions<StudentsCardFormActions>("students-card-form");
+
+  const { selectedCardId } = useSignal<StudentCardState>("students");
   const { addCard } = useActions<StudentCardActions>("students");
 
   // Global operations
@@ -58,25 +61,9 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
     (step = activeStep) => {
       switch (step) {
         case 0: {
-          const {
-            firstName,
-            lastName,
-            sex,
-            birthPlace,
-            birthDate,
-            matricule,
-            sector,
-          } = form.step1;
+          const { name, sex, birthPlace, birthDate, matricule, sector } = form.step1;
 
-          if (
-            firstName &&
-            lastName &&
-            sex &&
-            birthDate &&
-            birthPlace &&
-            matricule &&
-            sector
-          ) {
+          if (name && sex && birthDate && birthPlace && matricule && sector) {
             return true;
           }
 
@@ -84,9 +71,12 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
         }
 
         case 1: {
-          const { nationality, email, phone, photo } = form.step2;
+          const { nationality, photo, email, phone, paymentStatus } = form.step2;
 
-          if (nationality && email && phone && photo) return true;
+          if (email && !isValidEmail(email)) return false;
+          if (phone && !isValidPhoneNumber(phone)) return false;
+
+          if (nationality && photo && paymentStatus) return true;
 
           return false;
         }
@@ -130,10 +120,17 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
             sex: undefined,
             photo: undefined,
             sector: undefined,
-            birthPlace: undefined,
+            email:
+              form.step2.email && form.step2.email.length > 0
+                ? form.step2.email
+                : undefined,
+            phone:
+              form.step2.phone && form.step2.phone.length > 0
+                ? form.step2.phone
+                : undefined,
           };
 
-          const { data: cardData } = await registerStudent(payload);
+          const { data: cardData, error } = await registerStudent(payload);
 
           if (cardData) {
             toast.success("Student card created successfully");
@@ -205,7 +202,7 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
     resetForm();
 
     // Redirect to student card
-    navigate(`/dashboard/personal-info`);
+    navigate(`/dashboard/personal-info/${selectedCardId}`);
   };
 
   const handleRetry = () => {

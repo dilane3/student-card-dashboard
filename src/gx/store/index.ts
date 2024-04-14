@@ -4,6 +4,7 @@ import authSignal from "../signals/auth.signal";
 import sectorsSignal from "../signals/sectors.signal";
 import agentsSignal from "../signals/agents.signal";
 import studentsCardFormSignal from "../signals/studentsCardForm.signal";
+import studentsCompletionFormSignal from "../signals/studentsCompletionForm.signal";
 import studentsSignal from "../signals/students.signal";
 
 const store = createStore([
@@ -12,6 +13,7 @@ const store = createStore([
   sectorsSignal,
   agentsSignal,
   studentsCardFormSignal,
+  studentsCompletionFormSignal,
   studentsSignal,
 ]);
 

@@ -10,7 +10,15 @@ import {
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
-export function Navbar({ brandName, routes, action }) {
+export function Navbar({
+  brandName,
+  routes,
+  action,
+}: {
+  brandName: string;
+  routes: { name: string; path: string; icon: any }[];
+  action: JSX.Element;
+}) {
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {

@@ -1,4 +1,5 @@
 import {
+  PaymentStatus,
   SecondStepInputSchema,
   StudentsCardFormActions,
   StudentsCardFormState,
@@ -8,13 +9,14 @@ import { Controller, useForm } from "react-hook-form";
 import "../styles.css";
 import { Input, Select, Typography, Option } from "@material-tailwind/react";
 import { useEffect, useRef } from "react";
-import { generateImage } from "@/utils";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import React from "react";
 // @ts-ignore
 import { useCountries } from "use-react-countries";
+import { isValidEmail, isValidPhoneNumber } from "@/utils";
 
-// import cloud from "../../../assets/images/icons/settings/cloud.png";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 
 const SecondStep = () => {
   const { control, watch, setValue } = useForm<SecondStepInputSchema>();
@@ -30,6 +32,7 @@ const SecondStep = () => {
 
   // Watchers
   const nationality = watch("nationality");
+  const paymentStatus = watch("paymentStatus");
   const email = watch("email");
   const phone = watch("phone");
   const photo = watch("photo");
@@ -42,9 +45,10 @@ const SecondStep = () => {
   // Set Default values
   useEffect(() => {
     (() => {
-      const { nationality, email, phone, photo } = form.step2;
+      const { nationality, email, phone, photo, paymentStatus } = form.step2;
 
       setValue("nationality", nationality || "Cameroon");
+      setValue("paymentStatus", paymentStatus || PaymentStatus.HALF);
       setValue("email", email);
       setValue("phone", phone);
       setValue("photo", photo);
@@ -53,7 +57,7 @@ const SecondStep = () => {
 
   useEffect(() => {
     handleSetForm();
-  }, [nationality, email, phone, photo]);
+  }, [nationality, email, phone, photo, paymentStatus]);
 
   // Handlers
   const handleSetForm = () => {
@@ -62,6 +66,7 @@ const SecondStep = () => {
       email,
       phone,
       photo,
+      paymentStatus,
     });
   };
 
@@ -152,14 +157,19 @@ const SecondStep = () => {
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
-              <Input
-                color="purple"
-                crossOrigin={null}
-                size="lg"
-                label="Email"
-                value={value}
-                onChange={onChange}
-              />
+              <div>
+                <Input
+                  color={email && !isValidEmail(email) ? "red" : "purple"}
+                  crossOrigin={null}
+                  size="lg"
+                  label="Email"
+                  value={value}
+                  onChange={onChange}
+                />
+                {email && !isValidEmail(email) && (
+                  <p className="text-red-500 text-sm">Invalid email</p>
+                )}
+              </div>
             )}
           />
 
@@ -168,20 +178,74 @@ const SecondStep = () => {
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
-              <Input
+              <div>
+                <p className="text-sm font-semibold">Phone number</p>
+                <PhoneInput
+                  onChange={onChange}
+                  name="phone"
+                  value={value}
+                  defaultCountry="cm"
+                  inputStyle={{
+                    height: "2.5rem",
+                    borderTopRightRadius: 6,
+                    borderBottomRightRadius: 6,
+                    border: `1px solid ${
+                      phone && !isValidPhoneNumber(phone)
+                        ? "red"
+                        : "rgba(24, 63, 76, 0.4)"
+                    }`,
+                    borderLeftWidth: "2px",
+                    width: "100%",
+                  }}
+                  countrySelectorStyleProps={{
+                    buttonStyle: {
+                      height: "2.5rem",
+                      borderTopLeftRadius: 6,
+                      borderBottomLeftRadius: 6,
+                      paddingLeft: 10,
+                      border: `1px solid ${
+                        phone && !isValidPhoneNumber(phone)
+                          ? "red"
+                          : "rgba(24, 63, 76, 0.4)"
+                      }`,
+                      paddingRight: 5,
+                    },
+                  }}
+                />
+                {phone ? (
+                  isValidPhoneNumber(phone) ? undefined : (
+                    <p className="block text-red-500 mt-1 text-sm">
+                      Invalid Phone Number
+                    </p>
+                  )
+                ) : (
+                  ""
+                )}
+              </div>
+            )}
+          />
+
+          <Controller
+            name="paymentStatus"
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <Select
                 color="purple"
-                crossOrigin={null}
                 size="lg"
-                label="Phone"
+                label="Payment Status"
                 value={value}
                 onChange={onChange}
-              />
+              >
+                <Option value={PaymentStatus.HALF}>{PaymentStatus.HALF}</Option>
+                <Option value={PaymentStatus.FULL}>{PaymentStatus.FULL}</Option>
+              </Select>
             )}
           />
         </div>
-        <div className="mb-4 flex w-full md:w-1/2  flex-col gap-6">
+        <div className="mb-4 flex w-full md:w-1/2 flex-col gap-6">
           {photo ? (
-            <div className="relative h-[25rem] w-full md:h-full md:w-[10rem] bg-red-300 ">
+            <div className="relative h-[25rem] w-full md:h-full md:w-[13rem] bg-primary">
               <img
                 src={displayPhoto()}
                 alt="avatar"

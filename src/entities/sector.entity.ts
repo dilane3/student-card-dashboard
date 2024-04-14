@@ -1,6 +1,7 @@
 export interface SectorData {
   id: string;
   name: string;
+  longName: string;
   createdAt: Date;
   idFaculty: string;
 }
@@ -8,12 +9,14 @@ export interface SectorData {
 export class Sector {
   private _id: string;
   private _name: string;
+  private _longName: string;
   private _createdAt: Date;
   private _idFaculty: string;
 
   constructor(data: SectorData) {
     this._id = data.id;
     this._name = data.name;
+    this._longName = data.longName;
     this._createdAt = data.createdAt;
     this._idFaculty = data.idFaculty;
   }
@@ -26,6 +29,10 @@ export class Sector {
 
   get name(): string {
     return this._name;
+  }
+
+  get longName(): string {
+    return this._longName;
   }
 
   get createdAt(): Date {

@@ -24,7 +24,7 @@ export function SignUp() {
           <Typography variant="h2">
             <p className="text-slate-900 mt-4 text-center">Sign Up</p>
           </Typography>{" "}
-          <Typography variant="h7">
+          <Typography variant="h6">
             <p className="mt-2 text-center text-gray-600">
               Create an account to get started.
             </p>
@@ -32,12 +32,7 @@ export function SignUp() {
           <CardBody className="flex flex-col gap-4">
             <Input crossOrigin={null} label="Name" size="lg" />
             <Input crossOrigin={null} type="email" label="Email" size="lg" />
-            <Input
-              crossOrigin={null}
-              type="password"
-              label="Password"
-              size="lg"
-            />
+            <Input crossOrigin={null} type="password" label="Password" size="lg" />
             <div className="-ml-2.5">
               <Checkbox
                 crossOrigin={null}

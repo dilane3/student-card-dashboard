@@ -1,9 +1,14 @@
-import { Sector } from "@/entities/sector.entity";
 import { createSignal } from "@dilane3/gx";
 
+export const PaymentStatus = {
+  HALF: "HALF",
+  FULL: "FULL",
+} as const;
+
+export type PaymentStatusEnum = (typeof PaymentStatus)[keyof typeof PaymentStatus];
+
 export type FirstStepInputSchema = {
-  firstName: string;
-  lastName: string;
+  name: string;
   sex: string;
   birthDate: string;
   birthPlace: string;
@@ -13,9 +18,10 @@ export type FirstStepInputSchema = {
 
 export type SecondStepInputSchema = {
   nationality: string;
-  email: string;
-  phone: string;
+  email?: string;
+  phone?: string;
   photo: File | undefined;
+  paymentStatus: PaymentStatusEnum;
 };
 
 export type StudentsCardFormState = {
@@ -43,8 +49,7 @@ export default createSignal<StudentsCardFormState>({
   state: {
     form: {
       step1: {
-        firstName: "",
-        lastName: "",
+        name: "",
         sex: "",
         birthDate: "",
         birthPlace: "",
@@ -53,8 +58,9 @@ export default createSignal<StudentsCardFormState>({
       },
       step2: {
         nationality: "",
-        email: "",
-        phone: "",
+        paymentStatus: PaymentStatus.HALF,
+        email: undefined,
+        phone: undefined,
         photo: undefined,
       },
     },
@@ -119,15 +125,20 @@ export default createSignal<StudentsCardFormState>({
         ...state,
         form: {
           step1: {
-            firstName: "",
-            lastName: "",
+            name: "",
             sex: "",
             birthDate: "",
             birthPlace: "",
             matricule: "",
             sector: "",
           },
-          step2: { nationality: "", email: "", phone: "", photo: undefined },
+          step2: {
+            nationality: "",
+            paymentStatus: PaymentStatus.HALF,
+            email: undefined,
+            phone: undefined,
+            photo: undefined,
+          },
         },
         step: 0,
         complete: false,

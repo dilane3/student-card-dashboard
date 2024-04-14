@@ -1,10 +1,15 @@
 import FilterAndResearch from "@/components/filterAndResearch/FilterAndResearch";
 import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import { ModalContext } from "@/context/modalContext";
-import { Sector as SectorEntity } from "@/entities/sector.entity";
-import { SectorsState } from "@/gx/signals/sectors.signal";
-import { formatDate } from "@/utils";
-import { useSignal } from "@dilane3/gx";
+import { Sector, Sector as SectorEntity } from "@/entities/sector.entity";
+import {
+  SectorsActions,
+  SectorsOperations,
+  SectorsState,
+} from "@/gx/signals/sectors.signal";
+import usePagination from "@/hooks/usePagination";
+import { formatDate, ITEM_PER_PAGE } from "@/utils";
+import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
@@ -17,7 +22,7 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 const TABS = [
   {
@@ -42,6 +47,20 @@ export function Sectors() {
   // Global state
   const { sectors } = useSignal<SectorsState>("sectors");
 
+  // Actions
+  const { selectSector } = useActions<SectorsActions>("sectors");
+
+  // Operations
+  const { getSector } = useOperations<SectorsOperations>("sectors");
+
+  const [filteredSectors, setFilteredSectors] = useState(sectors);
+
+  const handleFilteredData = (filteredData: Sector[]) => {
+    // Mettre à jour l'état local avec les données filtrées
+    setFilteredSectors(filteredData);
+    console.log("Données filtrées reçues :", filteredData);
+  };
+
   const handleOpenCreateSectorModal = () => {
     if (!dispatch) return;
 
@@ -49,11 +68,43 @@ export function Sectors() {
     handleOpen();
   };
 
-  const handleOpenDeleteModal = () => {
+  const handleOpenUpdateSectorModal = (id: string) => {
     if (!dispatch) return;
+
+    const selectedSector = getSector(id);
+
+    if (!selectedSector) return;
+
+    dispatch!({ type: "UPDATE_SECTOR" });
+    handleOpen();
+    selectSector(selectedSector);
+  };
+
+  const handleOpenDeleteModal = (id: string) => {
+    if (!dispatch) return;
+
+    const selectedSector = getSector(id);
+
+    if (!selectedSector) return;
 
     dispatch!({ type: "DELETE_CONFIRMATION" });
     handleOpen();
+    selectSector(selectedSector);
+  };
+
+  const {
+    currentPage,
+    totalPages,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    startIndex,
+    endIndex,
+  } = usePagination(sectors.length, ITEM_PER_PAGE);
+
+  // to display data by applying pagination
+  const currentPageData = (): Array<Sector> => {
+    return sectors.slice(startIndex, endIndex);
   };
 
   return (
@@ -76,7 +127,11 @@ export function Sectors() {
             <PlusCircleIcon strokeWidth={2} className="h-6 w-6" /> Add a sector
           </Button>
         </div>
-        <FilterAndResearch tabsList={TABS} />
+        <FilterAndResearch
+          tabsList={TABS}
+          TabItems={sectors}
+          onDataFiltered={(data) => handleFilteredData(data as Sector[])}
+        />
       </CardHeader>
       <CardBody className="overflow-auto px-0">
         <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -102,8 +157,8 @@ export function Sectors() {
             </tr>
           </thead>
           <tbody>
-            {sectors.map(({ name, createdAt }, index) => {
-              const isLast = index === sectors.length - 1;
+            {filteredSectors.map(({ name, createdAt, id }, index) => {
+              const isLast = index === filteredSectors.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
               return (
@@ -130,12 +185,18 @@ export function Sectors() {
                   </td>
                   <td className={classes}>
                     <Tooltip content="Edit Faculty">
-                      <IconButton variant="text">
+                      <IconButton
+                        variant="text"
+                        onClick={() => handleOpenUpdateSectorModal(id)}
+                      >
                         <PencilIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip content="Delete Faculty">
-                      <IconButton onClick={handleOpenDeleteModal} variant="text">
+                      <IconButton
+                        onClick={() => handleOpenDeleteModal(id)}
+                        variant="text"
+                      >
                         <TrashIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
@@ -147,7 +208,17 @@ export function Sectors() {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-center border-t border-blue-gray-50 p-4">
-        <DefaultPagination />
+        <DefaultPagination
+          paginationEntry={{
+            currentPage,
+            totalPages,
+            goToPage,
+            goToNextPage,
+            goToPreviousPage,
+            startIndex,
+            endIndex,
+          }}
+        />
       </CardFooter>
     </Card>
   );

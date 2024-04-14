@@ -1,11 +1,11 @@
 import { createFaculty } from "@/api/faculty";
-import { createSector } from "@/api/sector";
+import { createSector, updateSector } from "@/api/sector";
 import { ModalContext } from "@/context/modalContext";
 import { Faculty } from "@/entities/faculty.entity";
 import { Sector } from "@/entities/sector.entity";
 import { FacultiesActions, FacultiesState } from "@/gx/signals/faculties.signal";
-import { SectorsActions } from "@/gx/signals/sectors.signal";
-import { useActions, useSignal } from "@dilane3/gx";
+import { SectorsActions, SectorsState } from "@/gx/signals/sectors.signal";
+import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import {
   Button,
   Select,
@@ -16,7 +16,7 @@ import {
   Input,
   Typography,
 } from "@material-tailwind/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const CreateSectorModal = () => {
@@ -29,15 +29,33 @@ const CreateSectorModal = () => {
 
   // Global state
   const { faculties } = useSignal<FacultiesState>("faculties");
+  const { sector } = useSignal<SectorsState>("sectors");
 
   // Global actions
-  const { addSector } = useActions<SectorsActions>("sectors");
+  const { addSector, selectSector, updateSector: patchSector } = useActions<SectorsActions>("sectors");
+
+  // Operations
+  const { getFaculty } = useOperations("faculties");
+
+  // Effect 
+  useEffect(()=>{
+    if ( sector !== undefined) {
+      setName(sector?.name)
+      setFacultyId(sector?.idFaculty)
+    }
+  }, [sector])
 
   // Handlers
   const handleNameChange = (e: any) => setName(e.target.value);
+
   const handleFacultyChange = (value: string | undefined) => {
     if (value) setFacultyId(value);
   };
+
+  const handleCloseModal = () => {
+    selectSector(undefined);
+    handleOpen();
+  }
 
   const handleSubmit = async () => {
     if (!name || !facultyId) {
@@ -47,19 +65,36 @@ const CreateSectorModal = () => {
 
     setLoading(true);
 
-    const { data } = await createSector({ name, facultyId });
+    if (sector !== undefined) {
+      const { data } = await updateSector(sector.id, { name });
+      if (data) {
+        const updatedSector = new Sector({ ...data, idFaculty: sector.idFaculty });
 
-    setLoading(false);
+        patchSector(updatedSector)
 
-    if (data) {
-      const sector = new Sector({ ...data, facultyId });
-
-      addSector(sector);
-
-      toast.success("Sector created successfully");
-      handleOpen();
+        toast.success("Sector updated successfully");
+        handleOpen();
+      } else {
+        setLoading(false);
+        toast.error("Something went wrong");
+      }
+      
     } else {
-      toast.error("Something went wrong");
+      const { data } = await createSector({ name, facultyId });
+
+      setLoading(false);
+  
+      if (data) {
+        const sector = new Sector({ ...data, idFaculty: facultyId });
+  
+        addSector(sector);
+  
+        toast.success("Sector created successfully");
+        handleOpen();
+      } else {
+        toast.error("Something went wrong");
+      }
+      
     }
   };
 
@@ -88,7 +123,7 @@ const CreateSectorModal = () => {
           onChange={(e: any) => handleFacultyChange(e.target.value)}
         >
           <option value="" disabled selected className="font-nunitoRegular">
-            Select a faculty
+            {sector !== undefined ? `${getFaculty(sector.idFaculty)?.name}`: "Select a faculty"}
           </option>
 
           {faculties.map((faculty, index) => {
@@ -108,7 +143,7 @@ const CreateSectorModal = () => {
         <Button
           variant="filled"
           className="bg-gray-400 uppercase"
-          onClick={handleOpen}
+          onClick={handleCloseModal}
         >
           Cancel
         </Button>
@@ -117,7 +152,7 @@ const CreateSectorModal = () => {
           className="bg-primary uppercase"
           onClick={handleSubmit}
         >
-          {loading ? "Loading..." : "Add"}
+          {loading ? "Loading..." : ( sector !== undefined ? "Update": "Add" )}
         </Button>
       </CardFooter>
     </Card>

@@ -1,15 +1,45 @@
+import { getFilteredStudentCards } from "@/api/students";
 import { ModalContext } from "@/context/modalContext";
+import { SectorsActions, SectorsState } from "@/gx/signals/sectors.signal";
+import useFilterByDate from "@/hooks/useFilterByDate";
+import useLoadSectors from "@/hooks/useLoadSectors";
+import { useActions, useSignal } from "@dilane3/gx";
 import {
   Button,
   Card,
   CardBody,
   CardFooter,
+  Input,
+  Option,
+  Select,
   Typography,
 } from "@material-tailwind/react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 const ExportCardsModal = () => {
   const { handleOpen } = useContext(ModalContext);
+
+  useLoadSectors();
+
+  const { sectors, sector } = useSignal<SectorsState>("sectors");
+  const { selectSector } = useActions<SectorsActions>("sectors");
+
+  // Cards filtering configurator logic
+  const { startDate, endDate, handleSetRangeDate } = useFilterByDate();
+
+  useEffect(() => {
+    (async () => {
+      if (sector) {
+        await handleFetchConfiguratedCards(sector.id);
+      }
+    })();
+  }, [sector, startDate, endDate]);
+
+  const handleFetchConfiguratedCards = async (sectorId: string) => {
+    const response = await getFilteredStudentCards(sectorId, startDate, endDate);
+
+    console.log(response);
+  };
 
   return (
     <Card className="w-full px-2">

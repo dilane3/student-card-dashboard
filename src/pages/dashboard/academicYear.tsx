@@ -3,11 +3,7 @@ import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import { ModalContext } from "@/context/modalContext";
 import { AcademicYear as AcademicYearEntity } from "@/entities/academicYear.entity";
 
-import {
-  PencilIcon,
-  PlusCircleIcon,
-  TrashIcon,
-} from "@heroicons/react/24/solid";
+import { PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -21,9 +17,9 @@ import {
 import { useContext, useState } from "react";
 
 type TabItem = {
-  label: string,
-  value: string
-}
+  label: string;
+  value: string;
+};
 
 const TABS: TabItem[] = [
   {
@@ -48,24 +44,28 @@ const academicYears: Array<AcademicYearEntity> = [
 ];
 
 function AcademicYear() {
+  const { handleOpen, dispatch } = useContext(ModalContext);
 
-  const {handleOpen, dispatch} = useContext(ModalContext)
-
-  const [selectedTab, setSelectedTab] = useState<TabItem>(TABS[0])
+  const [selectedTab, setSelectedTab] = useState<TabItem>(TABS[0]);
 
   const handleOpenCreateAcademicYearModal = () => {
-    if(!dispatch) return
-    
-    dispatch!({ type: "ADD_ACADEMIC_YEAR" })
+    if (!dispatch) return;
+
+    dispatch!({ type: "ADD_ACADEMIC_YEAR" });
     handleOpen();
-  }
+  };
 
   const handleOpenDeleteModal = () => {
-    if(!dispatch) return
-    
-    dispatch!({ type: "DELETE_CONFIRMATION" })
+    if (!dispatch) return;
+
+    dispatch!({ type: "DELETE_CONFIRMATION" });
     handleOpen();
-  }
+  };
+
+  // to display data by applying pagination
+  const currentPageData = (): Array<AcademicYearEntity> => {
+    return academicYears;
+  };
 
   return (
     <Card className="h-full w-full">
@@ -79,16 +79,20 @@ function AcademicYear() {
               Ci-dessous les informations sur les années académiques
             </Typography>
           </div>
-          <Button onClick={handleOpenCreateAcademicYearModal} className="flex mt-4 600px:mt-0 items-center gap-3 bg-primary" size="md">
-            <PlusCircleIcon strokeWidth={2} className="h-6 w-6" /> Ajouter une
-            année académique
+          <Button
+            onClick={handleOpenCreateAcademicYearModal}
+            className="flex mt-4 600px:mt-0 items-center gap-3 bg-primary"
+            size="md"
+          >
+            <PlusCircleIcon strokeWidth={2} className="h-6 w-6" /> Ajouter une année
+            académique
           </Button>
         </div>
-        <FilterAndResearch tabsList={TABS} />
       </CardHeader>
-      <CardBody className={`grid 600px:grid-cols-2 843px:grid-cols-3 1087px:grid-cols-4 1140px:grid-cols-3 1359px:grid-cols-4 gap-0 sm:gap-x-4 overflow-auto`}>
-        {academicYears.map(({ date }, index) => {
-
+      <CardBody
+        className={`grid 600px:grid-cols-2 843px:grid-cols-3 1087px:grid-cols-4 1140px:grid-cols-3 1359px:grid-cols-4 gap-0 sm:gap-x-4 overflow-auto`}
+      >
+        {currentPageData().map(({ date }, index) => {
           return (
             <Card key={index} className="mt-6 bg-primary">
               <CardBody className="flex items-center justify-between">
@@ -103,7 +107,11 @@ function AcademicYear() {
                   </Tooltip>
 
                   <Tooltip content="Delete Faculty">
-                    <IconButton onClick={handleOpenDeleteModal} color="white" variant="text">
+                    <IconButton
+                      onClick={handleOpenDeleteModal}
+                      color="white"
+                      variant="text"
+                    >
                       <TrashIcon className="h-4 w-4" />
                     </IconButton>
                   </Tooltip>
@@ -113,17 +121,14 @@ function AcademicYear() {
           );
         })}
       </CardBody>
-      <CardFooter className="flex items-center justify-center border-t border-blue-gray-50 p-4">
-        <DefaultPagination />
-      </CardFooter>
     </Card>
   );
 }
 
 const styles = {
   "&:hover": {
-    background: "#efefef"
+    background: "#efefef",
   },
-}
+};
 
 export default AcademicYear;
