@@ -1,13 +1,12 @@
 import logo from "@/assets/img/logo.svg";
 import logoTransparent from "@/assets/img/logo_transparent.png";
-import userImage from "@/assets/img/clems.jpeg";
 import star from "@/assets/img/star.svg";
 import Card from "@/entities/studentCard.entity";
 import { formatDateBySlash } from "@/utils";
 
 type Props = {
-  card: Card
-}
+  card: Card;
+};
 
 export default function CardRector({ card }: Props) {
   return (
@@ -43,26 +42,26 @@ export default function CardRector({ card }: Props) {
           CARTE D’ÉTUDIANT - FACULTE DES SCIENCES
         </p>
         <p className="h-1/2 w-full text-center">
-          <span className="text-white font-nunitoBoldItalic text-[10px]">FILIÈRE/OPTION:</span>
+          <span className="text-white font-nunitoBoldItalic text-[10px]">
+            FILIÈRE/OPTION:
+          </span>
           <span className="text-[10px] uppercase">{` ${card.sector}`}</span>
         </p>
       </div>
       <div className="w-full h-[60%] flex bg-white p-2 pb-0 rounded-b-2xl">
         <div className="h-full w-[78%]">
           <div className="h-1/3 font-nunitoBoldItalic text-primary flex w-full">
-            <div className="w-2/6 mr-2 h-full">
-              <p className="w-full text-[8px]">NOM/SURNAME</p>
+            <div className="w-5/6 mr-2 h-full">
+              <p className="w-full text-[8px]">NOMS ET PRENOMS/NAMES AND SURNAMES</p>
               <p className="font-nunitoBold text-black overflow-clip text-ellipsis text-[8px] uppercase">
-                {card.firstName}
+                {card.name}
               </p>
-            </div>
-            <div className="w-3/6 mr-2 h-full">
-              <p className="w-full text-[8px]">PRÉNOMS/GIVEN NAMES</p>
-              <p className="font-nunitoBold text-black text-[8px] uppercase">{card.lastName}</p>
             </div>
             <div className="w-1/6 h-full">
               <p className="w-full text-[8px]">SEXE/SEX</p>
-              <p className="font-nunitoBold text-black text-[8px] uppercase">{card.sex}</p>
+              <p className="font-nunitoBold text-black text-[8px] uppercase">
+                {card.sex}
+              </p>
             </div>
           </div>
           <div className="h-1/3 font-nunitoBoldItalic text-primary w-full leading-[10px]">

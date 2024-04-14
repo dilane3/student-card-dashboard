@@ -147,6 +147,7 @@ export function Faculties() {
         <FilterAndResearch
           tabsList={TABS}
           TabItems={TABLE_ROWS}
+          withTabs={false}
           onDataFiltered={(data) => handleFilteredData(data as Faculty[])}
         />
       </CardHeader>

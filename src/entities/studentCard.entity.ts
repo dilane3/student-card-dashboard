@@ -1,3 +1,4 @@
+import { PaymentStatusEnum } from "@/gx/signals/studentsCardForm.signal";
 import { baseURL } from "../api";
 
 export const cardsStatuses = {
@@ -15,8 +16,7 @@ export interface ICard {
   id: string;
   matricule: string;
   code: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
   avatar: string;
@@ -30,6 +30,7 @@ export interface ICard {
   academicYear: number;
   sector: string;
   faculty: string;
+  paymentStatus: PaymentStatusEnum;
 }
 
 /**
@@ -39,8 +40,7 @@ export default class Card {
   private _id: string;
   private _matricule: string;
   private _code: string;
-  private _firstName: string;
-  private _lastName: string;
+  private _name: string;
   private _email: string;
   private _phone: string;
   private _avatar: string;
@@ -54,13 +54,13 @@ export default class Card {
   private _academicYear: number;
   private _sector: string;
   private _faculty: string;
+  private _paymentStatus: PaymentStatusEnum;
 
   constructor(data: ICard) {
     this._id = data.id;
     this._matricule = data.matricule;
     this._code = data.code;
-    this._firstName = data.firstName;
-    this._lastName = data.lastName;
+    this._name = data.name;
     this._email = data.email;
     this._phone = data.phone;
     this._avatar = data.avatar;
@@ -74,6 +74,7 @@ export default class Card {
     this._academicYear = data.academicYear;
     this._sector = data.sector;
     this._faculty = data.faculty;
+    this._paymentStatus = data.paymentStatus;
   }
 
   // Getters
@@ -89,16 +90,8 @@ export default class Card {
     return this._code;
   }
 
-  get firstName() {
-    return this._firstName;
-  }
-
-  get lastName() {
-    return this._lastName;
-  }
-
-  get fullName() {
-    return `${this._firstName} ${this._lastName}`;
+  get name() {
+    return this._name;
   }
 
   get email() {
@@ -157,13 +150,16 @@ export default class Card {
     return this._faculty;
   }
 
+  get paymentStatus() {
+    return this._paymentStatus;
+  }
+
   public toJson() {
     return {
       id: this._id,
       matricule: this._matricule,
       code: this._code,
-      firstName: this._firstName,
-      lastName: this._lastName,
+      name: this._name,
       email: this._email,
       phone: this._phone,
       avatar: this._avatar,
@@ -177,6 +173,7 @@ export default class Card {
       academicYear: this._academicYear,
       sector: this._sector,
       faculty: this._faculty,
+      paymentStatus: this._paymentStatus,
     };
   }
 }

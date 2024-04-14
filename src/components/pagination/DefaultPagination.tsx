@@ -11,21 +11,14 @@ type PaginationEntryProps = {
     goToPreviousPage: () => void;
     startIndex: number;
     endIndex: number;
-  }
+  };
 };
 
-export function DefaultPagination({
-  paginationEntry
-}: PaginationEntryProps) {
+export function DefaultPagination({ paginationEntry }: PaginationEntryProps) {
   const [active, setActive] = React.useState(1);
 
-  const {
-    currentPage,
-    totalPages,
-    goToPage,
-    goToNextPage,
-    goToPreviousPage,
-  } = paginationEntry
+  const { currentPage, totalPages, goToPage, goToNextPage, goToPreviousPage } =
+    paginationEntry;
 
   const getItemProps = (index: number) =>
     ({
@@ -33,7 +26,7 @@ export function DefaultPagination({
       color: "gray",
       className: currentPage === index ? "bg-primary" : "",
       onClick: () => setActive(index),
-    } as any);
+    }) as any;
 
   const next = () => {
     if (active === 2) return;
@@ -56,7 +49,7 @@ export function DefaultPagination({
         disabled={currentPage === 1}
       >
         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
-        
+
         <Typography className="hidden sm:block text-xs font-bold ">
           Précédent
         </Typography>
@@ -64,18 +57,13 @@ export function DefaultPagination({
       <div className="flex items-center gap-2">
         {Array.from({ length: totalPages }, (_, index) => (
           <div
-            onClick={() => goToPage(index + 1) }
+            key={index}
+            onClick={() => goToPage(index + 1)}
             className="bg-invisible h-"
           >
-            <IconButton 
-              {...getItemProps(index+1)}
-            >
-              {index + 1}
-            </IconButton>
+            <IconButton {...getItemProps(index + 1)}>{index + 1}</IconButton>
           </div>
-
         ))}
-
       </div>
       <Button
         variant="text"

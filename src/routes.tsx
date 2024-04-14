@@ -97,16 +97,6 @@ export const routes: Array<RouteType> = [
           </AuthProvider>
         ),
       },
-      {
-        icon: <PencilIcon {...icon} />,
-        name: "personal info",
-        path: "/personal-info/:id",
-        element: (
-          <AuthProvider access={[RoleEnum.ADMIN, RoleEnum.AGENT]}>
-            <PersonalInfo />
-          </AuthProvider>
-        ),
-      },
       // {
       //   icon: <PrinterIcon {...icon} />,
       //   name: "receipt",

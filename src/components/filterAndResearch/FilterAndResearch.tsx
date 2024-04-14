@@ -11,6 +11,8 @@ export type TabItem = {
 
 type FilterAndResearchProps = {
   tabsList: Array<TabItem>;
+  withTabs?: boolean;
+  withSearchBar?: boolean;
   TabItems: Array<any>;
   onDataFiltered: (filteredData: Array<Faculty> | Array<Sector>) => void;
 };
@@ -19,6 +21,8 @@ const FilterAndResearch = ({
   tabsList,
   TabItems,
   onDataFiltered,
+  withTabs = true,
+  withSearchBar = true,
 }: FilterAndResearchProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   // const [faculties, setFaculties] = useState(TabItems);
@@ -48,34 +52,46 @@ const FilterAndResearch = ({
     setSearchTerm(text);
   };
 
+  console.log(withSearchBar && !withTabs);
+
   return (
-    <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-      <Tabs value={selectedTab.value} className="w-auto">
-        <TabsHeader className="bg-primary">
-          {tabsList.map(({ label, value }, index) => (
-            <Tab
-              onClick={() => setSelectedTab(tabsList[index])}
-              className={`${
-                selectedTab.value === value ? "text-primary" : `text-white`
-              } w-max`}
-              key={value}
-              value={value}
-            >
-              &nbsp;&nbsp;{label}&nbsp;&nbsp;
-            </Tab>
-          ))}
-        </TabsHeader>
-      </Tabs>
-      <div className="w-full md:w-72">
-        <Input
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-          crossOrigin={null}
-          label="Search"
-          className="peer focus:border-primary"
-          icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-        />
-      </div>
+    <div
+      className={`flex flex-col ${withTabs && withSearchBar && "justify-between"} ${
+        withTabs && !withSearchBar && "justify-start"
+      } ${
+        withSearchBar && !withTabs && "justify-end"
+      } items-center w-full gap-4 md:flex-row`}
+    >
+      {withTabs && (
+        <Tabs value={selectedTab.value} className="w-auto">
+          <TabsHeader className="bg-primary">
+            {tabsList.map(({ label, value }, index) => (
+              <Tab
+                onClick={() => setSelectedTab(tabsList[index])}
+                className={`${
+                  selectedTab.value === value ? "text-primary" : `text-white`
+                } w-max`}
+                key={value}
+                value={value}
+              >
+                &nbsp;&nbsp;{label}&nbsp;&nbsp;
+              </Tab>
+            ))}
+          </TabsHeader>
+        </Tabs>
+      )}
+      {withSearchBar && (
+        <div className={"w-full md:w-72"}>
+          <Input
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            crossOrigin={null}
+            label="Search"
+            className="peer focus:border-primary"
+            icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+          />
+        </div>
+      )}
     </div>
   );
 };

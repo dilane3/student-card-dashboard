@@ -44,7 +44,7 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
         </div>
         <div className="m-2 xl:m-4">
           {routes.map(({ layout, title, pages }, key) => (
-            <ul key={key} className="mb-4 flex flex-col gap-1">
+            <ul key={key + 1} className="mb-4 flex flex-col gap-1">
               {title && (
                 <li className="mt-4 mb-2 hidden xl:mx-3.5 xl:block">
                   <Typography
@@ -96,20 +96,22 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
           ))}
         </div>
       </div>
-      <div className="flex items-center w-[60%] xl:w-[80%] my-8 gap-2 mx-auto">
-        <div className="w-[100%] xl:w-[20%] h-full flex items-center justify-center rounded-full bg-white">
+      <div className="flex items-center w-[60%] xl:w-[90%] my-8 gap-2 mx-auto">
+        <div className="w-full py-0.5 xl:py-0[] xl:w-[45px] xl:h-[45px] flex justify-center items-center rounded-full bg-white">
           {user.avatar ? (
-            <p className="uppercase text-xl text-primary font-nunitoBold">
+            <p className="uppercase text-lg text-primary font-nunitoBold">
               <span>{user.fullName.split(" ")[0].slice(0)[0]}</span>
-              <span className="hidden xl:inline-block">
-                {user.fullName.split(" ")[1].slice(0)[0]}
-              </span>
+              {user.fullName.split(" ")[1] && (
+                <span className="hidden xl:inline-block">
+                  {user.fullName.split(" ")[1].slice(0)[0]}
+                </span>
+              )}
             </p>
           ) : (
             <img src={user.avatar} alt="User avatar" />
           )}
         </div>
-        <div className="text-white w-[80%] hidden xl:block">
+        <div className="text-white hidden xl:block">
           <p className="capitalize font-nunitoBold">{user.fullName}</p>
           <p className="text-sm font-nunitoRegular">{user.email}</p>
         </div>

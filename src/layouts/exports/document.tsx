@@ -1,9 +1,10 @@
 import Card from "@/entities/studentCard.entity";
 import Page from "./page";
+import { Fragment } from "react";
 
 type Props = {
-  cards: Card[]
-}
+  cards: Card[];
+};
 
 export default function Document({ cards }: Props) {
   // handlers
@@ -16,18 +17,16 @@ export default function Document({ cards }: Props) {
     }
 
     return result;
-  }
+  };
 
   return (
     <>
-      {
-        generateCardsPerPage(cards).map((cardsPerPage, index) => (
-          <>
-            <Page key={index} cards={cardsPerPage} />
-            <Page key={index} cards={cardsPerPage} cardSide="verso" />
-          </>
-        ))
-      }
+      {generateCardsPerPage(cards).map((cardsPerPage, index) => (
+        <Fragment key={index}>
+          <Page cards={cardsPerPage} />
+          <Page cards={cardsPerPage} cardSide="verso" />
+        </Fragment>
+      ))}
     </>
-  )
+  );
 }

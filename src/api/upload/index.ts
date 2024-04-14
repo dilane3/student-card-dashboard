@@ -10,7 +10,10 @@ export async function uploadFile(formData: FormData, multiple: boolean = false) 
   try {
     const response = await instance.post(
       `/uploads/file${multiple ? "s" : ""}`,
-      formData
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
     );
 
     if (response.status === 201) {

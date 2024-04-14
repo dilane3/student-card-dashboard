@@ -23,8 +23,7 @@ const FirstStep = () => {
   const { sectors } = useSignal<SectorsState>("sectors");
 
   // Watchers
-  const firstName = watch("firstName");
-  const lastName = watch("lastName");
+  const name = watch("name");
   const sex = watch("sex");
   const birthDate = watch("birthDate");
   const birthPlace = watch("birthPlace");
@@ -36,11 +35,9 @@ const FirstStep = () => {
   // Set Default values
   useEffect(() => {
     (() => {
-      const { firstName, lastName, sex, birthPlace, birthDate, matricule, sector } =
-        form.step1;
+      const { name, sex, birthPlace, birthDate, matricule, sector } = form.step1;
 
-      setValue("firstName", firstName);
-      setValue("lastName", lastName);
+      setValue("name", name);
       setValue("sex", sex);
       setValue("birthDate", birthDate);
       setValue("birthPlace", birthPlace);
@@ -51,13 +48,12 @@ const FirstStep = () => {
 
   useEffect(() => {
     handleSetForm();
-  }, [firstName, lastName, sex, birthPlace, birthDate, matricule, sector]);
+  }, [name, sex, birthPlace, birthDate, matricule, sector]);
 
   // Handlers
   const handleSetForm = () => {
     setForm({
-      firstName,
-      lastName,
+      name,
       sex,
       birthPlace,
       birthDate,
@@ -74,7 +70,7 @@ const FirstStep = () => {
       <div className="mt-8 flex flex-col md:flex-row w-full gap-4">
         <div className="mb-4 flex w-full md:w-1/2 flex-col gap-6">
           <Controller
-            name="lastName"
+            name="name"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -82,14 +78,14 @@ const FirstStep = () => {
                 color="purple"
                 crossOrigin={null}
                 size="lg"
-                label="Name"
+                label="Full Name"
                 value={value}
                 onChange={onChange}
               />
             )}
           />
 
-          <Controller
+          {/* <Controller
             name="firstName"
             control={control}
             rules={{ required: true }}
@@ -103,7 +99,7 @@ const FirstStep = () => {
                 onChange={onChange}
               />
             )}
-          />
+          /> */}
 
           <Controller
             name="matricule"
