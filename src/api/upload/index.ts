@@ -10,7 +10,7 @@ export async function uploadFile(formData: FormData, multiple: boolean = false) 
   try {
     const response = await instance.post(
       `/uploads/file${multiple ? "s" : ""}`,
-      formData,
+      formData
     );
 
     if (response.status === 201) {

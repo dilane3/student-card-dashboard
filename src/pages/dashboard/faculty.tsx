@@ -177,7 +177,7 @@ export function Faculties() {
             {/* {currentPageData().map(({ name, createdAt, id }, index) => {
               const isLast = index === faculties.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50"; */}
-            {tableRows.map(({ name, createdAt, id }, index) => {
+            {faculties.map(({ name, createdAt, id }, index) => {
               const isLast = index === tableRows.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 

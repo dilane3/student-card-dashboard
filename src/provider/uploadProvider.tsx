@@ -10,6 +10,7 @@ import {
 } from "react";
 import { UploadContext } from "../context/uploadContext";
 import { toast } from "react-toastify";
+import instance, { baseURL } from "@/api";
 
 type ReactChildren = {
   children: ReactNode;
@@ -158,7 +159,7 @@ const UploadProvider = ({ children }: ReactChildren) => {
       setLoading(true);
       // Sending the files to the backend for annotation
       const response = await axios.post(
-        "http://localhost:3000/student-cards/create/csv",
+        `${baseURL}student-cards/create/csv`,
         formData,
         {
           // Header that specifies the type of data we are send
@@ -170,6 +171,7 @@ const UploadProvider = ({ children }: ReactChildren) => {
       console.log(response);
 
       toast.success(response.data);
+      // toast.success("CSV file as been uploaded")
 
       // Stop the loading event
       setLoading(false);
