@@ -7,6 +7,7 @@ import {
   FacultiesOperations,
   FacultiesState,
 } from "@/gx/signals/faculties.signal";
+import { useLoadPaginatedFaculties } from "@/hooks/useLoadFaculties";
 import usePagination from "@/hooks/usePagination";
 import { formatDate, ITEM_PER_PAGE } from "@/utils";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
@@ -23,6 +24,7 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import { useContext, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const TABS = [
   {
@@ -40,26 +42,51 @@ const TABS = [
 ];
 const TABLE_HEAD = ["Name", "Registered At", "Actions"];
 
-let TABLE_ROWS: Array<Faculty> = [
-  new Faculty({
-    id: "1",
-    createdAt: new Date(Date.now()),
-    name: "Faculty of science",
-    // description: "Description of the faculty of science",
-  }),
-  new Faculty({
-    id: "2",
-    createdAt: new Date(Date.now()),
-    name: "Faculty of arts",
-    // description: "Description of the faculty of arts",
-  }),
-];
-
 export function Faculties() {
   const { handleOpen, dispatch } = useContext(ModalContext);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Getting the URL parameters
+  const [filterParams] = useSearchParams();
+  // Getting the page value
+  const page = Number(filterParams.get("page")) || 0;
+  // Getting the offset value
+  const offset = Number(filterParams.get("offset")) || 20;
+  // Getting the query value
+  const [query, setQuery] = useState(filterParams.get("query") || "");
+
+  useLoadPaginatedFaculties({
+    offset: parseInt(page.toString()),
+    limit: parseInt(offset.toString()),
+    search: query,
+  });
+
+  // Updating the search url parameters
+  const handlerUpdateSearchParams = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const queryParams = new URLSearchParams(filterParams);
+    const newQuery = event.target.value;
+    setQuery(newQuery);
+    if (newQuery) {
+      queryParams.set("query", newQuery);
+    } else {
+      queryParams.delete("query");
+    }
+
+    navigate(`${location.pathname}?${queryParams.toString()}`, { replace: true });
+  };
+
+  // Updating the url parameters
+  // const handlerUpdateParams = () => {
+  //   setFilterParams({
+  //     page: page.toString(),
+  //     offset: offset.toString(),
+  //   });
+  // };
+
   // Global state
-  const { faculties } = useSignal<FacultiesState>("faculties");
+  const { paginatedFaculties: faculties } = useSignal<FacultiesState>("faculties");
 
   // Actions
   const { selectFaculty } = useActions<FacultiesActions>("faculties");
@@ -67,30 +94,18 @@ export function Faculties() {
   // Operations
   const { getFaculty } = useOperations<FacultiesOperations>("faculties");
 
-  const [tableRows, setTableRows] = useState(TABLE_ROWS); // Utilisation de l'état pour stocker les données des facultés
-
-  // Fonction de rappel pour recevoir les données du composant enfant
-  const handleFilteredData = (filteredData: Faculty[]) => {
-    // Traiter les données filtrées reçues du composant enfant
-    setTableRows(filteredData);
-    // TABLE_ROWS = filteredData
-    console.log("Données filtrées reçues :", TABLE_ROWS);
-    // Faire d'autres manipulations ou mises à jour en fonction des données filtrées
-  };
+  // Handlers
 
   const handleOpenCreateFacultyModal = () => {
     if (!dispatch) return;
 
-    dispatch!({ type: "ADD_FACULTY" });
+    dispatch({ type: "ADD_FACULTY" });
     handleOpen();
   };
 
   const handleOpenUpdateFacultyModal = (id: string) => {
-    if (!dispatch) return;
-
     const selectedFaculty = getFaculty(id);
-
-    if (!selectedFaculty) return;
+    if (!selectedFaculty || !dispatch) return;
 
     dispatch!({ type: "UPDATE_FACULTY" });
     handleOpen();
@@ -98,13 +113,10 @@ export function Faculties() {
   };
 
   const handleOpenDeleteModal = (id: string) => {
-    if (!dispatch) return;
-
     const selectedFaculty = getFaculty(id);
+    if (!dispatch || !selectedFaculty) return;
 
-    if (!selectedFaculty) return;
-
-    dispatch!({ type: "DELETE_CONFIRMATION" });
+    dispatch({ type: "DELETE_CONFIRMATION" });
     handleOpen();
     selectFaculty(selectedFaculty);
   };
@@ -118,11 +130,6 @@ export function Faculties() {
     startIndex,
     endIndex,
   } = usePagination(faculties.length, ITEM_PER_PAGE);
-
-  // to display data by applying pagination
-  const currentPageData = (): Array<Faculty> => {
-    return faculties.slice(startIndex, endIndex);
-  };
 
   return (
     <Card className="h-full w-full">
@@ -146,9 +153,9 @@ export function Faculties() {
         </div>
         <FilterAndResearch
           tabsList={TABS}
-          TabItems={TABLE_ROWS}
+          query={query}
           withTabs={false}
-          onDataFiltered={(data) => handleFilteredData(data as Faculty[])}
+          handleChange={handlerUpdateSearchParams}
         />
       </CardHeader>
       <CardBody className="overflow-auto px-0">
@@ -175,11 +182,8 @@ export function Faculties() {
             </tr>
           </thead>
           <tbody>
-            {/* {currentPageData().map(({ name, createdAt, id }, index) => {
-              const isLast = index === faculties.length - 1;
-              const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50"; */}
             {faculties.map(({ name, createdAt, id }, index) => {
-              const isLast = index === tableRows.length - 1;
+              const isLast = index === faculties.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
               return (

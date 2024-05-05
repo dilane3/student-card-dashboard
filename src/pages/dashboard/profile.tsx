@@ -18,31 +18,31 @@ export function Profile() {
       </div>
       <Card className="mx-3 -mt-16 mb-6 lg:mx-4">
         <CardBody className="p-4">
-          <div className="mb-10 flex items-center justify-between gap-6">
+          <div className="mb-10 flex flex-col min-[640px]:flex-row min-[640px]:items-center min-[640px]:justify-between gap-6">
             <div className="flex items-center gap-6">
               <Avatar
                 src={userImage ?? user.avatar}
                 alt="bruce-mars"
                 size="xl"
-                className="rounded-lg shadow-lg shadow-blue-gray-500/40"
+                className="rounded-lg shadow-lg w-12 h-12 min-[640px]:w-16 min-[640px]:h-16 shadow-blue-gray-500/40"
               />
               <div>
                 <Typography
                   variant="h5"
                   color="blue-gray"
-                  className="mb-1 capitalize"
+                  className="mb-1 capitalize text-base min-[640px]:text-lg"
                 >
                   {user.fullName}
                 </Typography>
                 <Typography
                   variant="small"
-                  className="font-normal text-blue-gray-600"
+                  className="font-normal text-blue-gray-600 text-sm min-[640px]:text-base"
                 >
                   {user.email}
                 </Typography>
               </div>
             </div>
-            <div className="bg-primary rounded-lg px-8 py-2">
+            <div className="bg-primary w-min rounded-lg px-8 py-2">
               <Typography
                 variant="h6"
                 color="white"
