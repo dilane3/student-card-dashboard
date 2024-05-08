@@ -7,6 +7,7 @@ import {
   SectorsOperations,
   SectorsState,
 } from "@/gx/signals/sectors.signal";
+import { useLoadPaginatedFaculties } from "@/hooks/useLoadFaculties";
 import usePagination from "@/hooks/usePagination";
 import { formatDate, ITEM_PER_PAGE } from "@/utils";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
@@ -23,6 +24,7 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import { useContext, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const TABS = [
   {
@@ -43,6 +45,38 @@ const TABLE_HEAD = ["Name", "Registered At", "Actions"];
 
 export function Sectors() {
   const { handleOpen, dispatch } = useContext(ModalContext);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Getting the URL parameters
+  const [filterParams] = useSearchParams();
+  // Getting the page value
+  const page = Number(filterParams.get("page")) || 0;
+  // Getting the offset value
+  const offset = Number(filterParams.get("offset")) || 20;
+  // Getting the query value
+  const [query, setQuery] = useState(filterParams.get("query") || "");
+
+  useLoadPaginatedFaculties({
+    offset: parseInt(page.toString()),
+    limit: parseInt(offset.toString()),
+    search: query,
+  });
+
+  // Updating the search url parameters
+  const handlerUpdateSearchParams = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const queryParams = new URLSearchParams(filterParams);
+    const newQuery = event.target.value;
+    setQuery(newQuery);
+    if (newQuery) {
+      queryParams.set("query", newQuery);
+    } else {
+      queryParams.delete("query");
+    }
+
+    navigate(`${location.pathname}?${queryParams.toString()}`, { replace: true });
+  };
 
   // Global state
   const { sectors } = useSignal<SectorsState>("sectors");
@@ -129,8 +163,8 @@ export function Sectors() {
         </div>
         <FilterAndResearch
           tabsList={TABS}
-          TabItems={sectors}
-          onDataFiltered={(data) => handleFilteredData(data as Sector[])}
+          query={query}
+          handleChange={handlerUpdateSearchParams}
         />
       </CardHeader>
       <CardBody className="overflow-auto px-0">

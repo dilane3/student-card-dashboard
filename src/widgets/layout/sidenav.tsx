@@ -5,6 +5,7 @@ import { useMaterialTailwindController } from "@/context";
 import { RouteType } from "@/routes";
 import { useSignal } from "@dilane3/gx";
 import { AuthState } from "@/gx/signals/auth.signal";
+import { Fragment } from "react";
 
 type SideNavProps = {
   brandImg: string;
@@ -13,7 +14,7 @@ type SideNavProps = {
 
 export function Sidenav({ brandImg, routes }: SideNavProps) {
   const [controller, _] = useMaterialTailwindController();
-  const { sidenavColor, sidenavType } = controller;
+  const { sidenavType } = controller;
 
   // Global state
   const { user } = useSignal<AuthState>("auth");
@@ -57,39 +58,41 @@ export function Sidenav({ brandImg, routes }: SideNavProps) {
                 </li>
               )}
               {pages.map(
-                ({ icon, name, path, access }) =>
+                ({ icon, name, path, access }, idx) =>
                   access &&
                   access.includes(user.role.label) && (
-                    <Tooltip
-                      content={name}
-                      className="bg-primary block 1140px:hidden 1359px:hidden ml-2 font-nunitoBold capitalize"
-                      placement="right-center"
-                    >
-                      <li key={name}>
-                        <NavLink to={`/${layout}${path}`}>
-                          {({ isActive }) => (
-                            <Button
-                              variant={isActive ? "gradient" : "text"}
-                              color={isActive ? "white" : "white"}
-                              className={`${
-                                isActive ? "bg-white text-primary" : "text-white"
-                              } flex items-center gap-4 pl-2 pr-0 capitalize xl:px-4`}
-                              fullWidth
-                            >
-                              {icon}
-                              <Typography
-                                color="inherit"
+                    <Fragment key={idx + 2}>
+                      <Tooltip
+                        content={name}
+                        className="bg-primary block 1140px:hidden 1359px:hidden ml-2 font-nunitoBold capitalize"
+                        placement="right"
+                      >
+                        <li key={name}>
+                          <NavLink to={`/${layout}${path}`}>
+                            {({ isActive }) => (
+                              <Button
+                                variant={isActive ? "gradient" : "text"}
+                                color={isActive ? "white" : "white"}
                                 className={`${
-                                  isActive ? "text-primary" : "text-white"
-                                } hidden font-medium capitalize xl:block`}
+                                  isActive ? "bg-white text-primary" : "text-white"
+                                } flex items-center gap-4 pl-2 pr-0 capitalize xl:px-4`}
+                                fullWidth
                               >
-                                {name}
-                              </Typography>
-                            </Button>
-                          )}
-                        </NavLink>
-                      </li>
-                    </Tooltip>
+                                {icon}
+                                <Typography
+                                  color="inherit"
+                                  className={`${
+                                    isActive ? "text-primary" : "text-white"
+                                  } hidden font-medium capitalize xl:block`}
+                                >
+                                  {name}
+                                </Typography>
+                              </Button>
+                            )}
+                          </NavLink>
+                        </li>
+                      </Tooltip>
+                    </Fragment>
                   ),
               )}
             </ul>

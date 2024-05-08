@@ -15,6 +15,7 @@ import { ExportContext } from "@/context/export";
 import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import ImageStudentCards from "./ImageStudentCards/ImageStudentCards";
 import PdfStudentCards from "./PdfStudentCards/PdfStudentCards";
+import { useSearchParams } from "react-router-dom";
 
 const TabsData = [
   {
@@ -38,6 +39,24 @@ export default function Students() {
 
   // Observer for displaying the students list in card mode for pdf export
   const [cardMode, setCardMode] = useState(false);
+
+  // Getting the URL parameters
+  const [filterParams, setFilterParams] = useSearchParams();
+  const [query, setQuery] = useState(filterParams.get("query") || "");
+  const page = filterParams.get("page") || 1;
+  const offset = filterParams.get("offset") || 10;
+
+  // Updating the url parameters
+  const hqndlerUpdateParams = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuery = event.target.value;
+
+    setQuery(newQuery);
+    setFilterParams({
+      query: newQuery,
+      page: page.toString(),
+      offset: offset.toString(),
+    });
+  };
 
   return (
     <Card className="min-h-[600px] mt-12 mb-8 ">

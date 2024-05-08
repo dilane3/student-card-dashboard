@@ -13,46 +13,19 @@ type FilterAndResearchProps = {
   tabsList: Array<TabItem>;
   withTabs?: boolean;
   withSearchBar?: boolean;
-  TabItems: Array<any>;
-  onDataFiltered: (filteredData: Array<Faculty> | Array<Sector>) => void;
+  query: string;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const FilterAndResearch = ({
   tabsList,
-  TabItems,
-  onDataFiltered,
   withTabs = true,
+  query,
+  handleChange,
   withSearchBar = true,
 }: FilterAndResearchProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  // const [faculties, setFaculties] = useState(TabItems);
-
   const [selectedTab, setSelectedTab] = useState(tabsList[0]);
   // Fonction pour récupérer la liste complète des facultés depuis l'API
-
-  // Filtrer les données en fonction du terme de recherche
-  useEffect(() => {
-    if (!searchTerm) {
-      // onDataFiltered(TabItems); // Si aucun terme de recherche n'est saisi, afficher toutes les facultés
-      return;
-    }
-
-    // console.log(faculties);
-
-    // Filtrer les facultés en fonction du terme de recherche
-    const filtered = TabItems.filter((item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-
-    onDataFiltered(filtered);
-  }, [searchTerm, TabItems, onDataFiltered]);
-
-  // Fonction pour gérer le changement du terme de recherche
-  const handleSearch = (text: string) => {
-    setSearchTerm(text);
-  };
-
-  console.log(withSearchBar && !withTabs);
 
   return (
     <div
@@ -83,8 +56,9 @@ const FilterAndResearch = ({
       {withSearchBar && (
         <div className={"w-full md:w-72"}>
           <Input
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
+            value={query}
+            defaultValue={query}
+            onChange={handleChange}
             crossOrigin={null}
             label="Search"
             className="peer focus:border-primary"

@@ -1,8 +1,8 @@
 import {
-  BanknotesIcon,
-  UserPlusIcon,
   UserIcon,
-  ChartBarIcon,
+  UsersIcon,
+  PrinterIcon,
+  CheckBadgeIcon,
 } from "@heroicons/react/24/solid";
 import { SVGProps } from "react";
 
@@ -34,7 +34,7 @@ export interface StatisticType {
     props: SVGProps<SVGSVGElement> & {
       title?: string | undefined;
       titleId?: string | undefined;
-    }
+    },
   ) => JSX.Element;
   title: string;
   value: string;
@@ -47,7 +47,18 @@ export interface StatisticType {
 
 export const statisticsCardsData: Array<StatisticType> = [
   {
-    color: "blue",
+    color: "purple",
+    icon: UsersIcon,
+    title: "Total Students",
+    value: "3,462",
+    footer: {
+      color: "text-green-500",
+      value: "3,462",
+      label: "Total students registered",
+    },
+  },
+  {
+    color: "purple",
     icon: UserIcon,
     title: "Male",
     value: "2",
@@ -58,7 +69,7 @@ export const statisticsCardsData: Array<StatisticType> = [
     },
   },
   {
-    color: "pink",
+    color: "purple",
     icon: UserIcon,
     title: "Female",
     value: "3,460",
@@ -69,27 +80,27 @@ export const statisticsCardsData: Array<StatisticType> = [
     },
   },
   {
-    color: "orange",
-    icon: UserIcon,
-    title: "Students",
+    color: "purple",
+    icon: PrinterIcon,
+    title: "Cards printed",
     value: "3,462",
     footer: {
       color: "text-green-500",
       value: "3,462",
-      label: "students registered",
+      label: "Total cards printed",
     },
   },
-  // {
-  //   color: "orange",
-  //   icon: ChartBarIcon,
-  //   title: "Sales",
-  //   value: "$103,430",
-  //   footer: {
-  //     color: "text-green-500",
-  //     value: "+5%",
-  //     label: "than yesterday",
-  //   },
-  // },
+  {
+    color: "purple",
+    icon: CheckBadgeIcon,
+    title: "Cards validated",
+    value: "3,462",
+    footer: {
+      color: "text-green-500",
+      value: "3,462",
+      label: "Total cards validated",
+    },
+  },
 ];
 
 export default statisticsCardsData;
