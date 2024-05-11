@@ -32,41 +32,46 @@ const ViewCardToExportModal = () => {
 
   // Handlers
   const handleExport = useCallback(async () => {
-    if (!rectoImg || !versoImg) return;
+    try {
+      if (!rectoImg || !versoImg) return;
 
-    setLoading(true);
+      setLoading(true);
 
-    const zip = new JSZip();
-    
-    zip.file("recto.png", rectoImg.replace("data:image/png;base64,", ""), {
-      base64: true,
-    });
-    zip.file("verso.png", versoImg.replace("data:image/png;base64,", ""), {
-      base64: true,
-    });
-
-    zip
-      .generateAsync({ type: "blob" })
-      .then((content) => {
-        setLoading(false);
-
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(content);
-
-        link.download = `${card.fullName.replace(" ", "_")}-${card.matricule}.zip`;
-
-        document.body.appendChild(link);
-        link.click();
-
-        document.body.removeChild(link);
-
-        toast.success("Card exported successfully");
-        handleOpen();
-      })
-      .catch(() => {
-        setLoading(false);
-        toast.error("An error occurred while exporting the card");
+      const zip = new JSZip();
+      
+      zip.file("recto.png", rectoImg.replace("data:image/png;base64,", ""), {
+        base64: true,
       });
+      zip.file("verso.png", versoImg.replace("data:image/png;base64,", ""), {
+        base64: true,
+      });
+
+      zip
+        .generateAsync({ type: "blob" })
+        .then((content) => {
+          setLoading(false);
+
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(content);
+
+          link.download = `${card.name.replace(" ", "_")}-${card.matricule}.zip`;
+
+          document.body.appendChild(link);
+          link.click();
+
+          document.body.removeChild(link);
+
+          toast.success("Card exported successfully");
+          handleOpen();
+        })
+        .catch((error) => {
+          console.log(error)
+          setLoading(false);
+          toast.error("An error occurred while exporting the card");
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }, [rectoImg, versoImg]);
 
   return (
