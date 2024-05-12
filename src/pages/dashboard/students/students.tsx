@@ -60,7 +60,7 @@ export default function Students() {
 
   return (
     <Card className="min-h-[600px] mt-12 mb-8 ">
-      <CardHeader className="mb-8 p-6 bg-primary flex justify-between items-center">
+      <CardHeader className="mb-8 p-6 bg-primary flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <Typography variant="h6" color="white">
           Students Table
         </Typography>

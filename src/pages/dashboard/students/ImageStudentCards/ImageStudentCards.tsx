@@ -4,7 +4,6 @@ import CardEntity, {
   CardStatusesType,
   cardsStatuses,
 } from "@/entities/studentCard.entity";
-import { studentsTableData } from "@/data";
 import { useSignal } from "@dilane3/gx";
 import { StudentCardState } from "@/gx/signals/students.signal";
 import { useNavigate } from "react-router-dom";
@@ -18,8 +17,142 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { formatDate } from "@/utils";
-import { PrinterIcon } from "@heroicons/react/24/solid";
+import { ArrowsUpDownIcon } from "@heroicons/react/24/solid";
 import useLoadStudentsCards from "@/hooks/useLoadStudentsCard";
+import { ColumnDef, Row } from "@tanstack/react-table";
+import DataTable from "@/components/datatable/DataTable";
+
+const columns: ColumnDef<CardEntity>[] = [
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="text"
+          className="border-b w-full flex border-blue-gray-50 py-3 px-5 text-left"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Infos
+          <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    filterFn: (row, columnId, filterValue) => {
+      const email = row.original.email;
+      const name = row.original.email;
+      return (
+        name.includes((filterValue as string).toLowerCase()) ||
+        email.includes((filterValue as string).toLowerCase())
+      );
+    },
+    cell: ({ row }) => {
+      const card = row.original;
+      return (
+        <div className="flex items-center ml-4 gap-4">
+          {card.avatarLink ? (
+            <div className="flex w-10 h-10 items-center justify-center rounded-full bg-primary">
+              <p className="uppercase text-lg text-white font-nunitoBold">
+                <span>{card.name.split(" ")[0].slice(0)[0]}</span>
+                {card.name.split(" ")[1] && (
+                  <span className="">{card.name.split(" ")[1].slice(0)[0]}</span>
+                )}
+              </p>
+            </div>
+          ) : (
+            <Avatar src={card.avatarLink} alt={card.name} size="sm" />
+          )}
+          <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="font-semibold capitalize line-clamp-1"
+            >
+              {card.name}
+            </Typography>
+            <Typography className="text-xs font-normal text-blue-gray-500 line-clamp-1">
+              {card.email}
+            </Typography>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "nationality",
+    header: () => (
+      <div className="border-b border-blue-gray-50 py-3 text-left">Nationality</div>
+    ),
+    cell: ({ row }) => {
+      const { nationality } = row.original;
+      return <div className=" font-medium">{nationality}</div>;
+    },
+  },
+  {
+    accessorKey: "sex",
+    header: () => (
+      <div className="border-b border-blue-gray-50 py-3 text-left">Sex</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: () => (
+      <div className="border-b border-blue-gray-50 py-3 text-left">Status</div>
+    ),
+    cell: ({ row }) => {
+      const cardStatus = row.getValue("status");
+
+      return (
+        <Chip
+          variant="gradient"
+          color={cardStatus !== "SUBMITTED" ? "green" : "blue-gray"}
+          value={cardStatus !== "SUBMITTED" ? "Verified" : "Not Verified"}
+          className="py-0.5 px-2 w-min text-[11px] font-medium"
+        />
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: () => (
+      <div className="border-b border-blue-gray-50 py-3 text-left">CreatedAt</div>
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue("createdAt");
+
+      return (
+        <div>
+          <Typography className="text-xs font-semibold text-blue-gray-600">
+            {formatDate(value as Date)}
+          </Typography>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "action",
+    header: () => (
+      <div className="border-b border-blue-gray-50 py-3 text-left">Action</div>
+    ),
+    cell: ({ row }) => {
+      const card = row.original;
+      return (
+        <div className="flex gap-2">
+          <Button size="sm" variant="text" className="bg-red-300">
+            Edit
+          </Button>
+          <Button
+            onClick={() => window.location.replace(`/dashboard/students/${card.id}`)}
+            size="sm"
+            variant="text"
+            className="bg-green-300"
+          >
+            View
+          </Button>
+        </div>
+      );
+    },
+  },
+];
 
 const ImageStudentCards = () => {
   const navigate = useNavigate();
@@ -91,8 +224,11 @@ const ImageStudentCards = () => {
           </div>
         )}
       </div>
+      <div className="px-6">
+        <DataTable columns={columns} data={cards} />
+      </div>
 
-      <table className="w-full min-w-[640px] table-auto">
+      {/* <table className="w-full min-w-[640px] table-auto">
         <thead>
           <tr>
             {[
@@ -213,7 +349,7 @@ const ImageStudentCards = () => {
             );
           })}
         </tbody>
-      </table>
+      </table> */}
     </>
   );
 };
