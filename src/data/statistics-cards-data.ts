@@ -28,6 +28,13 @@ export type ColorsType =
   | "pink"
   | "red";
 
+export type CardTypes =
+  | "total_students"
+  | "total_males"
+  | "total_females"
+  | "total_printed"
+  | "total_validated";
+
 export interface StatisticType {
   color: ColorsType;
   icon: (
@@ -37,6 +44,7 @@ export interface StatisticType {
     },
   ) => JSX.Element;
   title: string;
+  index: CardTypes;
   value: string;
   footer: {
     color: string;
@@ -51,6 +59,7 @@ export const statisticsCardsData: Array<StatisticType> = [
     icon: UsersIcon,
     title: "Total Students",
     value: "3,462",
+    index: "total_students",
     footer: {
       color: "text-green-500",
       value: "3,462",
@@ -62,6 +71,7 @@ export const statisticsCardsData: Array<StatisticType> = [
     icon: UserIcon,
     title: "Male",
     value: "2",
+    index: "total_males",
     footer: {
       color: "text-green-500",
       value: "2",
@@ -73,6 +83,7 @@ export const statisticsCardsData: Array<StatisticType> = [
     icon: UserIcon,
     title: "Female",
     value: "3,460",
+    index: "total_females",
     footer: {
       color: "text-green-500",
       value: "3,460",
@@ -84,6 +95,7 @@ export const statisticsCardsData: Array<StatisticType> = [
     icon: PrinterIcon,
     title: "Cards printed",
     value: "3,462",
+    index: "total_printed",
     footer: {
       color: "text-green-500",
       value: "3,462",
@@ -95,6 +107,7 @@ export const statisticsCardsData: Array<StatisticType> = [
     icon: CheckBadgeIcon,
     title: "Cards validated",
     value: "3,462",
+    index: "total_validated",
     footer: {
       color: "text-green-500",
       value: "3,462",

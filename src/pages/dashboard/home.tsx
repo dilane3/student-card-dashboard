@@ -1,14 +1,10 @@
 import React from "react";
 import { Card, CardBody, CardHeader, Typography } from "@material-tailwind/react";
-import { StatisticsCard } from "@/widgets/cards";
-import { ordersOverviewData, statisticsCardsData } from "@/data";
-import { useStudentCardsStatistics } from "@/hooks/useStudent";
+import { ordersOverviewData } from "@/data";
 import { ArrowUpIcon } from "@heroicons/react/24/outline";
 import DashboardStatisticsCard from "./DashboardStatisticsCard";
 
 export function Home() {
-  useStudentCardsStatistics();
-
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">

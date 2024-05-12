@@ -239,6 +239,8 @@ export async function getStudentCardStatistics() {
   try {
     const response = await instance.get(`/student-cards/statistics`);
 
+    console.log(response);
+
     if (response.status === 200) {
       return {
         data: response.data,
@@ -246,13 +248,13 @@ export async function getStudentCardStatistics() {
     }
 
     return {
-      error: "Error getting student.",
+      error: "Error getting statistics.",
     };
   } catch (error) {
     console.log(error);
 
     return {
-      error: "Error getting student.",
+      error: "Error getting statistics.",
     };
   }
 }
