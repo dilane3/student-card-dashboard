@@ -1,24 +1,15 @@
 import { ExportContext } from "@/context/export";
-import { studentsTableData } from "@/data";
 import { StudentCardState } from "@/gx/signals/students.signal";
 import Document from "@/layouts/exports/document";
-import { formatDate } from "@/utils";
 import { useActions, useSignal } from "@dilane3/gx";
-import {
-  Avatar,
-  Chip,
-  Input,
-  Option,
-  Select,
-  Switch,
-  Typography,
-} from "@material-tailwind/react";
+import { Input, Option, Select, Switch } from "@material-tailwind/react";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import useLoadSectors from "@/hooks/useLoadSectors";
 import { SectorsActions, SectorsState } from "@/gx/signals/sectors.signal";
 import useFilterByDate from "@/hooks/useFilterByDate";
 import { useLoadConfiguratedStudentsCards } from "@/hooks/useLoadStudentsCard";
+import DataTable from "@/components/datatable/DataTable";
+import { StudentsTableColumns } from "../students";
 
 type PdfStudentCardsProps = {
   cardMode?: boolean;
@@ -29,8 +20,6 @@ const PdfStudentCards = ({
   cardMode = false,
   setCardMode,
 }: PdfStudentCardsProps) => {
-  const navigate = useNavigate();
-
   // Contexts
   const exportContext = useContext(ExportContext);
 
@@ -50,7 +39,7 @@ const PdfStudentCards = ({
 
   return (
     <>
-      <div className="ml-6 w-72 mb-4 my-2 flex items-center gap-4">
+      <div className="ml-6 w-72 mb-4 my-2 flex flex-col lg:flex-row lg:items-center gap-4">
         <Select
           label="Sector"
           color="purple"
@@ -124,116 +113,9 @@ const PdfStudentCards = ({
           <Document cards={cards} />
         </div>
       ) : (
-        <table className="w-full min-w-[640px] table-auto">
-          <thead>
-            <tr>
-              {[
-                "infos",
-                "Nationality",
-                "Sex",
-                "Status",
-                "Registry date",
-                "Action",
-              ].map((el) => (
-                <th
-                  key={el}
-                  className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                >
-                  {el}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {cards.map((card, key) => {
-              const className = `py-3 px-5 ${
-                key === studentsTableData.length - 1
-                  ? ""
-                  : "border-b border-blue-gray-50"
-              }`;
-
-              return (
-                <tr
-                  key={card.id}
-                  className="hover:bg-gray-400/30 hover:cursor-pointer transition-all"
-                >
-                  <td
-                    className={className}
-                    onClick={() => {
-                      navigate(`/dashboard/personal-info/${card.id}`);
-                    }}
-                  >
-                    <div className="flex items-center gap-4">
-                      {card.avatarLink ? (
-                        <div className="flex w-10 h-10 items-center justify-center rounded-full bg-primary">
-                          <p className="uppercase text-lg text-white font-nunitoBold">
-                            <span>{card.name.split(" ")[0].slice(0)[0]}</span>
-                            {card.name.split(" ")[1] && (
-                              <span className="">
-                                {card.name.split(" ")[1].slice(0)[0]}
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                      ) : (
-                        <Avatar src={card.avatarLink} alt={card.name} size="sm" />
-                      )}
-                      <div>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold capitalize line-clamp-1"
-                        >
-                          {card.name}
-                        </Typography>
-                        <Typography className="text-xs font-normal line-clamp-1 text-blue-gray-500">
-                          {card.email}
-                        </Typography>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td className={className}>
-                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                      {card.nationality}
-                    </Typography>
-                  </td>
-                  <td className={className}>
-                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                      {card.sex}
-                    </Typography>
-                  </td>
-                  <td className={className}>
-                    <Chip
-                      variant="gradient"
-                      color={card.status !== "SUBMITTED" ? "green" : "blue-gray"}
-                      value={
-                        card.status !== "SUBMITTED" ? "Verified" : "Not Verified"
-                      }
-                      className="py-0.5 px-2 text-[11px] font-medium"
-                    />
-                  </td>
-                  <td className={className}>
-                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                      {formatDate(card.createdAt)}
-                    </Typography>
-                  </td>
-                  <td className={className}>
-                    <div className="flex w-full h-max items-center gap-3">
-                      <Typography
-                        as="a"
-                        href="#"
-                        className="text-xs font-semibold text-blue-gray-600"
-                      >
-                        Edit
-                      </Typography>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="px-6">
+          <DataTable columns={StudentsTableColumns} data={cards} />
+        </div>
       )}
     </>
   );

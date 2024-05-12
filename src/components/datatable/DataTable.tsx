@@ -24,6 +24,9 @@ export default function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const [rowSelection, setRowSelection] = useState({});
+
   const table = useReactTable({
     data,
     columns,
@@ -33,7 +36,8 @@ export default function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, columnFilters },
+    onRowSelectionChange: setRowSelection,
+    state: { sorting, columnFilters, rowSelection },
   });
 
   return (
@@ -49,14 +53,14 @@ export default function DataTable<TData, TValue>({
         />
       </div>
 
-      <div className="rounded-md border-2">
+      <div className="rounded-md border-2 min-w-[775px]">
         <table className="w-full">
-          <thead>
+          <thead className="w-full">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id}>
+                    <th className="px-2" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -69,7 +73,7 @@ export default function DataTable<TData, TValue>({
               </tr>
             ))}
           </thead>
-          <tbody>
+          <tbody className="w-full">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row, index) => (
                 <tr
@@ -78,7 +82,7 @@ export default function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td className="py-2" key={cell.id}>
+                    <td className="p-2" key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -94,7 +98,7 @@ export default function DataTable<TData, TValue>({
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-center space-x-2 pt-8">
+      <div className="flex items-center justify-end space-x-2 pt-8">
         <Button
           variant="outlined"
           size="sm"
@@ -103,7 +107,9 @@ export default function DataTable<TData, TValue>({
         >
           Previous
         </Button>
-        {table.getPageCount()}
+        <span className="rounded-md bg-purple-800/80 font-nunitoBold text-white py-1 px-2">
+          {table.getPageCount()}
+        </span>
         <Button
           variant="outlined"
           size="sm"
