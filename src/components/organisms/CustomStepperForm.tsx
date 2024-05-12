@@ -73,10 +73,10 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
         case 1: {
           const { nationality, photo, email, phone, paymentStatus } = form.step2;
 
+          if (nationality && paymentStatus) return true;
           if (email && !isValidEmail(email)) return false;
           if (phone && !isValidPhoneNumber(phone)) return false;
-
-          if (nationality && photo && paymentStatus) return true;
+          if (!photo) return false;
 
           return false;
         }
@@ -96,70 +96,73 @@ export function CustomStepperForm({ context = "visitor" }: Props) {
         // Submit form
         setLoading(true);
 
-        toast.info("Uploading photo...");
-
         // Uploading photo
         const formData = new FormData();
 
-        formData.append("file", form.step2.photo as any);
+        let photoFile: { fileName: string } | undefined = undefined;
 
-        const { data } = await uploadFile(formData);
+        if (form.step2.photo) {
+          toast.info("Uploading photo...");
 
-        if (data) {
-          toast.info("Submitting form...");
+          formData.append("file", form.step2.photo as any);
 
-          const { fileName } = data;
+          const { data } = await uploadFile(formData);
 
-          const payload = {
-            ...form.step1,
-            ...form.step2,
-            sexe: form.step1.sex as "MALE" | "FEMALE",
-            sectorId: JSON.parse(form.step1.sector).id,
-            avatar: fileName,
-            birthDate: new Date(form.step1.birthDate),
-            sex: undefined,
-            photo: undefined,
-            sector: undefined,
-            email:
-              form.step2.email && form.step2.email.length > 0
-                ? form.step2.email
-                : undefined,
-            phone:
-              form.step2.phone && form.step2.phone.length > 0
-                ? form.step2.phone
-                : undefined,
-          };
-
-          const { data: cardData, error } = await registerStudent(payload);
-
-          if (cardData) {
-            toast.success("Student card created successfully");
-
-            // Get academic year
-
-            // Get sector and faculty
-            const sector = getSector(cardData.sectorId);
-            const faculty = getFaculty(sector?.idFaculty || "");
-
-            const card = new Card({
-              ...cardData,
-              birthDate: new Date(cardData.birthDate),
-              createdAt: new Date(cardData.createdAt),
-              updatedAt: new Date(cardData.updatedAt),
-              sex: cardData.sexe,
-              academicYear: 2023,
-              sector: sector?.name,
-              faculty: faculty?.name,
-            });
-
-            if (context === "admin") addCard(card);
-
-            setComplete(true);
-          } else {
-            toast.error("Error while creating student card");
+          if (!data) {
+            toast.error("Error while uploading photo");
           }
+          photoFile = data;
+        }
+
+        toast.info("Submitting form...");
+
+        const payload = {
+          ...form.step1,
+          ...form.step2,
+          sexe: form.step1.sex as "MALE" | "FEMALE",
+          sectorId: JSON.parse(form.step1.sector).id,
+          avatar: photoFile?.fileName,
+          birthDate: new Date(form.step1.birthDate),
+          sex: undefined,
+          photo: undefined,
+          sector: undefined,
+          email:
+            form.step2.email && form.step2.email.length > 0
+              ? form.step2.email
+              : undefined,
+          phone:
+            form.step2.phone && form.step2.phone.length > 0
+              ? form.step2.phone
+              : undefined,
+        };
+
+        const { data: cardData, error } = await registerStudent(payload);
+
+        if (cardData) {
+          toast.success("Student card created successfully");
+
+          // Get academic year
+
+          // Get sector and faculty
+          const sector = getSector(cardData.sectorId);
+          const faculty = getFaculty(sector?.idFaculty || "");
+
+          const card = new Card({
+            ...cardData,
+            birthDate: new Date(cardData.birthDate),
+            createdAt: new Date(cardData.createdAt),
+            updatedAt: new Date(cardData.updatedAt),
+            sex: cardData.sexe,
+            academicYear: 2023,
+            sector: sector?.name,
+            faculty: faculty?.name,
+          });
+
+          if (context === "admin") addCard(card);
+
+          setComplete(true);
         } else {
-          toast.error("Error while uploading photo");
+          toast.error("Error while creating student card");
         }
 
         setLoading(false);

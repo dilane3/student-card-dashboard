@@ -107,7 +107,7 @@ export default class Card {
   }
 
   get avatarLink() {
-    return `${baseURL}/${this.avatar}`;
+    return `${baseURL}${this.avatar}`;
   }
 
   get sex() {

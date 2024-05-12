@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosError, AxiosRequestConfig } from "axios";
 import instance from "..";
 import { CardStatusesType } from "@/entities/studentCard.entity";
 
@@ -222,10 +222,12 @@ export async function getStudentByMatricule(matricule: string) {
       error: "Error getting student.",
     };
   } catch (error) {
-    console.log(error);
+    const e: AxiosError = error as AxiosError;
+    console.log((e.response?.data as Record<"message", string>).message);
 
     return {
-      error: "Error getting student.",
+      error: e,
+      message: (e.response?.data as Record<"message", string>).message,
     };
   }
 }

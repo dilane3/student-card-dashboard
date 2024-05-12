@@ -3,7 +3,6 @@ import { createSignal } from "@dilane3/gx";
 
 export type CompletionFirstStepInputSchema = {
   matricule: string;
-  card?: Card;
 };
 
 export type CompletionSecondStepInputSchema = {
@@ -17,6 +16,7 @@ export type StudentsCompletionFormState = {
     step1: CompletionFirstStepInputSchema;
     step2: CompletionSecondStepInputSchema;
   };
+  card?: Card;
   step: number;
   complete: boolean;
   loading: boolean;
@@ -30,6 +30,7 @@ export type StudentsCompletionFormActions = {
   setPrev: () => void;
   setActive: (payload: number) => void;
   reset: () => void;
+  setCard: (card: Card | undefined) => void;
 };
 
 export default createSignal<StudentsCompletionFormState>({
@@ -38,7 +39,6 @@ export default createSignal<StudentsCompletionFormState>({
     form: {
       step1: {
         matricule: "",
-        card: undefined,
       },
       step2: {
         email: "",
@@ -47,6 +47,7 @@ export default createSignal<StudentsCompletionFormState>({
       },
     },
     step: 0,
+    card: undefined,
     complete: false,
     loading: false,
   },
@@ -81,6 +82,12 @@ export default createSignal<StudentsCompletionFormState>({
         complete: payload,
       };
     },
+    setCard: (state, payload: Card | undefined) => {
+      return {
+        ...state,
+        card: payload,
+      };
+    },
     setLoading: (state, payload) => {
       return {
         ...state,
@@ -111,7 +118,6 @@ export default createSignal<StudentsCompletionFormState>({
         form: {
           step1: {
             matricule: "",
-            card: undefined,
           },
           step2: {
             email: "",
@@ -120,6 +126,7 @@ export default createSignal<StudentsCompletionFormState>({
           },
         },
         step: 0,
+        card: undefined,
         complete: false,
         loading: false,
       };

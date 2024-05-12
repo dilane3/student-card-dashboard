@@ -17,6 +17,7 @@ import { isValidEmail, isValidPhoneNumber } from "@/utils";
 
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
+import { toast } from "react-toastify";
 
 const SecondStep = () => {
   const { control, watch, setValue } = useForm<SecondStepInputSchema>();
@@ -77,7 +78,22 @@ const SecondStep = () => {
   const handleChooseFile = (e: any) => {
     const file = e.target.files[0];
 
-    setValue("photo", file);
+    if (file as File) {
+      if (
+        file.type !== "image/jpeg" &&
+        file.type !== "image/png" &&
+        file.type !== "image/jpg"
+      ) {
+        toast("Incorrect file format");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast("File too large because size greater than 5Mb");
+        return;
+      }
+      setValue("photo", file);
+    }
   };
 
   const handleRemovePhoto = () => {
@@ -260,21 +276,28 @@ const SecondStep = () => {
               </span>
             </div>
           ) : (
-            <div
-              className="relative flex h-[10rem] w-full md:h-full items-center justify-center rounded-lg border-2 border-dashed border-purple-200 cursor-pointer"
-              onClick={handleOpenFileExplorer}
-              onChange={handleChooseFile}
-            >
-              <input
-                ref={inputRef}
-                hidden
-                type="file"
-                accept="image/*"
-                name="photo"
-                id="photo"
-              />
+            <div className="flex flex-col space-y-1 flex-1">
+              <div
+                className="relative flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-purple-200 cursor-pointer"
+                onClick={handleOpenFileExplorer}
+                onChange={handleChooseFile}
+              >
+                <input
+                  ref={inputRef}
+                  hidden
+                  type="file"
+                  accept=".png, .jpg, .jpeg"
+                  name="photo"
+                  id="photo"
+                />
 
-              <Typography className="absolute">Click to upload a picture</Typography>
+                <Typography className="absolute">
+                  Click to upload a picture
+                </Typography>
+              </div>
+              <p className="text-gray-600 text-sm">
+                Supported formats: jpg, jpeg, png, Max size: 5MB
+              </p>
             </div>
           )}
         </div>

@@ -23,6 +23,7 @@ const StudentAccountForm = () => {
   const {
     form,
     step: activeStep,
+    card: fetchedCard,
     complete,
   } = useSignal<StudentsCompletionFormState>("students-completion-form");
 
@@ -35,11 +36,15 @@ const StudentAccountForm = () => {
   const isFirstStep = useMemo(() => activeStep === 0, [activeStep]);
   const isVerified = useCallback(
     (step = activeStep) => {
+      if (!fetchedCard) return false;
       switch (step) {
         case 0: {
-          const { matricule, card } = form.step1;
+          const { matricule } = form.step1;
 
-          if (matricule && card) {
+          if (fetchedCard.email && fetchedCard.avatar && fetchedCard.phone)
+            return false;
+
+          if (matricule && fetchedCard) {
             return true;
           }
 
@@ -49,16 +54,16 @@ const StudentAccountForm = () => {
         case 1: {
           const { email, photo, phone } = form.step2;
 
-          if (
-            email &&
-            photo &&
-            phone &&
-            isValidEmail(email) &&
-            isValidPhoneNumber(phone)
-          )
-            return true;
-
-          return false;
+          return (
+            (!fetchedCard.email ? (!email ? false : isValidEmail(email)) : true) &&
+            (!fetchedCard.phone
+              ? !phone
+                ? false
+                : isValidPhoneNumber(phone)
+              : true)
+            // &&
+            // (!fetchedCard.avatar ? (!photo ? false : true) : true)
+          );
         }
 
         default:
@@ -75,7 +80,7 @@ const StudentAccountForm = () => {
    * @returns
    */
   const handleNext = async () => {
-    if (!form.step1.card) return;
+    if (!fetchedCard) return;
     if (isVerified()) {
       if (isLastStep) {
         // Submit form
@@ -83,29 +88,37 @@ const StudentAccountForm = () => {
         toast.info("Uploading photo...");
         // Uploading photo
         const formData = new FormData();
-        formData.append("file", form.step2.photo as any);
-        const { data } = await uploadFile(formData);
-        if (data) {
-          toast.info("Submitting form...");
-          const { fileName } = data;
-          const payload = {
-            email: form.step2.email,
-            phone: form.step2.phone,
-            avatar: fileName,
-          };
-          const { data: cardData } = await updateStudent(
-            form.step1.card.id,
-            payload,
-          );
-          if (cardData) {
-            toast.success("Student card submitted successfully");
-            setComplete(true);
-          } else {
-            toast.error("Error while submitting the student card");
+
+        let photoFile: { fileName: string } | undefined = undefined;
+
+        if (form.step2.photo) {
+          toast.info("Uploading photo...");
+
+          formData.append("file", form.step2.photo as any);
+
+          const { data } = await uploadFile(formData);
+
+          if (!data) {
+            toast.error("Error while uploading photo");
           }
-        } else {
-          toast.error("Error while uploading photo");
+          photoFile = data;
         }
+
+        toast.info("Submitting form...");
+
+        const payload = {
+          email: form.step2.email,
+          phone: form.step2.phone,
+          avatar: photoFile?.fileName,
+        };
+        const { data: cardData } = await updateStudent(fetchedCard.id, payload);
+        if (cardData) {
+          toast.success("Student card submitted successfully");
+          setComplete(true);
+        } else {
+          toast.error("Error while submitting the student card");
+        }
+
         setLoading(false);
       } else {
         setNext();
@@ -188,7 +201,7 @@ const StudentAccountForm = () => {
             </Stepper>
             <form className="w-full">{displayFormStep()}</form>
             <div
-              className={`mt-16 flex ${
+              className={`mt-8 flex ${
                 activeStep === 0 ? "w-full justify-end" : "justify-between"
               }`}
             >
