@@ -9,11 +9,11 @@ module.exports = withMT({
         primary: "#6D437D",
       },
       width: {
-        "card": "337.795px",
+        "card": "325.11496063px",
         "a4": "793.701px"
       },
       height: {
-        "card": "212.992px",
+        "card": "207.34488189px",
         "a4": "1108.661px"
       },
       spacing: {

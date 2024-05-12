@@ -79,7 +79,7 @@ export default function CardVerso({ card }: Props) {
               <QrCodeGenerator code={card.code} />
             </div>
           </div>
-          <p className="text-center font-nicoMojiRegular text-[6px] uppercase tracking-[0.06563rem]">
+          <p className="text-center font-nicoMojiRegular font-bold text-[6px] uppercase tracking-[0.06563rem]">
             {formatCode(card.code)}
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function CardVerso({ card }: Props) {
         </div>
         <div className="w-1/3 bg-[#FAE24C]" />
       </div>
-      <div className="font-nunitoRegular bg-white rounded-b-3xl h-[40%] px-2 pt-[3px] text-[7px] leading-[11px] uppercase">
+      <div className="font-nunitoRegular bg-white rounded-b-3xl h-[40%] px-2 pt-[3px] text-black text-[7px] leading-[11px] uppercase">
         <p>
           La carte d’étudiant (CE) est unique à chaque étudiant et considérée comme
           sa propriété. Le proriétaire de la CARTE D’ETUDIANT est responsable de sa
