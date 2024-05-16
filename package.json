@@ -7,7 +7,7 @@
     "dev": "vite",
     "tscheck": "tsc",
     "build": "vite build",
-    "start": "vite preview"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@dilane3/gx": "1.4.0",

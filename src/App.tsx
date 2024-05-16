@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+import { Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import { Auth, Dashboard } from "@/layouts";
 import { CurrentUserProvider } from "./provider/currentUser";
 import { ExportProvider } from "./provider/export";
@@ -18,7 +18,7 @@ const App = () => {
     <GXProvider store={store}>
       <ThemeProvider>
         <ModalProvider>
-          <BrowserRouter>
+          <HashRouter>
             <CurrentUserProvider>
               <MaterialTailwindControllerProvider>
                 <StudentProvider>
@@ -53,7 +53,7 @@ const App = () => {
                 </StudentProvider>
               </MaterialTailwindControllerProvider>
             </CurrentUserProvider>
-          </BrowserRouter>
+          </HashRouter>
         </ModalProvider>
       </ThemeProvider>
     </GXProvider>
