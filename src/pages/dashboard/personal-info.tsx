@@ -150,27 +150,27 @@ export function PersonalInfo() {
           <div className="mt-[0.9375rem] flex flex-col">
             <div className="flex flex-col md:flex-row justify-between">
               <div className="flex w-full md:w-1/2  space-y-8  flex-col">
-                <div className="h-[1.5625em] border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
+                <div className=" border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
                   Information personnelle / Personnal informations
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <div className="flex flex-col">
                     <span className="font-nunitoBold text-black">
                       {student.name}
                     </span>
-                    <span> Noms & Prénoms / LastName & FirstName</span>
+                    <span className="text-xs"> Noms & Prénoms / LastName & FirstName</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="font-nunitoBold text-black">
                       {student.sex === "MALE" ? "Masculin" : "Feminin"}
                     </span>
-                    <span> Sexe / Sex</span>
+                    <span className="text-xs"> Sexe / Sex</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="font-nunitoBold text-black">
                       {formatDate(student.birthDate)} - {student.nationality}
                     </span>
-                    <span> Date et Lieu de naissance / Date and Place of Birth</span>
+                    <span className="text-xs"> Date et Lieu de naissance / Date and Place of Birth</span>
                   </div>
 
                   <div className="mt-[0.625rem] flex flex-col">
@@ -178,7 +178,7 @@ export function PersonalInfo() {
                       {" "}
                       {student.nationality}
                     </span>
-                    <span> Nationalité / Nationality</span>
+                    <span className="text-xs"> Nationalité / Nationality</span>
                   </div>
                 </div>
               </div>
@@ -187,35 +187,38 @@ export function PersonalInfo() {
                 <div className="h-[1.5625em] border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
                   Information supplementaires
                 </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.sector}
-                  </span>
-                  <span> Filière / Sector</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.email}
-                  </span>
-                  <span> Adresse email / Email address</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.phone}
-                  </span>
-                  <span> Téléphone / Phone</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.paymentStatus}
-                  </span>
-                  <span>Statut de Paiement / Payment Status</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {new Date(Date.now()).getFullYear() - 1} - {student.academicYear}
-                  </span>
-                  <span>Année academique / Academic year</span>
+                <div className="space-y-4 mt-[24px]">
+
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.sector}
+                    </span>
+                    <span className="text-xs"> Filière / Sector</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.email}
+                    </span>
+                    <span className="text-xs"> Adresse email / Email address</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.phone}
+                    </span>
+                    <span className="text-xs"> Téléphone / Phone</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.paymentStatus}
+                    </span>
+                    <span className="text-xs">Statut de Paiement / Payment Status</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {new Date(Date.now()).getFullYear() - 1} - {student.academicYear}
+                    </span>
+                    <span className="text-xs">Année academique / Academic year</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -233,7 +236,7 @@ export function PersonalInfo() {
                 </div> */}
                 <div className="">
                   <p className="font-nunitoBold text-black">{student.faculty}</p>
-                  <p> Faculté / Faculty</p>
+                  <p className="text-xs"> Faculté / Faculty</p>
                 </div>
 
                 {/* <div className="mt-[0.625rem] flex flex-col">

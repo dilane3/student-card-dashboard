@@ -17,7 +17,7 @@ import { ExportContext } from "@/context/export";
 import { DefaultPagination } from "@/components/pagination/DefaultPagination";
 import ImageStudentCards from "./ImageStudentCards/ImageStudentCards";
 import PdfStudentCards from "./PdfStudentCards/PdfStudentCards";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 import { formatDate } from "@/utils";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/solid";
@@ -269,14 +269,21 @@ export const StudentsTableColumns: ColumnDef<CardEntity>[] = [
       <div className="border-b border-blue-gray-50 py-3 text-left">Action</div>
     ),
     cell: ({ row }) => {
+      const navigate = useNavigate();
+
       const card = row.original;
+      
+      const handleViewCard = () => {
+        navigate(`/dashboard/personal-info/${card.id}`);
+      }
+
       return (
         <div className="flex gap-2">
           <Button size="sm" variant="text" className="bg-gray-300/70 px-2">
             Edit
           </Button>
           <Button
-            onClick={() => window.location.replace(`/dashboard/students/${card.id}`)}
+            onClick={handleViewCard}
             size="sm"
             variant="text"
             className="bg-gray-300/70 px-2"
