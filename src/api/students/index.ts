@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosError, AxiosRequestConfig } from "axios";
 import instance from "..";
 import { CardStatusesType } from "@/entities/studentCard.entity";
 
@@ -222,10 +222,12 @@ export async function getStudentByMatricule(matricule: string) {
       error: "Error getting student.",
     };
   } catch (error) {
-    console.log(error);
+    const e: AxiosError = error as AxiosError;
+    console.log((e.response?.data as Record<"message", string>).message);
 
     return {
-      error: "Error getting student.",
+      error: e,
+      message: (e.response?.data as Record<"message", string>).message,
     };
   }
 }
@@ -237,6 +239,8 @@ export async function getStudentCardStatistics() {
   try {
     const response = await instance.get(`/student-cards/statistics`);
 
+    console.log(response);
+
     if (response.status === 200) {
       return {
         data: response.data,
@@ -244,13 +248,13 @@ export async function getStudentCardStatistics() {
     }
 
     return {
-      error: "Error getting student.",
+      error: "Error getting statistics.",
     };
   } catch (error) {
     console.log(error);
 
     return {
-      error: "Error getting student.",
+      error: "Error getting statistics.",
     };
   }
 }

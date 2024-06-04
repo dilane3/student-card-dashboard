@@ -47,6 +47,17 @@ export function PersonalInfo() {
   const handleUpdateCardStatus = async () => {
     if (!student || !statusValue) return;
 
+    if (
+      statusValue === "INFORMATIONS_VALIDATED" ||
+      statusValue === "PRINTED" ||
+      statusValue === "AVAILABLE"
+    ) {
+      if (!student.avatar || !student.email || !student.phone) {
+        toast.error("Missing avatar, email or phone number");
+        return;
+      }
+    }
+
     const { data } = await updateStudentCardStatus(student.id, statusValue);
 
     if (data) {
@@ -92,7 +103,7 @@ export function PersonalInfo() {
       </div>
       <MaterialCard>
         <div className="flex flex-col rounded-[10px] border border-[#808080] bg-white p-[1.25rem] shadow-md">
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row justify-between">
             <div className="flex w-[50%] flex-row gap-2 items-center">
               <Avatar
                 src={student.avatarLink}
@@ -102,17 +113,17 @@ export function PersonalInfo() {
                 }}
                 alt={student.name}
               />
-              <div className="flex flex-col text-[0.875em]">
-                <span className="text-[1.375em] font-nunitoBold text-black">
+              <div className="flex flex-row-reverse md:flex-col text-[0.875em]">
+                <p className="text-[1.375em] ml-2 md:ml-0 font-nunitoBold text-black">
                   {student.matricule}
-                </span>
-                <span className="text-[1.375em] font-nunitoBold text-black">
+                </p>
+                <p className="text-[1.375em] font-nunitoBold text-black">
                   {student.name}
-                </span>
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-72 my-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="w-full sm:w-72 my-2">
                 <Select
                   label="Card status"
                   color="purple"
@@ -138,33 +149,37 @@ export function PersonalInfo() {
           </div>
           <div className="mt-[0.9375rem] flex flex-col">
             <div className="flex flex-col md:flex-row justify-between">
-              <div className="flex w-full md:w-1/2 flex-col">
-                <div className="h-[1.5625em] border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
+              <div className="flex w-full md:w-1/2  space-y-8  flex-col">
+                <div className=" border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
                   Information personnelle / Personnal informations
                 </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className="font-nunitoBold text-black">{student.name}</span>
-                  <span> Noms & Prénoms / LastName & FirstName</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className="font-nunitoBold text-black">
-                    {student.sex === "MALE" ? "Masculin" : "Feminin"}
-                  </span>
-                  <span> Sexe / Sex</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className="font-nunitoBold text-black">
-                    {formatDate(student.birthDate)} - {student.nationality}
-                  </span>
-                  <span> Date et Lieu de naissance / Date and Place of Birth</span>
-                </div>
+                <div className="space-y-4">
+                  <div className="flex flex-col">
+                    <span className="font-nunitoBold text-black">
+                      {student.name}
+                    </span>
+                    <span className="text-xs"> Noms & Prénoms / LastName & FirstName</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-nunitoBold text-black">
+                      {student.sex === "MALE" ? "Masculin" : "Feminin"}
+                    </span>
+                    <span className="text-xs"> Sexe / Sex</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-nunitoBold text-black">
+                      {formatDate(student.birthDate)} - {student.nationality}
+                    </span>
+                    <span className="text-xs"> Date et Lieu de naissance / Date and Place of Birth</span>
+                  </div>
 
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {" "}
-                    {student.nationality}
-                  </span>
-                  <span> Nationalité / Nationality</span>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {" "}
+                      {student.nationality}
+                    </span>
+                    <span className="text-xs"> Nationalité / Nationality</span>
+                  </div>
                 </div>
               </div>
 
@@ -172,42 +187,45 @@ export function PersonalInfo() {
                 <div className="h-[1.5625em] border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
                   Information supplementaires
                 </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.sector}
-                  </span>
-                  <span> Filière / Sector</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.email}
-                  </span>
-                  <span> Adresse email / Email address</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.phone}
-                  </span>
-                  <span> Téléphone / Phone</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.paymentStatus}
-                  </span>
-                  <span>Statut de Paiement / Payment Status</span>
-                </div>
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {new Date(Date.now()).getFullYear() - 1} - {student.academicYear}
-                  </span>
-                  <span>Année academique / Academic year</span>
+                <div className="space-y-4 mt-[24px]">
+
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.sector}
+                    </span>
+                    <span className="text-xs"> Filière / Sector</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.email}
+                    </span>
+                    <span className="text-xs"> Adresse email / Email address</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.phone}
+                    </span>
+                    <span className="text-xs"> Téléphone / Phone</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {student.paymentStatus}
+                    </span>
+                    <span className="text-xs">Statut de Paiement / Payment Status</span>
+                  </div>
+                  <div className="mt-[0.625rem] flex flex-col">
+                    <span className=" font-nunitoBold text-black">
+                      {new Date(Date.now()).getFullYear() - 1} - {student.academicYear}
+                    </span>
+                    <span className="text-xs">Année academique / Academic year</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-[1.875rem] flex flex-row justify-between">
-              <div className="flex w-full md:w-1/2 flex-col">
-                <div className="h-[1.5625em] border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
+            <div className="mt-[1.875rem] flex flex-col md:flex-row space-y-4 md:space-y-0 justify-between">
+              <div className="flex w-full md:w-1/2 space-y-2 flex-col">
+                <div className="border border-solid border-b-[purple] text-lg min-[1350px]:text-xl font-nunitoBold text-[purple]">
                   Information complementaires / Complementary
                 </div>
                 {/* <div className="mt-[0.625rem] flex flex-col">
@@ -216,11 +234,9 @@ export function PersonalInfo() {
                   </span>
                   <span className="text-[0.75em]"> Identifiant Unique</span>
                 </div> */}
-                <div className="mt-[0.625rem] flex flex-col">
-                  <span className=" font-nunitoBold text-black">
-                    {student.faculty}
-                  </span>
-                  <span> Faculté / Faculty</span>
+                <div className="">
+                  <p className="font-nunitoBold text-black">{student.faculty}</p>
+                  <p className="text-xs"> Faculté / Faculty</p>
                 </div>
 
                 {/* <div className="mt-[0.625rem] flex flex-col">

@@ -25,7 +25,7 @@ export default function useConvertToPng(ref: React.RefObject<HTMLDivElement>) {
 
     if (!node) return;
 
-    toPng(node, { quality: 1, preferredFontFormat: "woff2", pixelRatio: 2 })
+    toPng(node, { quality: 1, preferredFontFormat: "woff2", pixelRatio: 8 })
       .then((dataUrl) => {
         setImage(dataUrl);
       })

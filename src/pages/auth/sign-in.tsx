@@ -1,4 +1,4 @@
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -13,6 +13,7 @@ import lockBackground from "../../../src/assets/img/lock_background.png";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { login } from "@/api/auth";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 export function SignIn() {
   // Navigation
@@ -21,6 +22,7 @@ export function SignIn() {
   // Local state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Handlers
@@ -73,14 +75,27 @@ export function SignIn() {
               value={email}
               onChange={handleEmailChange}
             />
-            <Input
-              crossOrigin={null}
-              type="password"
-              label="Password"
-              size="lg"
-              value={password}
-              onChange={handlePasswordChange}
-            />
+            <div className="relative">
+              <Input
+                crossOrigin={null}
+                type={showPassword ? "text" : "password"}
+                label="Password"
+                size="lg"
+                value={password}
+                className="pr-8"
+                onChange={handlePasswordChange}
+              />
+              <div
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="hover:cursor-pointer absolute top-3 right-2"
+              >
+                {showPassword ? (
+                  <EyeIcon className="w-5" />
+                ) : (
+                  <EyeSlashIcon className="w-5" />
+                )}
+              </div>
+            </div>
             <div className="-ml-2.5">
               <Checkbox crossOrigin={null} label="Remember Me" />
             </div>

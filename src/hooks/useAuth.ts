@@ -28,7 +28,7 @@ export default function useAuth() {
   const handleGetMe = async () => {
     setIsLoading(true);
 
-    const { data, user: userData } = await getMe();
+    const { data, user: userData, error } = await getMe();
 
     if (data) {
       if (userData.admin) {

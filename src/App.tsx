@@ -25,12 +25,16 @@ const App = () => {
                   <ExportProvider>
                     <UploadProvider>
                       <Routes>
+                        <Route
+                          path="/dashboard"
+                          element={<Navigate to="/registration" replace />}
+                        />
                         <Route path="/registration" element={<FormRegistration />} />
                         <Route path="/dashboard/*" element={<Dashboard />} />
                         <Route path="/auth/*" element={<Auth />} />
                         <Route
                           path="*"
-                          element={<Navigate to="/dashboard/home" replace />}
+                          element={<Navigate to="/registration" replace />}
                         />
                       </Routes>
                     </UploadProvider>

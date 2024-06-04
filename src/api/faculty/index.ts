@@ -64,7 +64,7 @@ export async function updateFaculty(id: string, payload: UpdateFacultyDto) {
  */
 export async function findAllFaculties() {
   try {
-    const response = await instance.get("/faculties");
+    const response = await instance.get(`/faculties`);
 
     if (response.status === 200) {
       return {
@@ -114,11 +114,16 @@ export async function deleteFaculty(id: string) {
 /**
  * This function loads paginated faculties from the server.
  */
-export async function findFacultysWithPagination(offset: number, limit: number) {
+export async function findFacultysWithPagination(
+  offset: number,
+  limit: number,
+  search: string,
+) {
   try {
     const params = {
       offset,
       limit,
+      search,
     };
 
     const config: AxiosRequestConfig = {

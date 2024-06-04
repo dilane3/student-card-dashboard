@@ -22,7 +22,7 @@ export default function CardRector({ card }: Props) {
           </div>
         </div>
         <div className="flex w-full h-[90%] bg-primary">
-          <div className="w-[40%] text-white h-full font-gideonRomanRegular flex flex-col justify-center items-center">
+          <div className="w-[40%] text-white h-full font-nunitoBold flex flex-col justify-center items-center">
             <p className="text-[8px]">REPUBLIQUE DU CAMEROUN</p>
             <p className="text-[8px]">Paix - Travail - Patrie</p>
             <p className="text-[8px]">UNIVERSITE DE YAOUNDE 1</p>
@@ -30,7 +30,7 @@ export default function CardRector({ card }: Props) {
           <div className="w-[20%] h-full flex justify-center items-center">
             <img src={logo} className="w-full h-full" alt="UY1 transparent logo" />
           </div>
-          <div className="w-[40%] h-full font-gideonRomanRegular text-white flex flex-col justify-center items-center">
+          <div className="w-[40%] h-full font-nunitoBold text-white flex flex-col justify-center items-center">
             <p className="text-[8px]">REPUBLIC OF CAMEROON</p>
             <p className="text-[8px]">Peace - Work - Fatherland</p>
             <p className="text-[8px]">UNIVERSITY OF YAOUNDE 1</p>
@@ -38,14 +38,14 @@ export default function CardRector({ card }: Props) {
         </div>
       </div>
       <div className="w-full h-[15%] text-lg py-[0.3rem] font-nunitoBold bg-[#BA68C8] leading-[8px]">
-        <p className="h-1/2 w-full text-center text-[10px]">
+        <p className="h-1/2 w-full text-black text-center text-[10px]">
           CARTE D’ÉTUDIANT - FACULTE DES SCIENCES
         </p>
         <p className="h-1/2 w-full text-center">
           <span className="text-white font-nunitoBoldItalic text-[10px]">
             FILIÈRE/OPTION:
           </span>
-          <span className="text-[10px] uppercase">{` ${card.sector}`}</span>
+          <span className="text-[10px] uppercase text-black">{` ${card.sector}`}</span>
         </p>
       </div>
       <div className="w-full h-[60%] flex bg-white p-2 pb-0 rounded-b-2xl">

@@ -1,7 +1,13 @@
 import { PhoneNumberUtil } from "google-libphonenumber";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 // Getting the library instance
 const phoneUtil = PhoneNumberUtil.getInstance();
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export const generateImage = () => {
   // Generate avatar randomly

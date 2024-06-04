@@ -3,12 +3,14 @@ import { createSignal } from "@dilane3/gx";
 
 export type FacultiesState = {
   faculties: Faculty[];
+  paginatedFaculties: Faculty[];
   faculty: Faculty | undefined;
   loading: boolean;
 };
 
 export type FacultiesActions = {
   loadFaculties: (faculties: Faculty[]) => void;
+  loadPaginatedFaculties: (faculties: Faculty[]) => void;
   addFaculty: (faculty: Faculty) => void;
   selectFaculty: (faculty: Faculty | undefined) => void;
   updateFaculty: (faculty: Faculty) => void;
@@ -23,6 +25,7 @@ const facultiesSignal = createSignal<FacultiesState>({
   name: "faculties",
   state: {
     faculties: [],
+    paginatedFaculties: [],
     faculty: undefined,
     loading: false,
   },
@@ -31,6 +34,14 @@ const facultiesSignal = createSignal<FacultiesState>({
       return {
         ...state,
         faculties,
+        loading: false,
+      };
+    },
+
+    loadPaginatedFaculties: (state, paginatedFaculties: Faculty[]) => {
+      return {
+        ...state,
+        paginatedFaculties,
         loading: false,
       };
     },

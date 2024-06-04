@@ -1,5 +1,4 @@
 import { getStudentByMatricule } from "@/api/students";
-import FormSummaryItem from "@/components/molecules/FormSummaryItem";
 import Card from "@/entities/studentCard.entity";
 import { FacultiesOperations } from "@/gx/signals/faculties.signal";
 import { SectorsOperations } from "@/gx/signals/sectors.signal";
@@ -8,12 +7,12 @@ import {
   StudentsCompletionFormActions,
   StudentsCompletionFormState,
 } from "@/gx/signals/studentsCompletionForm.signal";
-import { formatDateBySlash } from "@/utils";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Button, Input, Typography } from "@material-tailwind/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const RegisterFirstStep = () => {
   // Local state
@@ -23,12 +22,12 @@ const RegisterFirstStep = () => {
   const { setValue, control, watch } = useForm<CompletionFirstStepInputSchema>();
 
   // Global actions
-  const { setForm } = useActions<StudentsCompletionFormActions>(
+  const { setForm, setCard } = useActions<StudentsCompletionFormActions>(
     "students-completion-form",
   );
 
   // Global state
-  const { form } = useSignal<StudentsCompletionFormState>(
+  const { form, card } = useSignal<StudentsCompletionFormState>(
     "students-completion-form",
   );
 
@@ -36,17 +35,16 @@ const RegisterFirstStep = () => {
   const { getSector } = useOperations<SectorsOperations>("sectors");
 
   const matricule = watch("matricule");
-  const card = watch("card");
 
   // Effects
 
   // Set Default values when the component load for the first time
   useEffect(() => {
     (() => {
-      const { matricule, card } = form.step1;
+      const { matricule } = form.step1;
 
       setValue("matricule", matricule);
-      setValue("card", card);
+      setCard(card);
     })();
   }, []);
 
@@ -67,7 +65,7 @@ const RegisterFirstStep = () => {
     setLoading(true);
     setError(false);
 
-    const { data } = await getStudentByMatricule(matricule);
+    const { data, message } = await getStudentByMatricule(matricule);
 
     setLoading(false);
 
@@ -83,7 +81,7 @@ const RegisterFirstStep = () => {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        avatar: data.avator,
+        avatar: data.avatar,
         sex: data.sexe,
         status: data.status,
         birthDate: new Date(Date.parse(data.birthDate)),
@@ -97,13 +95,14 @@ const RegisterFirstStep = () => {
         faculty: faculty?.name ?? "",
       });
 
-      setValue("card", fetchedCard);
+      setCard(fetchedCard);
       setForm({
         matricule,
         card: fetchedCard,
       });
     } else {
       setError(true);
+      toast(message);
       console.error("loading failed");
     }
   };
@@ -112,26 +111,34 @@ const RegisterFirstStep = () => {
     // Reset form
     setError(false);
     setValue("matricule", "");
-    setValue("card", undefined);
+    setCard(undefined);
     setForm({
       matricule: "",
       card: undefined,
     });
   };
 
+  const handleGetNoDataPresent = useCallback(() => {
+    if (!card?.email || !card.avatar || !card.phone) {
+      return <>This are the datas you lack:</>;
+    } else {
+      return <>Your account is already completed</>;
+    }
+  }, [card]);
+
   return (
     <>
       <Typography variant="h4" color="purple" className="mt-8">
         Find Student / Rechercher l'étudiant
       </Typography>
-      <div className="mt-8">
-        <div className="flex">
-          <Controller
-            name="matricule"
-            control={control}
-            defaultValue=""
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
+      <div className="mt-4 space-y-6">
+        <Controller
+          name="matricule"
+          control={control}
+          defaultValue=""
+          rules={{ required: true }}
+          render={({ field: { value, onChange } }) => (
+            <div className="relative w-full">
               <Input
                 color="purple"
                 crossOrigin={null}
@@ -140,48 +147,47 @@ const RegisterFirstStep = () => {
                 value={value}
                 onChange={onChange}
               />
-            )}
-          />
-          {card && (
-            <div className="bg-green-500 px-2 rounded-lg ml-2 flex justify-center items-center">
-              <CheckIcon className="w-6 text-white" />
+              {card && (
+                <div className="bg-green-500 w-[5%] h-[80%] -translate-y-1/2 absolute top-1/2 right-1 px-2 rounded-md flex justify-center items-center">
+                  <CheckIcon className="w-6 text-white" />
+                </div>
+              )}
+              {error && (
+                <div className="bg-red-500 w-[5%] h-[80%] -translate-y-1/2 absolute top-1/2 right-1 px-2 rounded-lg flex justify-center items-center">
+                  <XMarkIcon className="w-6 text-white" />
+                </div>
+              )}
             </div>
           )}
-          {error && (
-            <div className="bg-red-500 px-2 rounded-lg ml-2 flex justify-center items-center">
-              <XMarkIcon className="w-6 text-white" />
-            </div>
-          )}
-        </div>
+        />
         {card && (
-          <div className="mt-8 flex flex-col-reverse md:flex-row w-full gap-4">
-            <div className="mb-4 flex w-full md:w-1/2 flex-col gap-6">
-              <FormSummaryItem label="Full Name" value={card.name} />
-              <FormSummaryItem label="Sex" value={card.sex} />
-              <FormSummaryItem label="Birth place" value={card.birthPlace} />
-              <FormSummaryItem
-                label="Birth date"
-                value={formatDateBySlash(card.birthDate)}
-              />
-            </div>
-            <div className="mb-4 flex w-full md:w-1/2 flex-col gap-6">
-              <FormSummaryItem label="Faculty" value={card.faculty} />
-              <FormSummaryItem label="Academic sector" value={card.sector} />
-              <FormSummaryItem label="Nationality" value={card.nationality} />
+          <div className="mt-2 flex flex-col-reverse md:flex-row w-full gap-4">
+            <div className="mb-4 space-y-4">
+              <p className="text-lg">
+                Great you are present in the system. {handleGetNoDataPresent()}
+              </p>
+              <div>
+                <ul className="list-decimal ml-4">
+                  {!card.email && <li>Email</li>}
+                  {!card.phone && <li>Phone</li>}
+                  {!card.avatar && <li>Photo</li>}
+                </ul>
+              </div>
             </div>
           </div>
         )}
-        <div>
+        <div className="space-x-2">
           <Button
             variant="filled"
-            className="mt-4 bg-gray-500 text-gray-300 mr-2"
+            className="bg-gray-600 text-white"
             onClick={handleResetStep}
           >
             Clear
           </Button>
           <Button
             variant="filled"
-            className="mt-4 bg-primary text-white"
+            disabled={card !== undefined}
+            className="bg-primary text-white"
             onClick={handleGetStudent}
           >
             {loading ? "Loading..." : "Find"}

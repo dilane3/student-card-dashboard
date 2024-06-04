@@ -58,11 +58,13 @@ export default function useStudent(studentId: string) {
 export function useStudentCardsStatistics() {
   const { loadCard } = useActions<StudentCardActions>("students");
 
-  const [cardsStatistics, setCardsStatistics] = useState(null);
-
-  // Operations
-  const { getFaculty } = useOperations<FacultiesOperations>("faculties");
-  const { getSector } = useOperations<SectorsOperations>("sectors");
+  const [cardsStatistics, setCardsStatistics] = useState<{
+    studentsCount: number;
+    maleStudentsCount: number;
+    femaleStudentsCount: number;
+    totalPrintedCardsCount: number;
+    totalValidatedCardsCount: number;
+  } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -74,38 +76,18 @@ export function useStudentCardsStatistics() {
     const { data } = await getStudentCardStatistics();
 
     if (data) {
+      setCardsStatistics({
+        studentsCount: data.studentsCount,
+        maleStudentsCount: data.maleStudentsCount,
+        femaleStudentsCount: data.femaleStudentsCount,
+        totalPrintedCardsCount: data.totalPrintedCardsCount,
+        totalValidatedCardsCount: data.totalValidatedCardsCount,
+      });
     }
+  };
 
-    // if (data) {
-    //   const sector = getSector(data.sectorId);
-    //   const faculty = getFaculty(sector?.idFaculty ?? "");
-
-    //   const fetchedCard = new Card({
-    //     id: data.id,
-    //     matricule: data.matricule,
-    //     code: data.code,
-    //     firstName: data.firstName,
-    //     lastName: data.lastName,
-    //     email: data.email,
-    //     phone: data.phone,
-    //     avatar: data.avator,
-    //     sex: data.sexe,
-    //     status: data.status,
-    //     birthDate: new Date(Date.parse(data.birthDate)),
-    //     birthPlace: data.birthPlace,
-    //     nationality: data.nationality,
-    //     createdAt: new Date(Date.parse(data.createdAt)),
-    //     updatedAt: new Date(Date.parse(data.updatedAt)),
-    //     academicYear: new Date(Date.now()).getFullYear(),
-    //     sector: sector?.name ?? "",
-    //     faculty: faculty?.name ?? "",
-    //   });
-
-    //   console.log(fetchedCard);
-
-    //   loadCard({ data: fetchedCard });
-    // } else {
-    //   console.error("loading failed");
-    // }
+  return {
+    cardsStatistics,
+    loadCard,
   };
 }
